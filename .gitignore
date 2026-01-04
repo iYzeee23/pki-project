@@ -1,0 +1,78 @@
+# -------------------------
+# OS / Editor
+# -------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+.vscode/
+.idea/
+*.iml
+
+# -------------------------
+# Logs
+# -------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -------------------------
+# Env / Secrets
+# -------------------------
+.env
+.env.*.local
+!.env.example
+
+# -------------------------
+# Node / JS
+# -------------------------
+node_modules/
+**/node_modules/
+
+dist/
+build/
+out/
+coverage/
+.tmp/
+.cache/
+
+# -------------------------
+# Server (Node/Express)
+# -------------------------
+Server/.env
+
+# -------------------------
+# Web (React)
+# -------------------------
+Web/.env
+Web/.env.*
+Web/.vite/
+Web/build/
+Web/dist/
+
+# -------------------------
+# Mobile (React Native)
+# -------------------------
+Mobile/.env
+Mobile/.env.*
+
+# Metro / RN caches
+Mobile/.expo/
+Mobile/.metro-cache/
+Mobile/.cache/
+
+# React Native - iOS (if you ever add ios/)
+Mobile/ios/build/
+Mobile/ios/Pods/
+Mobile/ios/Podfile.lock
+Mobile/ios/*.xcworkspace/
+Mobile/ios/*.xcodeproj/xcuserdata/
+
+# -------------------------
+# Misc
+# -------------------------
+*.pem
+*.key
