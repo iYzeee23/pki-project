@@ -1,0 +1,8 @@
+=> MongoDB (baza)
+=> Mongoose (biblioteka za rad backenda sa sa MongoDB)
+=> Node.js (runtime)
+=> Express (REST API u okviru Node runtime-a)
+=> Socket.IO (real-time events, takođe u okviru istog Node servera)
+=> React (web klijent)
+=> React Native (mobilni klijent)
+=> JWT (mehanizam autentifikacije/autorizacije koji izdaje backend i klijenti šalju nazad)

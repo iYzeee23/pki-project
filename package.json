@@ -1,0 +1,33 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "workspaces": [
+    "Server",
+    "Web",
+    "Mobile",
+    "Common"
+  ],
+  "scripts": {
+    "dev:server": "npm --workspace Server run dev",
+    "dev:web": "npm --workspace Web run dev",
+    "dev:mobile": "npm --workspace Mobile run start",
+
+    "install:all": "npm install --workspaces",
+
+    "build:web": "npm --workspace Web run build",
+    "build:server": "npm --workspace Server run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iYzeee23/pki-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iYzeee23/pki-project/issues"
+  },
+  "homepage": "https://github.com/iYzeee23/pki-project#readme"
+}

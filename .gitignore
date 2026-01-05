@@ -43,12 +43,15 @@ coverage/
 # Server (Node/Express)
 # -------------------------
 Server/.env
+Server/.env.*.local
+!Server/.env.example
 
 # -------------------------
 # Web (React)
 # -------------------------
 Web/.env
 Web/.env.*
+!Web/.env.example
 Web/.vite/
 Web/build/
 Web/dist/
@@ -58,6 +61,7 @@ Web/dist/
 # -------------------------
 Mobile/.env
 Mobile/.env.*
+!Mobile/.env.example
 
 # Metro / RN caches
 Mobile/.expo/
