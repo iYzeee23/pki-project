@@ -1,4 +1,4 @@
-## Setup & Testiranje (minimalni stack: REST + Socket.IO + JWT + Mongo + Web/Mobile)
+## Setup & Testiranje
 
 ### 1) Instalirati Node.js
 https://nodejs.org/en/download
@@ -40,8 +40,8 @@ curl http://localhost:3000/secret ^
 ```bash
 node .\Server\scripts\test.js
 ```
-**server => [socket] connected**
-**terminal => connected i pong**
+**Server => [socket] connected**  
+**Terminal => connected i pong**
 
 ### 9) Proveriti da li radi Mongo + Socket event
 ```bash
@@ -50,7 +50,7 @@ curl -X POST http://localhost:3000/notes ^
   -H "Authorization: Bearer <TOKEN>" ^
   -d "{\"text\":\"Hello\"}"
 ```
-**terminal => note_created**
+**Terminal => note_created**
 ```bash
 curl http://localhost:3000/notes ^
   -H "Authorization: Bearer <TOKEN>"
@@ -61,10 +61,10 @@ curl http://localhost:3000/notes ^
 ```bash
 npm --workspace ./Web run dev
 ```
-**http://localhost:5173/ => treba da se iscrta minijaturna mapa**
+**http://localhost:5173/ => Treba da se iscrta minijaturna mapa**
 
 ### 11) Proveriti da li radi Mobile app [React Native + Expo]
 ```bash
 npm --workspace ./Mobile run start
 ```
-**skenirati QR kod kamerom => u Expo Go treba da se iscrta mapa**
+**Skenirati QR kod kamerom => U Expo Go treba da se iscrta mapa**
