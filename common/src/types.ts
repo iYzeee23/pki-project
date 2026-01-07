@@ -1,0 +1,14 @@
+export const GEOJSON_STRUCTURES = ["Point"] as const;
+export type GeoJsonStructure = (typeof GEOJSON_STRUCTURES)[number];
+
+export const BIKE_STATUSES = ["Available", "Maintenance", "Off"] as const;
+export type BikeStatus = (typeof BIKE_STATUSES)[number];
+
+export const IMAGE_SOURCES = ["Rental", "Issue"] as const;
+export type ImageSource = (typeof IMAGE_SOURCES)[number];
+
+export type LngLat = { lng: number; lat: number };
+export type LoginRequest = { username: string; password: string };
+export type LoginResponse = { token: string };
+
+export const NUM_OF_NEAREST_OBJECTS = 3;

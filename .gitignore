@@ -42,38 +42,38 @@ coverage/
 # -------------------------
 # Server (Node/Express)
 # -------------------------
-Server/.env
-Server/.env.*.local
-!Server/.env.example
+server/.env
+server/.env.*.local
+!server/.env.example
 
 # -------------------------
 # Web (React)
 # -------------------------
-Web/.env
-Web/.env.*
-!Web/.env.example
-Web/.vite/
-Web/build/
-Web/dist/
+web/.env
+web/.env.*
+!web/.env.example
+web/.vite/
+web/build/
+web/dist/
 
 # -------------------------
 # Mobile (React Native)
 # -------------------------
-Mobile/.env
-Mobile/.env.*
-!Mobile/.env.example
+mobile/.env
+mobile/.env.*
+!mobile/.env.example
 
 # Metro / RN caches
-Mobile/.expo/
-Mobile/.metro-cache/
-Mobile/.cache/
+mobile/.expo/
+mobile/.metro-cache/
+mobile/.cache/
 
 # React Native - iOS (if you ever add ios/)
-Mobile/ios/build/
-Mobile/ios/Pods/
-Mobile/ios/Podfile.lock
-Mobile/ios/*.xcworkspace/
-Mobile/ios/*.xcodeproj/xcuserdata/
+mobile/ios/build/
+mobile/ios/Pods/
+mobile/ios/Podfile.lock
+mobile/ios/*.xcworkspace/
+mobile/ios/*.xcodeproj/xcuserdata/
 
 # -------------------------
 # Misc

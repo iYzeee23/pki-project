@@ -4,20 +4,22 @@
   "private": true,
   "type": "commonjs",
   "workspaces": [
-    "Server",
-    "Web",
-    "Mobile",
-    "Common"
+    "server",
+    "web",
+    "mobile",
+    "common"
   ],
   "scripts": {
-    "dev:server": "npm --workspace Server run dev",
-    "dev:web": "npm --workspace Web run dev",
-    "dev:mobile": "npm --workspace Mobile run start",
-
     "install:all": "npm install --workspaces",
-
-    "build:web": "npm --workspace Web run build",
-    "build:server": "npm --workspace Server run build"
+    "build:all": "npm -ws run build --if-present",
+    "typecheck:all": "npm -ws run typecheck --if-present",
+    "clean:all": "npm -ws run clean --if-present",
+    "dev:server": "npm --workspace server run dev",
+    "dev:web": "npm --workspace web run dev",
+    "dev:mobile": "npm --workspace mobile run start",
+    "build:common": "npm --workspace common run build",
+    "build:server": "npm --workspace server run build",
+    "build:web": "npm --workspace web run build"
   },
   "repository": {
     "type": "git",
@@ -29,5 +31,8 @@
   "bugs": {
     "url": "https://github.com/iYzeee23/pki-project/issues"
   },
-  "homepage": "https://github.com/iYzeee23/pki-project#readme"
+  "homepage": "https://github.com/iYzeee23/pki-project#readme",
+  "devDependencies": {
+    "typescript": "^5.9.3"
+  }
 }
