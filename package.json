@@ -19,7 +19,8 @@
     "dev:mobile": "npm --workspace mobile run start",
     "build:common": "npm --workspace common run build",
     "build:server": "npm --workspace server run build",
-    "build:web": "npm --workspace web run build"
+    "build:web": "npm --workspace web run build",
+    "db:init": "npm --workspace server run init"
   },
   "repository": {
     "type": "git",

@@ -43,8 +43,8 @@ export class RentalsController {
     const bike = await BikeModel.findById(rental.bike);
     if (!bike) throw new HttpError(404, "Bike not found");
 
-    const lng = bike.location.coordinates[0];
-    const lat = bike.location.coordinates[1];
+    const lng = bike.location!.coordinates[0];
+    const lat = bike.location!.coordinates[1];
     const parkingSpot = await ParkingSpotModel.findOne({
       location: {
         $near: {

@@ -8,8 +8,7 @@ const bikeSchema = new mongoose.Schema(
         status: { type: String, enum: BIKE_STATUSES, required: true },
         location: {
             type: { type: String, enum: GEOJSON_STRUCTURES, default: "Point" },
-            coordinates: { type: [Number], required: true },
-            required: true
+            coordinates: { type: [Number], required: true }
         }
     }
 );

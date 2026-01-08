@@ -1,0 +1,10 @@
+[
+  { "username": "zorkas", "password": "samardzic", "isAdmin": true, "firstName": "Zorka", "lastName": "Samardzic", "phone": "+381691111111", "email": "zorkas@bike.rs" },
+  { "username": "rankop", "password": "pesic", "isAdmin": true, "firstName": "Ranko", "lastName": "Pesic", "phone": "+381692222222", "email": "rankop@bike.rs" },
+  { "username": "slavicap", "password": "pesic", "isAdmin": false, "firstName": "Slavica", "lastName": "Pesic", "phone": "+381693333333", "email": "slavicap@bike.rs" },
+  { "username": "dragank", "password": "karic", "isAdmin": false, "firstName": "Dragan", "lastName": "Karic", "phone": "+381694444444", "email": "dragank@bike.rs" },
+  { "username": "milicak", "password": "karic", "isAdmin": false, "firstName": "Milica", "lastName": "Karic", "phone": "+381695555555", "email": "milicak@bike.rs" },
+  { "username": "milicas", "password": "stojanovic", "isAdmin": false, "firstName": "Milica", "lastName": "Stojanovic", "phone": "+381696666666", "email": "milicas@bike.rs" },
+  { "username": "predragp", "password": "pesic", "isAdmin": false, "firstName": "Predrag", "lastName": "Pesic", "phone": "+381697777777", "email": "predragp@bike.rs" },
+  { "username": "danicak", "password": "karic", "isAdmin": false, "firstName": "Danica", "lastName": "Karic", "phone": "+381698888888", "email": "danicak@bike.rs" }
+]

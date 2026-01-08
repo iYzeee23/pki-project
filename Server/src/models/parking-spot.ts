@@ -6,8 +6,7 @@ const parkingSpotSchema = new mongoose.Schema(
         name: { type: String, required: true, trim: true, unique: true },
         location: {
             type: { type: String, enum: GEOJSON_STRUCTURES, default: "Point" },
-            coordinates: { type: [Number], required: true },
-            required: true
+            coordinates: { type: [Number], required: true }
         }
     }
 );

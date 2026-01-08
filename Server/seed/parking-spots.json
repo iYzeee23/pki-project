@@ -1,0 +1,12 @@
+[
+  { "name": "Trg Republike",  "lat": 44.8164444444, "lng": 20.4601111111 },
+  { "name": "Slavija",        "lat": 44.8025000000, "lng": 20.4664000000 },
+  { "name": "Kalemegdan",     "lat": 44.8222662000, "lng": 20.4508992000 },
+  { "name": "Tasmajdan",      "lat": 44.8091972222, "lng": 20.4707638889 },
+  { "name": "Zeleni venac",   "lat": 44.8130555556, "lng": 20.4525000000 },
+  { "name": "Usce",           "lat": 44.8190388889, "lng": 20.4369305556 },
+  { "name": "Sava Centar",    "lat": 44.8053305556, "lng": 20.4253305556 },
+  { "name": "Autokomanda",    "lat": 44.7874972222, "lng": 20.4674972222 },
+  { "name": "Vukov spomenik", "lat": 44.8046390000, "lng": 20.4831250000 },
+  { "name": "Ada Ciganlija",  "lat": 44.7833305556, "lng": 20.3999972222 }
+]
