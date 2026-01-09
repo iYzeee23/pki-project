@@ -1,47 +1,21 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView from "react-native-maps";
-import { SafeAreaView } from "react-native-safe-area-context";
-
-export const API_BASE_URL = "http://192.168.0.16:3000";
-
-/*
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up app.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-*/
+import React, { useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { RootNavigator } from "./navigation/root-navigator";
+import { useAuthStore } from "./stores/auth-store";
 
 export default function App() {
+  const hydrate = useAuthStore(s => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
   return (
-    <SafeAreaView style={styles.container} edges={["top", "bottom"]}>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 44.8176,
-          longitude: 20.4633,
-          latitudeDelta: 0.06,
-          longitudeDelta: 0.06,
-        }}
-      />
-    </SafeAreaView>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <RootNavigator />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1 },
-  map: { flex: 1 },
-});

@@ -1,0 +1,132 @@
+-----------------------------------------------
+
+Šta konkretno “zakucamo” kao pravilo pre implementacije
+
+Da bude kratko i jasno (kao checklist):
+- Responsive layout (portrait/landscape) bez hard-coded dimenzija
+- Form state ne sme da se izgubi na rotaciji / navigaciji
+- JWT + active rental snapshot u persistent storage
+- Na AppState “active” → refresh /active + reconnect socket
+- Service sloj (use-case) između UI i API poziva
+- Stack navigacija po tabovima (back radi svuda prirodno)
+- Disable buttons tokom request-a + standardizovane greške/toastovi
+
+-----------------------------------------------
+
+1) Rotacija ekrana (portrait/landscape) i očuvanje stanja
+
+Da, treba da radi i u portrait i u landscape.
+Ali dobra vest: u React Native-u rotacija ne mora automatski da “uništi” stanje kao što se dešava u Android Activity recreation scenariju
+U RN-u se UI re-renderuje, ali komponentni state obično ostaje dok se komponenta ne unmount-uje
+
+Ipak, možeš izgubiti state u praksi ako:
+- ekran bude “unmount on blur”
+- navigacija resetuje stack
+- app bude ubijena u pozadini
+- koristiš komponente koje se remount-uju na orientation change
+
+Kako da dizajn podrži:
+- Layout pravimo responsive: koristimo useWindowDimensions() / flex, a ne fiksne širine/visine
+- Za forme (login/registracija/edit profila/description):
+	- ne oslanjamo se samo na lokalni state u input komponenti
+	- već čuvamo draft u “screen state” (npr. preko React Hook Form) i ne unmountujemo ekran bez razloga
+
+Praksa koju odmah “zakucamo”:
+- Nikad ne koristimo hard-coded pixel layout koji puca u landscape
+- Svaki screen treba da se ponaša normalno kad se promeni širina/visina (scroll gde treba)
+
+-----------------------------------------------
+
+2) “Izlazak iz aplikacije” (background) i očuvanje podataka
+
+Ovo je druga situacija od rotacije.
+
+Postoje tri nivoa:
+- App u backgroundu ali živa (user prešao na drugu app)
+- App suspendovana (OS zamrzne JS thread)
+- App ubijena (OS je ugasi / user “swipe away”)
+
+Šta znači za nas:
+- Dok je app samo u backgroundu, state uglavnom ostaje, ali timeri/network nisu garantovani
+- Ako je ubijena, gubiš sve što nije persisitirano
+
+Kako da dizajn podrži:
+- Kritične stvari čuvamo u “persistent storage”:
+	- JWT token
+	- “active rental snapshot” (id bicikla, start vreme, poslednja cena/elapsed) – samo minimalno
+	- draft slike (bar path/uri dok se ne pošalje) ili queue “pending upload”
+- Kad se app vrati u foreground:
+	- ponovo povučemo /active da obnovimo istinu sa servera (server je source of truth)
+
+U praksi: /active ti je savršen za ovo. Ako se app probudi posle 10 min, samo refreshuješ stanje
+
+-----------------------------------------------
+
+3) Background izvršavanje (šta realno možemo / treba)
+
+Za fakultetski projekat ne treba komplikovati “pravi background”
+
+Realističan fokus:
+- Kad je app u foregroundu: Socket.IO radi, mapa se ažurira, timer radi
+- Kad ode u background:
+	- Socket može da se prekine
+	- ne “glumimo” da i dalje primamo live lokaciju
+- Kad se vrati:
+	- reconnect na socket
+	- refresh /active
+	- refresh mapa
+
+To je i profesionalno rešenje u mnogim app-ovima, bez ulaska u background services
+
+-----------------------------------------------
+
+4) “Inside-out” / high-level vs low-level funkcije (arhitektura)
+
+Ovo što opisuješ je suština dobre organizacije koda:
+- UI (screens): samo prikazuje i reaguje na akcije
+- Use-case / service sloj: radi “posao” (start rental, finish rental, upload photo…)
+- API client: samo HTTP/Socket pozivi (low-level)
+
+Za naš projekat znači:
+- Screen ne “zove fetch” direktno
+- Screen pozove npr. rentalService.startByQr(qr) i dobije rezultat/grešku
+
+Ovo nam čuva živce kad dodamo još funkcionalnosti.
+
+-----------------------------------------------
+
+5) Stack / Back navigacija (iOS swipe, Android back)
+
+Da — ovo moramo dizajnom da ispoštujemo
+
+Pravilo:
+- Svaki tab ima svoj Stack:
+	- MapaStack: Map → ParkingDetails → BikeDetails
+	- RentalStack: RentalHome → QRScanner → Confirm → UploadReturnPhoto
+	- ProfileStack: Profile → Edit → ChangePassword → History → RentalDetails
+- “Back”:
+	- Android hardware back radi prirodno kroz stack
+	- iOS swipe back radi prirodno kroz stack
+
+Ne pravimo “custom back” osim gde je baš potrebno
+
+-----------------------------------------------
+
+6) Još 5 praksi koje je pametno da ugradimo (da ne zaboravimo)
+
+- Single source of truth za aktivno iznajmljivanje
+	- /active + lokalni store; sve ostalo samo “gleda” to stanje.
+
+- Idempotentnost / zaštita od duplih klikova
+	- dugmad “Start” / “Finish” / “Upload” se disable dok traje request.
+
+- Permission flow
+	- Kamera permission (QR + slikanje) mora imati jasne poruke i fallback.
+
+- Error handling & offline
+	- ako pukne mreža: toast + retry; za upload slike: “pending queue”.
+
+- Performance na mapi
+	- ne renderuj 500 markera bez potrebe; ali pošto je projekat, možemo jednostavno, samo pametno.
+
+-----------------------------------------------

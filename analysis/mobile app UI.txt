@@ -1,0 +1,137 @@
+-----------------------------------------------
+
+1) Root logika aplikacije (start)
+
+- Splash / inicijalizacija
+	- Ako nema JWT → ideš na Auth (Prijava/Registracija)
+	- Ako ima JWT → ideš na Main Tabs i odmah radiš GET /active da znaš da li postoji aktivno iznajmljivanje
+
+-----------------------------------------------
+
+2) Main Tabs (donja navigacija kao Instagram)
+
+Tri taba dole:
+- Mapa
+- Iznajmljivanje
+- Profil
+
+Svaki tab ima svoj mali “stack” ekrana (da možeš da ulaziš u detalje pa nazad)
+
+-----------------------------------------------
+
+3) TAB: Mapa (dva režima prikaza)
+
+Režim A: NEMA aktivnog iznajmljivanja
+- Na mapi se vide:
+	- sva parking mesta
+	- svi bicikli van parking mesta
+- Nema filtera, nema “moja lokacija”, fokus je na sistemu, ne na korisniku.
+
+Klik na parking pin → otvara novi ekran (Parking detalji)
+Klik na bike pin (van parkinga) → otvara novi ekran (Bicikl detalji)
+
+Režim B: POSTOJI aktivno iznajmljivanje
+- Na mapi se vide:
+	- samo pin aktivnog bicikla
+	- određeni broj najbližih parking mesta (npr. 3)
+- Dugme “centriraj” sada ima smisla: centriraj na aktivni bicikl (ne na korisnika)
+- Kako admin menja koordinate bicikla → preko Socket.IO se marker “pomera” uživo
+
+Šta ako aktivni bicikl “uđe” u parking? (rešenje koje je najjednostavnije i jasno)
+- Kad je bicikl “u zoni” nekog parkinga:
+	- i dalje si u režimu B
+	- prikažeš parking pin (taj parking) + aktivni bicikl (može i blago “offset” marker da se ne preklapaju)
+	- možeš dodati mali banner: “Bicikl je na parkingu X — možete završiti vožnju”
+
+-----------------------------------------------
+
+4) Parking detalji ekran (klik na parking)
+
+Ovo je “drugi view” koji si tražio:
+- Naslov: naziv parkinga (+ opcionalno “razdaljina od aktivnog bicikla” ako postoji aktivna vožnja)
+- Lista bicikala na tom parkingu
+	- Svaka stavka: bicikl ID/tip/status/cena po satu
+- Klik na bicikl iz liste → otvara Bicikl detalji ekran (isti kao i za pin van parkinga)
+
+(Navigacija do parkinga ne radimo)
+
+-----------------------------------------------
+
+5) Bicikl detalji ekran (reusable ekran)
+
+Ovo je “single source of truth” ekran za bicikl — ulaziš u njega na 2 načina:
+- klik na bicikl pin (van parkinga)
+- klik na bicikl iz liste na parkingu
+
+Prikazuje:
+- tip, status, cena po satu, QR/id info (šta god backend daje)
+- dugme “Prijavi neispravnost” → vodi na flow prijave (opis + fotografija)
+
+(Start iznajmljivanja i dalje radimo isključivo kroz QR flow, kao što si definisao)
+
+-----------------------------------------------
+
+6) TAB: Iznajmljivanje (tačno kako si opisao)
+
+Stanje 1: NEMA aktivnog iznajmljivanja
+- Ekran je praktično “QR skener” ulaz:
+	- dugme / view: Skeniraj QR kod
+	- otvara se QR Scan ekran (kamera aktivna)
+- Kad se skenira kod:
+	- modal/prompt: “Da li ste sigurni?”
+		- NE → ostaješ na skeneru
+		- DA → start rental → Toast “Započeto” → tab prelazi u Stanje 2
+
+Stanje 2: POSTOJI aktivno iznajmljivanje
+- Ekran aktivne vožnje prikazuje:
+	- vreme trajanja (timer)
+	- trenutna cena (real-time prikaz)
+	- info o biciklu
+- Dugmad:
+	- Završi vožnju
+	- (sekundarno) Prijavi neispravnost
+
+Završi vožnju (simulacija bez GPS-a)
+- Klik “Završi vožnju” → radi se provera:
+	- uzmeš trenutne koordinate aktivnog bicikla (iz socket state-a)
+	- proveriš da li upada u “area” nekog parkinga
+
+Napomena za “area” (jer parking ima samo lat/lng):
+Najlakše za projekat: parking zona = krug oko parking tačke (npr. radius 15–30m), a provera = distance(bike, parking) <= radius
+- Ako nije validno → prompt “Nevalidna parking lokacija”
+- Ako jeste validno → prompt “Ovo je validna lokacija. Da li ste sigurni?”
+	- potvrda → ideš na Upload fotografije vraćanja (novi screen)
+	- upload uspe → Toast “Završeno” → vraćaš se na početno stanje (nema aktivnog), a mapa se vraća u Režim A
+
+-----------------------------------------------
+
+7) Flow: Upload fotografije pri vraćanju (poseban screen)
+
+- Kamera → slikanje → preview
+- Dugme “Potvrdi i pošalji”
+- Uspeh: toast + povratak na “Iznajmljivanje (nema aktivnog)”
+
+-----------------------------------------------
+
+8) Flow: Prijava neispravnosti (opis + fotografija)
+
+Može iz:
+- Bicikl detalji
+- Aktivno iznajmljivanje
+
+Ekran:
+- tekst polje “Opis”
+- dugme “Dodaj fotografiju” → kamera + preview
+- submit → toast “Prijava poslata”
+
+-----------------------------------------------
+
+9) TAB: Profil (kao što smo imali)
+
+- Pregled ličnih podataka
+- Izmena ličnih podataka
+- Promena lozinke
+- Istorija iznajmljivanja (lista) → detalji iznajmljivanja
+- Odjava
+
+-----------------------------------------------
