@@ -1,6 +1,11 @@
 import axios from "axios";
 import { API_BASE_URL } from "./config";
-import { readToken } from "./auth-token";
+
+let authToken: string | null = null;
+
+export function setAuthToken(token: string | null) {
+  authToken = token;
+}
 
 export const http = axios.create({
   baseURL: API_BASE_URL,
@@ -8,10 +13,10 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use(config => {
-  const token = readToken();
-  if (token) {
+ if (authToken) {
     config.headers = config.headers ?? {};
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${authToken}`;
   }
+
   return config;
 });

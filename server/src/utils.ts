@@ -44,7 +44,7 @@ export function signToken(userId: string, isAdmin: boolean): string {
     if (!secret) throw new Error("Missing JWT_SECRET");
 
     const payload: JwtPayload = { userId, isAdmin };
-    return jwt.sign(payload, secret, { expiresIn: "2h" });
+    return jwt.sign(payload, secret, { expiresIn: "1d" });
 }
 
 export function requireAuth(req: Request, _res: Response, next: NextFunction): void {

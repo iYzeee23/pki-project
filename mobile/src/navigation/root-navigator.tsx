@@ -11,7 +11,7 @@ export function RootNavigator() {
   if (!isHydrated) {
     return (
       <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
+        <ActivityIndicator size="large" />
       </View>
     );
   }

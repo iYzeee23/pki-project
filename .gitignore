@@ -42,9 +42,9 @@ coverage/
 # -------------------------
 # Server (Node/Express)
 # -------------------------
-server/.env
-server/.env.*.local
-!server/.env.example
+server/uploads/*
+!server/uploads/default-profile-picture.jpg
+
 
 # -------------------------
 # Web (React)

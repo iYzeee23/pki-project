@@ -5,9 +5,9 @@ export const UPLOAD_DIR = path.resolve(__dirname, "..", "uploads");
 export const DEFAULT_IMAGE = "/uploads/default-profile-picture.jpg";
 
 export function saveImage(buffer?: Buffer, originalName?: string): string {
-    if (!buffer) return DEFAULT_IMAGE;
+    if (!buffer || !originalName) return DEFAULT_IMAGE;
 
-    const ext = path.extname(originalName!);
+    const ext = path.extname(originalName);
     const filename = `${Date.now()}${ext}`;
     const fullPath = path.join(UPLOAD_DIR, filename);
 

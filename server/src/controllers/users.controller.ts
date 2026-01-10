@@ -59,10 +59,6 @@ export class UsersController {
     res.status(201).json({ token: token, user: dto });
   });
 
-  logout = asyncHandler(async (_req, res, _next) => {
-    res.status(201).json({ ok: true });
-  });
-
   me = asyncHandler(async (req, res, _next) => {
     const user = await UserModel.findById(req.auth!.userId);
     if (!user) throw new HttpError(404, "User not found");
