@@ -1,8 +1,11 @@
 import dotenv from "dotenv";
+import path from "path";
 import { connectDb } from "./database";
 import { createApp } from "./app";
 
-dotenv.config();
+const ENV_PATH = path.resolve(__dirname, "../../.env");
+
+dotenv.config({ path: ENV_PATH });
 
 async function main() {
     await connectDb();

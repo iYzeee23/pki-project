@@ -12,7 +12,7 @@ export function createApp() {
   app.use("/uploads", express.static(UPLOAD_DIR));
 
   app.get("/health", (_req, res) => res.json({ ok: true }));
-  app.use("/api", apiRoutes);
+  app.use("/", apiRoutes);
 
   app.use(errorHandler);
 

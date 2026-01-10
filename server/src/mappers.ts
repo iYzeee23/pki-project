@@ -24,8 +24,8 @@ export function toBikeDto(b: HydratedDocument<Bike>): BikeDto {
         pricePerHour: b.pricePerHour,
         status: b.status as BikeStatus,
         location: {
-            lng: b.location.coordinates[0] ?? 0,
-            lat: b.location.coordinates[1] ?? 0
+            lng: b.location?.coordinates[0] ?? 0,
+            lat: b.location?.coordinates[1] ?? 0
         },
         qrCode: `bike:${id}`
     }
@@ -36,8 +36,8 @@ export function toParkingSpotDto(p: HydratedDocument<ParkingSpot>): ParkingSpotD
         id: p._id.toString(),
         name: p.name,
         location: { 
-            lng: p.location.coordinates[0] ?? 0,
-            lat: p.location.coordinates[1] ?? 0
+            lng: p.location?.coordinates[0] ?? 0,
+            lat: p.location?.coordinates[1] ?? 0
         } 
     };
 }

@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import * as SecureStore from "expo-secure-store";
+import { setTokenGetter } from "../util/auth-token";
 import { apiLogin } from "../services/auth-api";
 
 type AuthState = {
@@ -41,3 +42,5 @@ export const useAuthStore = create<AuthState>(set => ({
     set({ token: null });
   },
 }));
+
+setTokenGetter(() => useAuthStore.getState().token);
