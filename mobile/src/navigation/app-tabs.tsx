@@ -26,9 +26,9 @@ export function AppTabs() {
         },
       })}
     >
-      <Tab.Screen name="MapTab" component={MapStack} options={{ title: "Mapa" }} />
-      <Tab.Screen name="RentalTab" component={RentalStack} options={{ title: "Iznajmljivanje" }} />
-      <Tab.Screen name="ProfileTab" component={ProfileStack} options={{ title: "Profil" }} />
+      <Tab.Screen name="MapTab" component={MapStack} options={{ title: "Map" }} />
+      <Tab.Screen name="RentalTab" component={RentalStack} options={{ title: "Rental" }} />
+      <Tab.Screen name="ProfileTab" component={ProfileStack} options={{ title: "Profile" }} />
     </Tab.Navigator>
   );
 }

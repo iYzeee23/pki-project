@@ -10,9 +10,9 @@ const Stack = createNativeStackNavigator<MapStackParamList>();
 export function MapStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="MapHome" component={MapScreen} options={{ title: "Mapa" }} />
+      <Stack.Screen name="MapHome" component={MapScreen} options={{ title: "Map" }} />
       <Stack.Screen name="ParkingDetails" component={ParkingDetailsScreen} options={{ title: "Parking" }} />
-      <Stack.Screen name="BikeDetails" component={BikeDetailsScreen} options={{ title: "Bicikl" }} />
+      <Stack.Screen name="BikeDetails" component={BikeDetailsScreen} options={{ title: "Bike" }} />
     </Stack.Navigator>
   );
 }

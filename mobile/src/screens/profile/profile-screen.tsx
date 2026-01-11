@@ -54,7 +54,10 @@ export function ProfileScreen({ navigation }: Props) {
         <Text style={{ textAlign: "center", fontWeight: "600" }}>Change password</Text>
       </TouchableOpacity>
 
-      {/* RentalHistory */}
+      <TouchableOpacity onPress={() => navigation.navigate("RentalHistory")}
+        style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>Rental history</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity onPress={logout}
         style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>

@@ -12,11 +12,11 @@ const Stack = createNativeStackNavigator<ProfileStackParamList>();
 export function ProfileStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ title: "Profil" }} />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: "Izmena podataka" }} />
-      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: "Promena lozinke" }} />
-      <Stack.Screen name="RentalHistory" component={RentalHistoryScreen} options={{ title: "Istorija iznajmljivanja" }} />
-      <Stack.Screen name="RentalDetails" component={RentalDetailsScreen} options={{ title: "Detalji iznajmljivanja" }} />
+      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ title: "Profile" }} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: "Edit profile" }} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: "Change password" }} />
+      <Stack.Screen name="RentalHistory" component={RentalHistoryScreen} options={{ title: "Rental history" }} />
+      <Stack.Screen name="RentalDetails" component={RentalDetailsScreen} options={{ title: "Rental details" }} />
     </Stack.Navigator>
   );
 }
