@@ -7,8 +7,8 @@ import { asyncHandler, HttpError } from "../utils";
 export class BikesController {
   list = asyncHandler(async (_req, res, _next) => {
     const bikes = await BikeModel.find();
-    const dtos: BikeDto[] = bikes.map(b => toBikeDto(b));
 
+    const dtos: BikeDto[] = bikes.map(b => toBikeDto(b));
     res.json(dtos);
   });
 
@@ -64,6 +64,34 @@ export class BikesController {
     await bike.save();
 
     const dto: BikeDto = toBikeDto(bike);
+    const io = req.app.get("io");
+    io.emit("bike:updated", dto);
+
+    res.json(dto);
+  });
+
+  updateLocation = asyncHandler(async (req, res, _next) => {
+    const body = req.body as { 
+      location: { lng: number; lat: number; };
+    };
+
+    const updated = await BikeModel.findByIdAndUpdate(
+      req.params.id,
+      { 
+        location: { 
+          type: "Point",
+          coordinates: [body.location.lng, body.location.lat] 
+        }
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!updated) throw new HttpError(404, "Bike not found");
+
+    const dto: BikeDto = toBikeDto(updated);
+    const io = req.app.get("io");
+    io.emit("bike:updated", dto);
+
     res.json(dto);
   });
 
@@ -81,6 +109,9 @@ export class BikesController {
     if (!updated) throw new HttpError(404, "Bike not found");
 
     const dto: BikeDto = toBikeDto(updated);
+    const io = req.app.get("io");
+    io.emit("bike:updated", dto);
+
     res.json(dto);
   });
 

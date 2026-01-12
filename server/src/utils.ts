@@ -1,6 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
+import { LngLat, LOCATION_CACHE_SERVER } from "@app/shared";
 
 declare global {
   namespace Express {
@@ -76,4 +77,22 @@ export async function hashPassword(plain: string): Promise<string> {
 }
 export async function verifyPassword(plain: string, hash: string): Promise<boolean> {
     return bcrypt.compare(plain, hash);
+}
+
+export const NOMINATIM_BASE_URL = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18";
+export const SUPPORTED_LANGUAGES_URL = "addressdetails=1&accept-language=sr-Latn,sr,en";
+
+export function extractAddressName(address: any) {
+    const postcode = address.postcode;
+    const road =
+        address.road ||
+        address.pedestrian ||
+        address.footway ||
+        address.cycleway ||
+        address.path ||
+        address.residential ||
+        address.street;
+
+    const extracted = road ? `${road} [${postcode}]` : "Unknown location";
+    return extracted;
 }

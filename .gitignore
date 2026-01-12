@@ -40,6 +40,11 @@ coverage/
 .cache/
 
 # -------------------------
+# Common
+# -------------------------
+common/tsconfig.tsbuildinfo
+
+# -------------------------
 # Server (Node/Express)
 # -------------------------
 server/uploads/*

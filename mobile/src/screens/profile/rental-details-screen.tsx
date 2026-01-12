@@ -38,7 +38,7 @@ export function RentalDetailsScreen({ route }: Props) {
   useEffect(() => {
     if (!rentalId) return;
 
-    async function load() {
+    const load = async () => {
       setLoading(true);
 
       try {
@@ -76,30 +76,14 @@ export function RentalDetailsScreen({ route }: Props) {
       <Text style={{ fontSize: 22, fontWeight: "700" }}>Rental details</Text>
 
       <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 8 }}>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Bike id:</Text> {rental.bikeId}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Bike type:</Text> {bike.type}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Start:</Text> {startTime}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>End:</Text> {endTime}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Price per hour:</Text> {bike.pricePerHour}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Duration:</Text> {duration}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Total cost:</Text> {rental.totalCost}
-        </Text>
-        <Text>
-          <Text style={{ fontWeight: "700" }}>Description:</Text> {rental.description}
-        </Text>
+        <Text><Text style={{ fontWeight: "700" }}>Bike id:</Text> {rental.bikeId}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>Bike type:</Text> {bike.type}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>Start:</Text> {startTime}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>End:</Text> {endTime}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>Price per hour:</Text> {bike.pricePerHour}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>Duration:</Text> {duration}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>Total cost:</Text> {rental.totalCost}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>Description:</Text> {rental.description}</Text>
       </View>
     </View>
   );

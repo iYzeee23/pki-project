@@ -1,7 +1,7 @@
-import { type RentalDto } from "@app/shared";
+import { BikeDto, type RentalDto } from "@app/shared";
 
 import { RentalModel, BikeModel, ParkingSpotModel, ImageModel } from "../models";
-import { toRentalDto } from "../mappers";
+import { toBikeDto, toRentalDto } from "../mappers";
 import { asyncHandler, HttpError } from "../utils";
 
 export class RentalsController {
@@ -13,6 +13,13 @@ export class RentalsController {
     const bike = await BikeModel.findById(body.bikeId)
     if (!bike) throw new HttpError(404, "Bike not found");
     if (bike.status !== "Available") throw new HttpError(400, "Bike is not available");
+
+    bike.status = "Busy";
+    await bike.save();
+
+    const bikeDto: BikeDto = toBikeDto(bike);
+    const io = req.app.get("io");
+    io.emit("bike:updated", bikeDto);
 
     const doc = {
       user: req.auth!.userId,
@@ -42,6 +49,7 @@ export class RentalsController {
 
     const bike = await BikeModel.findById(rental.bike);
     if (!bike) throw new HttpError(404, "Bike not found");
+    if (bike.status !== "Busy") throw new HttpError(400, "Bike is not busy");
 
     const lng = bike.location!.coordinates[0];
     const lat = bike.location!.coordinates[1];
@@ -54,6 +62,13 @@ export class RentalsController {
       }
     });
     if (!parkingSpot) throw new HttpError(404, "Parking spot not found");
+
+    bike.status = "Available";
+    await bike.save();
+
+    const bikeDto: BikeDto = toBikeDto(bike);
+    const io = req.app.get("io");
+    io.emit("bike:updated", bikeDto);
 
     rental.endAt = new Date();
 

@@ -29,18 +29,10 @@ export function ProfileScreen({ navigation }: Props) {
         {url && <Image source={{ uri: url }} style={{ width: 96, height: 96, borderRadius: 48 }} />}
 
         <View style={{ gap: 6 }}>
-          <Text>
-            <Text style={{ fontWeight: "700" }}>Username:</Text> {me.username}
-          </Text>
-          <Text>
-            <Text style={{ fontWeight: "700" }}>Name:</Text> {me.firstName} {me.lastName}
-          </Text>
-          <Text>
-            <Text style={{ fontWeight: "700" }}>Email:</Text> {me.email}
-          </Text>
-          <Text>
-            <Text style={{ fontWeight: "700" }}>Phone:</Text> {me.phone}
-          </Text>
+          <Text><Text style={{ fontWeight: "700" }}>Username:</Text> {me.username}</Text>
+          <Text><Text style={{ fontWeight: "700" }}>Name:</Text> {me.firstName} {me.lastName}</Text>
+          <Text><Text style={{ fontWeight: "700" }}>Email:</Text> {me.email}</Text>
+          <Text><Text style={{ fontWeight: "700" }}>Phone:</Text> {me.phone}</Text>
         </View>
       </View>
 

@@ -11,8 +11,13 @@ export type AppTabsParamList = {
 
 export type MapStackParamList = {
   MapHome: undefined;
-  ParkingDetails: { parkingId: string };
   BikeDetails: { bikeId: string };
+  ParkingDetails: { 
+    spotId: string;
+    isActiveMode: boolean;
+    activeBikeId?: string;
+    distance?: number;
+  };
 };
 
 export type RentalStackParamList = {

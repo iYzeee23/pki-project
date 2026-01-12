@@ -39,12 +39,8 @@ function NonEmptyState( {filtered, navigation}: NonEmptyStateProps) {
             onPress={() => navigation.navigate("RentalDetails", { rentalId: item.id })}
             style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 6 }}
           >
-            <Text>
-              <Text style={{ fontWeight: "700" }}>Date:</Text> {day}
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "700" }}>Bike:</Text> {item.bikeId}
-            </Text>
+            <Text><Text style={{ fontWeight: "700" }}>Date:</Text> {day}</Text>
+            <Text><Text style={{ fontWeight: "700" }}>Bike:</Text> {item.bikeId}</Text>
           </TouchableOpacity>
         );
       }}
@@ -74,7 +70,7 @@ export function RentalHistoryScreen({ navigation }: Props) {
     if (!isFocused) return;
     if (rentals.length > 0) return;
 
-    async function load() {
+    const load = async () => {
       setLoading(true);
 
       try {

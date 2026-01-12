@@ -3,6 +3,8 @@ import * as SecureStore from "expo-secure-store";
 import * as authApi from "../services/auth-api";
 import { UserDto } from "@app/shared";
 import { setAuthToken } from "../util/http";
+import { useMapStore } from "./map-store";
+import { useBikesStore } from "./bike-store";
 
 type AuthState = {
   token: string | null;
@@ -33,7 +35,8 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setSession: async (payload) => {
     await SecureStore.setItemAsync(TOKEN_KEY, payload.token);
     await SecureStore.setItemAsync(USER_KEY, JSON.stringify(payload.user));
-
+    await useMapStore.getState().loadParkingSpots();
+    
     setAuthToken(payload.token);
     get().setMe(payload.user);
     set({ token: payload.token });
@@ -56,12 +59,17 @@ export const useAuthStore = create<AuthState>((set, get) => ({
     };
 
     const response = await authApi.login(payload);
+    if (!response) throw new Error("Login failed");
+    
     await get().setSession(response);
   },
 
   logout: async () => {
     await SecureStore.deleteItemAsync(TOKEN_KEY);
     await SecureStore.deleteItemAsync(USER_KEY);
+    
+    useMapStore.getState().clear();
+    useBikesStore.getState().clear();
     
     setAuthToken(null);
     get().setMe(null);

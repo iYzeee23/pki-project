@@ -51,5 +51,7 @@ export async function login(payload: LoginPayload) {
   const res = await http.post("/users/login", payload);
   
   const data = res.data;
+  if (!data) return undefined;
+  
   return { token: data.token, user: data.user } as AuthResponse;
 }

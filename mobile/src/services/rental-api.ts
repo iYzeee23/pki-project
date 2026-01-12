@@ -14,3 +14,10 @@ export async function getById(id: string) {
   const data = res.data;
   return data as RentalDto;
 }
+
+export async function active() {
+  const res = await http.get("/rentals/active");
+
+  const data: RentalDto | undefined = res.data ?? undefined;
+  return data;
+}

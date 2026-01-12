@@ -12,6 +12,7 @@ router.get("/:id", requireAuth, c.getById);
 // admin
 router.post("/new", requireAuth, requireAdmin, c.create);
 router.put("/:id", requireAuth, requireAdmin, c.update);
+router.put("/:id/location", requireAuth, requireAdmin, c.updateLocation);
 router.put("/:id/status", requireAuth, requireAdmin, c.changeStatus);
 router.delete("/:id", requireAuth, requireAdmin, c.remove);
 
