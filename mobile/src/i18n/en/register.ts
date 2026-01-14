@@ -1,0 +1,22 @@
+export default {
+    ErrUsername: "Username is required",
+    ErrPassword: "Password is required",
+    ErrLength: "Password must be at least 6 characters",
+    ErrMissmatch: "Passwords don't match",
+    ErrFirstName: "First name is required",
+    ErrLastName: "Last name is required",
+    ErrPhone: "Phone is required",
+    ErrMail: "Email is not valid",
+    Register: "Register",
+    Change: "Change",
+    Remove: "Remove",
+    Username: "Username",
+    Password: "Password",
+    ConfPassword: "Confirm password",
+    FirstName: "First name",
+    LastName: "Last name",
+    Phone: "Phone",
+    Email: "Email",
+    Creating: "Creating...",
+    CreateAcc: "Create account"
+} as const;

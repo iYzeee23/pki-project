@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { RootNavigator } from "./navigation/root-navigator";
 import { useAuthStore } from "./stores/auth-store";
+import "./i18n";
 
 export default function App() {
   const hydrate = useAuthStore(s => s.hydrate);

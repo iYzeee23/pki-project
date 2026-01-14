@@ -4,10 +4,15 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/types";
 import { useAuthStore } from "../../stores/auth-store";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
+import { useTranslation } from "react-i18next";
+import { commonTexts, loginTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
 
 export function LoginScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const logg = loginTexts(t);
+
   const login = useAuthStore(s => s.login);
 
   const loginControllerRef = useRef<AbortController | undefined>(undefined);
@@ -40,17 +45,17 @@ export function LoginScreen({ navigation }: Props) {
 
   return (
     <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Text>Username</Text>
+      <Text>{logg.Username}</Text>
       <TextInput value={username} onChangeText={setUsername} autoCapitalize="none" style={{ borderWidth: 1, padding: 10 }} />
 
-      <Text>Password</Text>
+      <Text>{logg.Password}</Text>
       <TextInput value={password} onChangeText={setPassword} secureTextEntry style={{ borderWidth: 1, padding: 10 }} />
 
       {error ? <Text style={{ color: "red" }}>{error}</Text> : null}
 
-      <Button title="Login" onPress={onLogin} />
+      <Button title={logg.Login} onPress={onLogin} />
       <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-        <Text style={{ textAlign: "center" }}>No account? Register</Text>
+        <Text style={{ textAlign: "center" }}>{logg.NoAcc}</Text>
       </TouchableOpacity>
     </View>
   );

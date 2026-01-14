@@ -8,10 +8,16 @@ import * as geocodeApi from "../../services/geocode-api";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { MapStackParamList } from "../../navigation/types";
 import { getCached, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
+import { useTranslation } from "react-i18next";
+import { bikeDetailsTexts, commonTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<MapStackParamList, "BikeDetails">;
 
 export function BikeDetailsScreen({ route }: Props) {
+  const { t } = useTranslation();
+  const bikk = bikeDetailsTexts(t);
+  const com = commonTexts();
+  
   const { bikeId } = route.params;
 
   const localBike = useBikesStore(s => s.bikes.find(b => b.id === bikeId));
@@ -39,7 +45,7 @@ export function BikeDetailsScreen({ route }: Props) {
       }
       catch (e: any) {
         if (isCanceled(e)) return;
-        Alert.alert("Error", getApiErrorMessage(e));
+        Alert.alert(com.Error, getApiErrorMessage(e));
       }
       finally {
         setLoadingBike(false);
@@ -78,7 +84,7 @@ export function BikeDetailsScreen({ route }: Props) {
       } 
       catch (e: any) {
         if (isCanceled(e)) return;
-        setLocationLabel("Unknown location");
+        setLocationLabel(bikk.ErrLocation);
       }
       finally {
         setLoadingLocation(false);
@@ -104,16 +110,16 @@ export function BikeDetailsScreen({ route }: Props) {
 
   return (
     <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>Bike details</Text>
+      <Text style={{ fontSize: 22, fontWeight: "700" }}>{bikk.Details}</Text>
 
       <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 8 }}>
-        <Text><Text style={{ fontWeight: "700" }}>Id:</Text> {bike.id}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Type:</Text> {bike.type}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Price per hour:</Text> {bike.pricePerHour}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Status:</Text> {bike.status}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Location:</Text> {locationLabel}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Lat:</Text> {bike.location.lat}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Lng:</Text> {bike.location.lng}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Id}:</Text> {bike.id}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Type}:</Text> {bike.type}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Price}:</Text> {bike.pricePerHour}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Status}:</Text> {bike.status}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Location}:</Text> {locationLabel}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Lat}:</Text> {bike.location.lat}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{bikk.Lng}:</Text> {bike.location.lng}</Text>
       </View>
     </View>
   );

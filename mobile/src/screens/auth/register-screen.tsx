@@ -7,10 +7,16 @@ import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/types";
 import { DEFAULT_PROFILE_PICTURE_RESOLVED } from "../../util/config";
+import { useTranslation } from "react-i18next";
+import { commonTexts, registerTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Register">;
 
 export function RegisterScreen({}: Props) {
+  const { t } = useTranslation();
+  const reg = registerTexts(t);
+  const com = commonTexts();
+
   const setSession = useAuthStore(s => s.setSession);
 
   const submitControllerRef = useRef<AbortController | undefined>(undefined);
@@ -30,14 +36,14 @@ export function RegisterScreen({}: Props) {
     file.uri : DEFAULT_PROFILE_PICTURE_RESOLVED;
 
   const validate = (): string | null => {
-    if (!username.trim()) return "Username is required";
-    if (!password) return "Password is required";
-    if (password.length < 6) return "Password must be at least 6 characters";
-    if (password !== passwordConf) return "Passwords don't match";
-    if (!firstName.trim()) return "First name is required";
-    if (!lastName.trim()) return "Last name is required";
-    if (!phone.trim()) return "Phone is required";
-    if (!email.trim() || !email.includes("@")) return "Email is not valid";
+    if (!username.trim()) return reg.ErrUsername;
+    if (!password) return reg.ErrPassword;
+    if (password.length < 6) return reg.ErrLength;
+    if (password !== passwordConf) return reg.ErrMissmatch;
+    if (!firstName.trim()) return reg.ErrFirstName;
+    if (!lastName.trim()) return reg.ErrLastName;
+    if (!phone.trim()) return reg.ErrPhone;
+    if (!email.trim() || !email.includes("@")) return reg.ErrMail;
     return null;
   };
 
@@ -54,7 +60,7 @@ export function RegisterScreen({}: Props) {
 
   const onSubmit = async () => {
     const err = validate();
-    if (err) return Alert.alert("Error", err);
+    if (err) return Alert.alert(com.Error, err);
 
     submitControllerRef.current?.abort();
     submitControllerRef.current = new AbortController();
@@ -79,7 +85,7 @@ export function RegisterScreen({}: Props) {
     }
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert("Error", getApiErrorMessage(e));
+      Alert.alert(com.Error, getApiErrorMessage(e));
     }
     finally {
       setBusy(false);
@@ -88,46 +94,44 @@ export function RegisterScreen({}: Props) {
 
   return (
     <ScrollView contentContainerStyle={{ padding: 16, gap: 10 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>Register</Text>
+      <Text style={{ fontSize: 22, fontWeight: "700" }}>{reg.Register}</Text>
 
       <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
         <Image source={{ uri: displayUri }} style={{ width: "100%", height: 220 }} />
         <View style={{ padding: 8, flexDirection: "row", gap: 8 }}>
           <View style={{ flex: 1 }}>
-            <Button title="Change" onPress={onPick} />
+            <Button title={reg.Change} onPress={onPick} />
           </View>
           <View style={{ flex: 1 }}>
-            <Button title="Remove" disabled={file === undefined} onPress={() => setFile(undefined)} color="red" />
+            <Button title={reg.Remove} disabled={file === undefined} onPress={() => setFile(undefined)} color="red" />
           </View>
         </View>
       </View>
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="Username" value={username} onChangeText={setUsername} autoCapitalize="none" />
+        placeholder={reg.Username} value={username} onChangeText={setUsername} autoCapitalize="none" />
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="Password" value={password} onChangeText={setPassword} secureTextEntry />
+        placeholder={reg.Password} value={password} onChangeText={setPassword} secureTextEntry />
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="Confirm password" value={passwordConf} onChangeText={setPasswordConf} secureTextEntry />
+        placeholder={reg.ConfPassword} value={passwordConf} onChangeText={setPasswordConf} secureTextEntry />
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="First name" value={firstName} onChangeText={setFirstName} />
+        placeholder={reg.FirstName} value={firstName} onChangeText={setFirstName} />
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="Last name" value={lastName} onChangeText={setLastName} />
+        placeholder={reg.LastName} value={lastName} onChangeText={setLastName} />
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+        placeholder={reg.Phone} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder="Email" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+        placeholder={reg.Email} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
 
       <TouchableOpacity disabled={busy} onPress={onSubmit}
         style={{ padding: 14, borderRadius: 12, borderWidth: 1, opacity: busy ? 0.6 : 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>
-          {busy ? "Creating..." : "Create account"}
-        </Text>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>{busy ? reg.Creating : reg.CreateAcc}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

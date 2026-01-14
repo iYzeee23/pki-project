@@ -4,7 +4,6 @@ import MapView, { Marker, Region } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { io, Socket } from "socket.io-client";
 
-import { useAuthStore } from "../../stores/auth-store";
 import { useMapStore } from "../../stores/map-store";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { API_BASE_URL } from "../../util/config";
@@ -12,8 +11,10 @@ import { API_BASE_URL } from "../../util/config";
 import * as bikesApi from "../../services/bike-api";
 import * as rentalsApi from "../../services/rental-api";
 import { MapStackParamList } from "../../navigation/types";
-import { BikeDto, LngLat, NUM_OF_NEAREST_OBJECTS, ParkingSpotDto, RentalDto, findInsideSpotId, haversineMeters, nearestSpots } from "@app/shared";
+import { BikeDto, LngLat, RentalDto, findInsideSpotId, nearestSpots } from "@app/shared";
 import { useBikesStore } from "../../stores/bike-store";
+import { useTranslation } from "react-i18next";
+import { commonTexts, mapTexts } from "../../util/i18n-builder";
 
 function locationToMapCenter(loc: LngLat) {
   return {
@@ -36,6 +37,10 @@ function defaultMapCenter() {
 type Props = NativeStackScreenProps<MapStackParamList, "MapHome">;
 
 export function MapScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const mapp = mapTexts(t);
+  const com = commonTexts();
+
   const parkingSpots = useMapStore(s => s.parkingSpots);
   const loadParkingSpots = useMapStore(s => s.loadParkingSpots);
 
@@ -74,7 +79,7 @@ export function MapScreen({ navigation }: Props) {
       } 
       catch (e: any) {
         if (isCanceled(e)) return;
-        Alert.alert("Error", getApiErrorMessage(e));
+        Alert.alert(com.Error, getApiErrorMessage(e));
       } 
       finally {
         setLoading(false);
@@ -181,7 +186,7 @@ export function MapScreen({ navigation }: Props) {
           const pinColor = b.status === "Available" ? "green" : "red";
 
           return (
-            <Marker key={b.id} pinColor={pinColor} title={`Bike ${b.id}`} description={b.status}
+            <Marker key={b.id} pinColor={pinColor} title={`${mapp.Bike} ${b.id}`} description={b.status}
               coordinate={{ latitude: b.location.lat, longitude: b.location.lng }}
               onPress={() => navigation.navigate("BikeDetails", { bikeId: b.id })} />
           );
@@ -206,7 +211,7 @@ export function MapScreen({ navigation }: Props) {
         })}
 
         {isActiveMode && activeBike && !activeInsideSpotId && (
-          <Marker key={activeBike.id} pinColor="red" title="Active bike" description={`Bike ${activeBike.id}`}
+          <Marker key={activeBike.id} pinColor="red" title={mapp.Active} description={`${mapp.Bike} ${activeBike.id}`}
             coordinate={{ latitude: activeBike.location.lat, longitude: activeBike.location.lng }}
             onPress={() => navigation.navigate("BikeDetails", { bikeId: activeBike.id })} />
         )}
