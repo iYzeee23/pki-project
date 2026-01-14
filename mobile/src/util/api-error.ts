@@ -8,3 +8,7 @@ export function getApiErrorMessage(err: unknown): string {
   
   return err instanceof Error ? err.message : "Unexpected error";
 }
+
+export function isCanceled(e: any) {
+  return e?.code === "ERR_CANCELED" || e?.name === "CanceledError";
+}

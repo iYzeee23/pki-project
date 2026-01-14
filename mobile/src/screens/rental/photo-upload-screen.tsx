@@ -1,31 +1,138 @@
-import React from "react";
-import { View, Text, Button } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useEffect, useRef, useState } from "react";
+import { ActivityIndicator, Alert, Button, FlatList, Image, View } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useDraftStore } from "../../stores/draft-store";
+import { useRentalStore } from "../../stores/rental-store";
+import * as rentalApi from "../../services/rental-api";
+import * as issueApi from "../../services/issue-api";
+import * as imageApi from "../../services/image-api";
 import { RentalStackParamList } from "../../navigation/types";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
+import { pickMultipleImages, UploadFile } from "../../util/image-picker";
+import { useMapStore } from "../../stores/map-store";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "PhotoUpload">;
 
 export function PhotoUploadScreen({ route, navigation }: Props) {
-  const { purpose, rentalId, bikeId } = route.params;
+  const { mode } = route.params;
 
-  const title = purpose === "RETURN" ? 
-    "Fotografija vracanja bicikla" : 
-    "Fotografija kvara";
+  const submitControllerRef = useRef<AbortController | undefined>(undefined);
 
-  const onDone = () => {
-    if (purpose === "RETURN") navigation.popToTop();
-    else navigation.goBack();
+  const draft = useDraftStore((s) => s.draft);
+  const clearDraft = useDraftStore((s) => s.clearDraft);
+
+  const markDirty = useMapStore((s) => s.markDirty);
+  const setActiveRental = useRentalStore((s) => s.setActiveRental);
+
+  const [files, setFiles] = useState<UploadFile[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      submitControllerRef.current?.abort();
+    };
+  }, []);
+
+  const onPickImages = async () => {
+    try {
+      const picked = await pickMultipleImages();
+      if (picked.length) setFiles(picked);
+    } 
+    catch (e: any) {
+      if (isCanceled(e)) return;
+      Alert.alert("Error", getApiErrorMessage(e));
+    }
+  };
+
+  const remove = (uri: string) => {
+    setFiles(files => files.filter(x => x.uri !== uri));
+  };
+
+  const validateDraft = () => {
+    if (!draft) return false;
+    
+    return !!draft.bikeId && draft.description.trim().length > 0;
+  };
+
+  const onSubmit = async () => {
+    if (!validateDraft()) {
+      Alert.alert("Error", "Missing information. Return back");
+      return;
+    }
+
+    if (files.length === 0) {
+      Alert.alert("Error", "Add at least one image");
+      return;
+    }
+
+    submitControllerRef.current?.abort();
+    submitControllerRef.current = new AbortController();
+
+    const signal = submitControllerRef.current.signal;
+
+    setSubmitting(true);
+
+    try {
+      let ownerId: string;
+      let message: string;
+
+      if (mode === "Issue") {
+        const issue = await issueApi.create({
+          bikeId: draft!.bikeId,
+          description: draft!.description
+        }, signal);
+
+        ownerId = issue.id;
+        message = "Successfully reported an issue";
+      } else {
+        const rental = await rentalApi.finish({
+          description: draft!.description,
+        }, signal);
+
+        ownerId = rental.id;
+        message = "Successfully finished the rental";
+
+        markDirty();
+        setActiveRental(undefined);
+      }
+
+      await imageApi.upload({
+        ownerId: ownerId,
+        ownerModel: mode,
+        files: files
+      }, signal);
+
+      Alert.alert("Success", message);
+
+      clearDraft();
+      navigation.popToTop();
+    } 
+    catch (e: any) {
+      if (isCanceled(e)) return;
+      Alert.alert("Error", getApiErrorMessage(e));
+    } 
+    finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "600" }}>{title}</Text>
+      <Button title="Add photos" onPress={onPickImages} disabled={submitting} />
 
-      {rentalId ? <Text>rentalId: {rentalId}</Text> : null}
-      {bikeId ? <Text>bikeId: {bikeId}</Text> : null}
+      <FlatList data={files} keyExtractor={(f) => f.uri} contentContainerStyle={{ gap: 12, paddingVertical: 8 }}
+        renderItem={({ item }) => (
+          <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
+            <Image source={{ uri: item.uri }} style={{ width: "100%", height: 200 }} />
+            <View style={{ padding: 8 }}>
+              <Button title="Remove" onPress={() => remove(item.uri)} disabled={submitting} />
+            </View>
+          </View>
+        )} />
 
-      <Button title="Usnimi/izaberi fotografiju" onPress={() => {}} />
-      <Button title="Posalji" onPress={onDone} />
+      {submitting && <ActivityIndicator size="large" />}
+
+      <Button title="Submit" onPress={onSubmit} disabled={submitting} />
     </View>
   );
 }

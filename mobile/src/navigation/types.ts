@@ -1,3 +1,5 @@
+import { ImageSource } from "@app/shared";
+
 export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
@@ -23,12 +25,9 @@ export type MapStackParamList = {
 export type RentalStackParamList = {
   ActiveRental: undefined;
   QrScanner: undefined;
-  ReportIssue: { bikeId: string; rentalId: string };
-  PhotoUpload: { 
-    purpose: "RETURN" | "ISSUE";
-    rentalId: string;
-    bikeId: string;
-  };
+  FinishRental: { bikeId: string; };
+  ReportIssue: { bikeId: string; };
+  PhotoUpload: { mode: ImageSource; };
 };
 
 export type ProfileStackParamList = {

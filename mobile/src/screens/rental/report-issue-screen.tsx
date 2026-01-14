@@ -1,29 +1,30 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { Button, TextInput, View } from "react-native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useDraftStore } from "../../stores/draft-store";
 import { RentalStackParamList } from "../../navigation/types";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "ReportIssue">;
 
 export function ReportIssueScreen({ route, navigation }: Props) {
-  const [desc, setDesc] = useState("");
+  const { bikeId } = route.params;
+  const [description, setDescription] = useState("");
+
+  const setDraft = useDraftStore((s) => s.setDraft);
+
+  const canNext = description.trim().length >= 10;
+
+  const onNext = () => {
+    setDraft({ bikeId: bikeId, description: description.trim() });
+    navigation.navigate("PhotoUpload", { mode: "Issue" });
+  };
 
   return (
-    <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "600" }}>Prijava neispravnosti</Text>
-      <Text>bikeId: {route.params.bikeId}</Text>
-      {route.params.rentalId ? <Text>rentalId: {route.params.rentalId}</Text> : null}
+    <View style={{ padding: 16, gap: 12 }}>
+      <TextInput value={description} onChangeText={setDescription} placeholder="Describe the problem"
+        multiline style={{ minHeight: 120, borderWidth: 1, borderRadius: 10, padding: 12 }} />
 
-      <TextInput
-        placeholder="Opis problema..."
-        value={desc}
-        onChangeText={setDesc}
-        multiline
-        style={{ borderWidth: 1, padding: 10, minHeight: 100 }}
-      />
-
-      <Button title="Dodaj fotografiju" onPress={() => {}} />
-      <Button title="Pošalji prijavu" onPress={() => navigation.goBack() } />
+      <Button title="Next" onPress={onNext} disabled={!canNext} />
     </View>
   );
 }

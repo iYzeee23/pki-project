@@ -6,16 +6,14 @@ import { io, Socket } from "socket.io-client";
 
 import { useAuthStore } from "../../stores/auth-store";
 import { useMapStore } from "../../stores/map-store";
-import { getApiErrorMessage } from "../../util/api-error";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { API_BASE_URL } from "../../util/config";
 
 import * as bikesApi from "../../services/bike-api";
 import * as rentalsApi from "../../services/rental-api";
 import { MapStackParamList } from "../../navigation/types";
-import { BikeDto, LngLat, NUM_OF_NEAREST_OBJECTS, ParkingSpotDto, RentalDto, haversineMeters } from "@app/shared";
+import { BikeDto, LngLat, NUM_OF_NEAREST_OBJECTS, ParkingSpotDto, RentalDto, findInsideSpotId, haversineMeters, nearestSpots } from "@app/shared";
 import { useBikesStore } from "../../stores/bike-store";
-
-const PARKING_RADIUS_M = 50;
 
 function locationToMapCenter(loc: LngLat) {
   return {
@@ -35,22 +33,6 @@ function defaultMapCenter() {
   } as Region;
 }
 
-function findInsideSpotId(bikeLoc: LngLat, spots: ParkingSpotDto[]) {
-  for (const s of spots) {
-    const d = haversineMeters(bikeLoc, s.location);
-    if (d <= PARKING_RADIUS_M) return s.id;
-  }
-
-  return undefined;
-}
-
-function nearestSpots(spots: ParkingSpotDto[], location: LngLat) {
-  return spots
-    .map(s => ({ spot: s, distance: haversineMeters(location, s.location) }))
-    .sort((a, b) => a.distance - b.distance)
-    .slice(0, NUM_OF_NEAREST_OBJECTS);
-}
-
 type Props = NativeStackScreenProps<MapStackParamList, "MapHome">;
 
 export function MapScreen({ navigation }: Props) {
@@ -58,6 +40,9 @@ export function MapScreen({ navigation }: Props) {
   const loadParkingSpots = useMapStore(s => s.loadParkingSpots);
 
   const [loading, setLoading] = useState(true);
+  const dirty = useMapStore(s => s.dirty);
+  const clearDirty = useMapStore(s => s.clearDirty);
+  const markDirty = useMapStore(s => s.markDirty);
   
   const bikes = useBikesStore(s => s.bikes);
   const setBikes = useBikesStore(s => s.setBikes);
@@ -69,19 +54,26 @@ export function MapScreen({ navigation }: Props) {
   const socketRef = useRef<Socket | undefined>(undefined);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const load = async () => {
       setLoading(true);
 
       try {
-        if (parkingSpots.length === 0) await loadParkingSpots();
+        if (parkingSpots.length === 0)
+          await loadParkingSpots(controller.signal);
 
-        const bikes = await bikesApi.list();
-        const activeRental = await rentalsApi.active();
+        if (dirty) {
+          const bikes = await bikesApi.list(controller.signal);
+          const activeRental = await rentalsApi.active(controller.signal);
 
-        setBikes(bikes);
-        setActiveRental(activeRental);
+          setBikes(bikes);
+          setActiveRental(activeRental);
+          clearDirty();
+        }
       } 
-      catch (e) {
+      catch (e: any) {
+        if (isCanceled(e)) return;
         Alert.alert("Error", getApiErrorMessage(e));
       } 
       finally {
@@ -90,7 +82,11 @@ export function MapScreen({ navigation }: Props) {
     };
 
     load();
-  }, [parkingSpots]);
+
+    return () => {
+      controller.abort();
+    };
+  }, [parkingSpots, dirty]);
 
   useEffect(() => {
     const s = io(API_BASE_URL, { transports: ["websocket"] });
@@ -99,6 +95,8 @@ export function MapScreen({ navigation }: Props) {
     s.on("bike:updated", (dto: BikeDto) => {
       upsertBike(dto);
     });
+
+    markDirty();
 
     return () => {
       s.disconnect();

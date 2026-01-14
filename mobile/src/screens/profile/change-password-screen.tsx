@@ -1,17 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as profileApi from "../../services/profile-api";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
-import { getApiErrorMessage } from "../../util/api-error";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "ChangePassword">;
 
 export function ChangePasswordScreen({ navigation }: Props) {
+  const submitControllerRef = useRef<AbortController | undefined>(undefined);
+
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConf, setNewPasswordConf] = useState("");
   const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      submitControllerRef.current?.abort();
+    };
+  }, []);  
 
   const validate = () => {
     if (!oldPassword) return "Input the current password";
@@ -24,10 +32,18 @@ export function ChangePasswordScreen({ navigation }: Props) {
     const err = validate();
     if (err) return Alert.alert("Error", err);
 
+    submitControllerRef.current?.abort();
+    submitControllerRef.current = new AbortController();
+
+    const signal = submitControllerRef.current.signal;
+
     setBusy(true);
 
     try {
-      await profileApi.changePassword({ oldPassword: oldPassword, newPassword: newPassword });
+      await profileApi.changePassword({ 
+        oldPassword: oldPassword, 
+        newPassword: newPassword
+      }, signal);
 
       Alert.alert(
         "Success",
@@ -38,6 +54,7 @@ export function ChangePasswordScreen({ navigation }: Props) {
       );
     }
     catch (e: any) {
+      if (isCanceled(e)) return;
       Alert.alert("Error", getApiErrorMessage(e));
     }
     finally {

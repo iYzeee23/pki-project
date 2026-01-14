@@ -5,7 +5,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useBikesStore } from "../../stores/bike-store";
 import * as bikesApi from "../../services/bike-api";
 import * as geocodeApi from "../../services/geocode-api";
-import { getApiErrorMessage } from "../../util/api-error";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { MapStackParamList } from "../../navigation/types";
 import { getCached, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
 
@@ -28,14 +28,17 @@ export function BikeDetailsScreen({ route }: Props) {
       return;
     }
 
+    const controller = new AbortController();
+
     const load = async () => {
       setLoadingBike(true);
 
       try {
-        const b = await bikesApi.getById(bikeId);
+        const b = await bikesApi.getById(bikeId, controller.signal);
         setBike(b);
       }
-      catch (e) {
+      catch (e: any) {
+        if (isCanceled(e)) return;
         Alert.alert("Error", getApiErrorMessage(e));
       }
       finally {
@@ -44,6 +47,10 @@ export function BikeDetailsScreen({ route }: Props) {
     };
 
     load();
+
+    return () => {
+      controller.abort();
+    };
   }, [bikeId, localBike]);
 
   useEffect(() => {
@@ -61,13 +68,16 @@ export function BikeDetailsScreen({ route }: Props) {
 
     setLoadingLocation(true);
 
+    const controller = new AbortController();
+
     const loadLocationLabel = async () => {
       try {
-        const label = await geocodeApi.reverse(lng, lat);
+        const label = await geocodeApi.reverse(lng, lat, controller.signal);
         setCached(LOCATION_CACHE_MOBILE, key, label);
         setLocationLabel(label);
       } 
-      catch {
+      catch (e: any) {
+        if (isCanceled(e)) return;
         setLocationLabel("Unknown location");
       }
       finally {
@@ -76,6 +86,10 @@ export function BikeDetailsScreen({ route }: Props) {
     };
 
     loadLocationLabel();
+
+    return () => {
+      controller.abort();
+    };
   }, [bike?.location.lat, bike?.location.lng]);
 
   const loading = loadingBike || loadingLocation;

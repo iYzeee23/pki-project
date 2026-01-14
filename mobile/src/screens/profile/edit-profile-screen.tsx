@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { Alert, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { Alert, Button, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useAuthStore } from "../../stores/auth-store";
-import { getApiErrorMessage } from "../../util/api-error";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";
 import * as profileApi from "../../services/profile-api";
+import { DEFAULT_PROFILE_PICTURE_RESOLVED, resolveImageUrl } from "../../util/config";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "EditProfile">;
 
@@ -21,14 +22,27 @@ export function EditProfileScreen({ navigation }: Props) {
     );
   }
 
+  const saveControllerRef = useRef<AbortController | undefined>(undefined);
+
   const [username, setUsername] = useState(me.username);
   const [firstName, setFirstName] = useState(me.firstName);
   const [lastName, setLastName] = useState(me.lastName);
   const [phone, setPhone] = useState(me.phone);
   const [email, setEmail] = useState(me.email);
-  const [file, setFile] = useState<UploadFile | undefined>(undefined);
+  const [file, setFile] = useState<UploadFile | undefined | null>(undefined);
 
   const [busy, setBusy] = useState(false);
+
+  const serverUri = resolveImageUrl(me.profileImagePath);
+  const displayUri = file ? 
+    file.uri : file === null ?
+    DEFAULT_PROFILE_PICTURE_RESOLVED : serverUri;
+
+  useEffect(() => {
+    return () => {
+      saveControllerRef.current?.abort();
+    };
+  }, []);
 
   const validate = (): string | null => {
     if (!username.trim()) return "Username is required";
@@ -48,6 +62,11 @@ export function EditProfileScreen({ navigation }: Props) {
     const err = validate();
     if (err) return Alert.alert("Error", err);
 
+    saveControllerRef.current?.abort();
+    saveControllerRef.current = new AbortController();
+
+    const signal = saveControllerRef.current.signal;
+
     setBusy(true);
 
     try {
@@ -60,7 +79,7 @@ export function EditProfileScreen({ navigation }: Props) {
         file: file
       } as profileApi.UpdateMePayload;
 
-      const resp = await profileApi.updateMe(data);
+      const resp = await profileApi.updateMe(data, signal);
       setMe(resp);
 
       Alert.alert(
@@ -71,7 +90,8 @@ export function EditProfileScreen({ navigation }: Props) {
         ]
       );
     }
-    catch (e) {
+    catch (e: any) {
+      if (isCanceled(e)) return;
       Alert.alert("Error", getApiErrorMessage(e));
     }
     finally {
@@ -83,14 +103,17 @@ export function EditProfileScreen({ navigation }: Props) {
     <View style={{ padding: 16, gap: 10 }}>
       <Text style={{ fontSize: 22, fontWeight: "700" }}>Edit profile</Text>
 
-      <TouchableOpacity onPress={onPick}
-        style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>
-          {file ? "Change selected image" : "Pick new profile image (optional)"}
-        </Text>
-      </TouchableOpacity>
-
-      { file?.uri && <Image source={{ uri: file.uri }} style={{ width: 96, height: 96, borderRadius: 48 }} /> }
+      <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
+        <Image source={{ uri: displayUri }} style={{ width: "100%", height: 220 }} />
+        <View style={{ padding: 8, flexDirection: "row", gap: 8 }}>
+          <View style={{ flex: 1 }}>
+            <Button title="Change" onPress={onPick} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Button title="Remove" disabled={file === null} onPress={() => setFile(null)} color="red" />
+          </View>
+        </View>
+      </View>
 
       <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
         placeholder="Username" value={username} onChangeText={setUsername} autoCapitalize="none" />

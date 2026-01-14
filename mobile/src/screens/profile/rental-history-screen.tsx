@@ -4,14 +4,10 @@ import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import * as rentalsApi from "../../services/rental-api";
-import { RentalDto } from "@app/shared";
-import { getApiErrorMessage } from "../../util/api-error";
+import { isoDateOnly, RentalDto } from "@app/shared";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
-
-function isoDateOnly(iso: string) {
-  return iso.slice(0, 10);
-}
 
 function EmptyState() {
   return (
@@ -70,15 +66,18 @@ export function RentalHistoryScreen({ navigation }: Props) {
     if (!isFocused) return;
     if (rentals.length > 0) return;
 
+    const controller = new AbortController();
+
     const load = async () => {
       setLoading(true);
 
       try {
-        const data = await rentalsApi.history();
+        const data = await rentalsApi.history(controller.signal);
         const onlyFinished = data.filter(r => r.endAt !== null);
         setRentals(onlyFinished);
       }
       catch (e: any) {
+        if (isCanceled(e)) return;
         Alert.alert("Error", getApiErrorMessage(e));
       }
       finally {
@@ -87,6 +86,10 @@ export function RentalHistoryScreen({ navigation }: Props) {
     };
 
     load();
+
+    return () => {
+      controller.abort();
+    };
   }, [isFocused]);
 
   const filtered = useMemo(() => {

@@ -4,13 +4,13 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useMapStore } from "../../stores/map-store";
 import { useBikesStore } from "../../stores/bike-store";
 import { MapStackParamList } from "../../navigation/types";
-import { BikeDto, haversineMeters } from "@app/shared";
-
-const PARKING_RADIUS_M = 50;
+import { BikeDto, haversineMeters, PARKING_RADIUS_M } from "@app/shared";
 
 function EmptyState() {
   return (
-    <Text>No bikes in this parking spot.</Text>
+    <View style={{ gap: 10 }}>
+      <Text>No bikes in this parking spot</Text>
+    </View>
   );
 }
 
@@ -84,16 +84,16 @@ export function ParkingDetailsScreen({ route, navigation }: Props) {
         <Text><Text style={{ fontWeight: "700" }}>Lat:</Text> {spot.location.lat}</Text>
         <Text><Text style={{ fontWeight: "700" }}>Lng:</Text> {spot.location.lng}</Text>
 
-        {distance && (
-          <Text><Text style={{ fontWeight: "700" }}>Distance:</Text> {Math.round(distance)}m</Text>
+        {(distance ?? 0) > 0 && (
+          <Text><Text style={{ fontWeight: "700" }}>Distance:</Text> {Math.round(distance!)}m</Text>
         )}
 
         {isActiveMode && isActiveBikeInsideThisSpot && (
-          <Text>"You're already inside parking spot"</Text>
+          <Text>You're already inside parking spot</Text>
         )}
       </View>
 
-      {!isActiveMode && <BikeList bikesInThisSpot={bikesInThisSpot} navigation={navigation}/>}
+      {!isActiveMode && <BikeList bikesInThisSpot={bikesInThisSpot} navigation={navigation} />}
     </View>
   );
 }

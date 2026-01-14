@@ -12,6 +12,7 @@ export type LoginRequest = { username: string; password: string };
 export type LoginResponse = { token: string };
 
 export const NUM_OF_NEAREST_OBJECTS = 3;
+export const PARKING_RADIUS_M = 50;
 
 export const LOCATION_CACHE_SERVER = new Map<string, string>();
 export const LOCATION_CACHE_MOBILE = new Map<string, string>();

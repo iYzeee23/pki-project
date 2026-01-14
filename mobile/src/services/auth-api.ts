@@ -21,7 +21,7 @@ export type AuthResponse = {
   user: UserDto;
 };
 
-export async function register(payload: RegisterPayload) {
+export async function register(payload: RegisterPayload, signal?: AbortSignal) {
   const form = new FormData();
 
   form.append("username", payload.username);
@@ -40,6 +40,7 @@ export async function register(payload: RegisterPayload) {
   }
   
   const res = await http.post("/users/register", form, {
+    signal: signal,
     headers: { "Content-Type": "multipart/form-data" },
   });
 
@@ -47,8 +48,8 @@ export async function register(payload: RegisterPayload) {
   return { token: data.token, user: data.user } as AuthResponse;
 }
 
-export async function login(payload: LoginPayload) {
-  const res = await http.post("/users/login", payload);
+export async function login(payload: LoginPayload, signal?: AbortSignal) {
+  const res = await http.post("/users/login", payload, { signal: signal });
   
   const data = res.data;
   if (!data) return undefined;

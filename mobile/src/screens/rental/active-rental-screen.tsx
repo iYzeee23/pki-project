@@ -1,52 +1,159 @@
-import React, { useState } from "react";
-import { View, Text, Button, Alert } from "react-native";
-import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { ActivityIndicator, Alert, Button, Text, View } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
+import * as bikesApi from "../../services/bike-api";
 import { RentalStackParamList } from "../../navigation/types";
+import { useRentalStore } from "../../stores/rental-store";
+import { BikeDto, findInsideSpotId, formatDurationFromMs } from "@app/shared";
+import { useMapStore } from "../../stores/map-store";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "ActiveRental">;
 
 export function ActiveRentalScreen({ navigation }: Props) {
-  const [active, setActive] = useState(false);
+  const isFocused = useIsFocused();
 
-  if (!active) {
+  const redirectedRef = useRef(false);
+  const loadingActive = useRentalStore((s) => s.loadingActive);
+  const activeRental = useRentalStore((s) => s.activeRental);
+  const refreshActiveRental = useRentalStore((s) => s.refreshActiveRental);
+
+  const parkingSpots = useMapStore((s) => s.parkingSpots);
+
+  const [bike, setBike] = useState<BikeDto | undefined>(undefined);
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    if (!isFocused) return;
+    if (loadingActive) return;
+
+    const controller = new AbortController();
+
+    const refresh = async () => {
+      try {
+        await refreshActiveRental(controller.signal);
+        const fresh = useRentalStore.getState().activeRental;
+
+        if (!fresh && !redirectedRef.current) {
+          redirectedRef.current = true;
+
+          requestAnimationFrame(() => {
+            navigation.replace("QrScanner");
+          });
+
+          return;
+        }
+
+        redirectedRef.current = false;
+      } 
+      catch (e: any) {
+        if (isCanceled(e)) return;
+        Alert.alert("Error", getApiErrorMessage(e));
+      }
+    };
+
+    if (!activeRental) refresh();
+
+    return () => {
+      controller.abort();
+    };
+  }, [isFocused]);
+
+  useEffect(() => {
+    if (!activeRental) return;
+
+    const controller = new AbortController();
+
+    const fetchBike = async () => {
+      try {
+        const b = await bikesApi.getById(activeRental.bikeId, controller.signal);
+        setBike(b);
+      } 
+      catch (e: any) {
+        if (isCanceled(e)) return;
+        Alert.alert("Error", getApiErrorMessage(e));
+      }
+    };
+
+    fetchBike();
+
+    return () => {
+      controller.abort();
+    };
+  }, [activeRental]);
+
+  useEffect(() => {
+    if (!activeRental) return;
+
+    const timer = setInterval(() => {
+      setTick(x => x + 1)
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [activeRental]);
+
+  const startMs = useMemo(() => {
+    if (!activeRental) return 0;
+
+    return new Date(activeRental.startAt).getTime();
+  }, [activeRental]);
+
+  const elapsedMs = useMemo(() => {
+    if (!activeRental) return 0;
+
+    return Date.now() - startMs;
+  }, [activeRental, startMs, tick]);
+
+  const liveCost = useMemo(() => {
+    if (!activeRental || !bike) return 0;
+
+    const hours = Math.ceil(elapsedMs / (1000 * 60 * 60));
+    return hours * bike.pricePerHour;
+  }, [activeRental, bike, elapsedMs]);
+
+  const onReportIssue = () => {
+    navigation.navigate("ReportIssue", { bikeId: activeRental!.bikeId });
+  };
+
+  const onFinish = () => {
+    const insideSpotId = findInsideSpotId(bike!.location, parkingSpots);
+
+    if (!insideSpotId) {
+      Alert.alert(
+        "Invalid place",
+        "You can finish the rental only on parking spot"
+      );
+      return;
+    }
+
+    navigation.navigate("FinishRental", { bikeId: bike!.id });
+  };
+
+  if (loadingActive) {
     return (
-      <View style={{ flex: 1, padding: 16, gap: 12 }}>
-        <Text style={{ fontSize: 18, fontWeight: "600" }}>Nema aktivnog iznajmljivanja</Text>
-
-        <Button title="Skeniraj QR" onPress={() => navigation.navigate("QrScanner")} />
-        <Button title="Postavi aktivno iznajmljivanje" onPress={() => setActive(true)} />
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
       </View>
     );
   }
 
+  if (!activeRental || !bike) return;
+
   return (
-    <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "600" }}>Aktivno iznajmljivanje</Text>
-      <Text>Timer + cena (dolazi posle)</Text>
+    <View style={{ padding: 16, gap: 12 }}>
+      <Text style={{ fontSize: 18, fontWeight: "600" }}>Active rental</Text>
 
-      <Button
-        title="Prijavi neispravnost"
-        onPress={() => navigation.navigate("ReportIssue", { bikeId: "bike-1", rentalId: "rental-1" })}
-      />
+      <Text>Bike: {activeRental.bikeId} {bike.type}</Text>
+      <Text>Duration: {formatDurationFromMs(elapsedMs)}</Text>
+      <Text>Current cost: {liveCost.toFixed(2)}</Text>
 
-      <Button
-        title="Zavrsi voznju"
-        onPress={() => {
-          Alert.alert(
-            "Ovo je validna lokacija. Da li ste sigurni?",
-            "",
-            [
-              { text: "Ne", style: "cancel" },
-              {
-                text: "Da",
-                onPress: () => navigation.navigate("PhotoUpload", { purpose: "RETURN", rentalId: "rental-1", bikeId: "bike-1" }),
-              },
-            ]
-          );
-        }}
-      />
-
-      <Button title="Ocisti aktivno iznajmljivanje" onPress={() => setActive(false)} />
+      <View style={{ gap: 10, marginTop: 8 }}>
+        <Button title="Report issue" onPress={onReportIssue} />
+        <Button title="Finish rental" onPress={onFinish} />
+      </View>
     </View>
   );
 }

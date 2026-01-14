@@ -4,27 +4,8 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import * as rentalsApi from "../../services/rental-api";
 import * as bikesApi from "../../services/bike-api";
-import { BikeDto, RentalDto } from "@app/shared";
-import { getApiErrorMessage } from "../../util/api-error";
-
-function formatDateTime(iso: string) {
-  const date = new Date(iso);
-  return date.toLocaleString();
-}
-
-function formatDuration(startIso: string, endIso: string) {
-  const start = new Date(startIso).getTime();
-  const end = new Date(endIso).getTime();
-
-  const milliSeconds = end - start;
-  const totalMinutes = Math.floor(milliSeconds / (60 * 1000));
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-
-  const hh = String(hours).padStart(2, "0");
-  const mm = String(minutes).padStart(2, "0");
-  return `${hh}:${mm}`;
-}
+import { BikeDto, formatDateTime, formatDurationFromStartEnd, RentalDto } from "@app/shared";
+import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "RentalDetails">;
 
@@ -38,17 +19,20 @@ export function RentalDetailsScreen({ route }: Props) {
   useEffect(() => {
     if (!rentalId) return;
 
+    const controller = new AbortController();
+
     const load = async () => {
       setLoading(true);
 
       try {
-        const r = await rentalsApi.getById(rentalId);
+        const r = await rentalsApi.getById(rentalId, controller.signal);
         setRental(r);
 
-        const b = await bikesApi.getById(r.bikeId);
+        const b = await bikesApi.getById(r.bikeId, controller.signal);
         setBike(b);
       }
       catch (e: any) {
+        if (isCanceled(e)) return;
         Alert.alert("Error", getApiErrorMessage(e));
       }
       finally {
@@ -57,6 +41,10 @@ export function RentalDetailsScreen({ route }: Props) {
     }
 
     load();
+
+    return () => {
+      controller.abort();
+    };
   }, [rentalId]);
 
   if (loading || !rental || !bike) {
@@ -69,7 +57,7 @@ export function RentalDetailsScreen({ route }: Props) {
 
   const startTime = formatDateTime(rental.startAt);
   const endTime = formatDateTime(rental.endAt!);
-  const duration = formatDuration(rental.startAt, rental.endAt!);
+  const duration = formatDurationFromStartEnd(rental.startAt, rental.endAt!);
 
   return (
     <View style={{ padding: 16, gap: 12 }}>

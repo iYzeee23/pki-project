@@ -15,14 +15,7 @@ export type ChangePasswordPayload = {
     newPassword: string;
 };
 
-export async function getMe() {
-    const res = await http.get("/users/me");
-
-    const data = res.data;
-    return data as UserDto;
-}
-
-export async function updateMe(payload: UpdateMePayload) {
+export async function updateMe(payload: UpdateMePayload, signal?: AbortSignal) {
     const form = new FormData();
 
     form.append("username", payload.username);
@@ -40,6 +33,7 @@ export async function updateMe(payload: UpdateMePayload) {
     }
 
     const res = await http.put("/users/me/update", form, {
+        signal: signal,
         headers: { "Content-Type": "multipart/form-data" },
     });
 
@@ -47,8 +41,8 @@ export async function updateMe(payload: UpdateMePayload) {
     return data as UserDto;
 }
 
-export async function changePassword(payload: ChangePasswordPayload) {
-    await http.put("/users/me/password", payload);
+export async function changePassword(payload: ChangePasswordPayload, signal?: AbortSignal) {
+    await http.put("/users/me/password", payload, { signal: signal });
 
     const data = "Password changed successfully";
     return data;

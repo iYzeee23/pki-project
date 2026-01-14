@@ -25,14 +25,29 @@ export function ProfileScreen({ navigation }: Props) {
     <View style={{ padding: 16, gap: 12 }}>
       <Text style={{ fontSize: 22, fontWeight: "700" }}>Profile</Text>
 
-      <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 10 }}>
-        {url && <Image source={{ uri: url }} style={{ width: 96, height: 96, borderRadius: 48 }} />}
+      <View style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
+        <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
+          {url ? (
+            <Image
+              source={{ uri: url }}
+              style={{ width: 96, height: 96, borderRadius: 48 }}
+            />
+          ) : null}
 
-        <View style={{ gap: 6 }}>
-          <Text><Text style={{ fontWeight: "700" }}>Username:</Text> {me.username}</Text>
-          <Text><Text style={{ fontWeight: "700" }}>Name:</Text> {me.firstName} {me.lastName}</Text>
-          <Text><Text style={{ fontWeight: "700" }}>Email:</Text> {me.email}</Text>
-          <Text><Text style={{ fontWeight: "700" }}>Phone:</Text> {me.phone}</Text>
+          <View style={{ gap: 6, flex: 1 }}>
+            <Text>
+              <Text style={{ fontWeight: "700" }}>Username:</Text> {me.username}
+            </Text>
+            <Text>
+              <Text style={{ fontWeight: "700" }}>Name:</Text> {me.firstName} {me.lastName}
+            </Text>
+            <Text>
+              <Text style={{ fontWeight: "700" }}>Email:</Text> {me.email}
+            </Text>
+            <Text>
+              <Text style={{ fontWeight: "700" }}>Phone:</Text> {me.phone}
+            </Text>
+          </View>
         </View>
       </View>
 

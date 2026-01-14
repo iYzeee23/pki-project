@@ -9,7 +9,7 @@ export default function App() {
 
   useEffect(() => {
     hydrate();
-  }, [hydrate]);
+  }, []);
 
   return (
     <SafeAreaProvider>
