@@ -13,7 +13,9 @@ import { IssueModel } from "./models/issue";
 import { ImageModel } from "./models/image";
 import { DEFAULT_IMAGE } from "./image-utils";
 
-dotenv.config();
+const ENV_PATH = path.resolve(__dirname, "../../.env");
+
+dotenv.config({ path: ENV_PATH });
 
 type SeedUser = {
     username: string;

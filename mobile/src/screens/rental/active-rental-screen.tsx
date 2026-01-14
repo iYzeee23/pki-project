@@ -8,10 +8,16 @@ import { RentalStackParamList } from "../../navigation/types";
 import { useRentalStore } from "../../stores/rental-store";
 import { BikeDto, findInsideSpotId, formatDurationFromMs } from "@app/shared";
 import { useMapStore } from "../../stores/map-store";
+import { useTranslation } from "react-i18next";
+import { activeRentalTexts, commonTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "ActiveRental">;
 
 export function ActiveRentalScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const act = activeRentalTexts(t);
+  const com = commonTexts();
+  
   const isFocused = useIsFocused();
 
   const redirectedRef = useRef(false);
@@ -49,7 +55,7 @@ export function ActiveRentalScreen({ navigation }: Props) {
       } 
       catch (e: any) {
         if (isCanceled(e)) return;
-        Alert.alert("Error", getApiErrorMessage(e));
+        Alert.alert(com.Error, getApiErrorMessage(e));
       }
     };
 
@@ -72,7 +78,7 @@ export function ActiveRentalScreen({ navigation }: Props) {
       } 
       catch (e: any) {
         if (isCanceled(e)) return;
-        Alert.alert("Error", getApiErrorMessage(e));
+        Alert.alert(com.Error, getApiErrorMessage(e));
       }
     };
 
@@ -123,8 +129,8 @@ export function ActiveRentalScreen({ navigation }: Props) {
 
     if (!insideSpotId) {
       Alert.alert(
-        "Invalid place",
-        "You can finish the rental only on parking spot"
+        com.InvalidPlace,
+        act.ErrInvalidPlace
       );
       return;
     }
@@ -144,15 +150,15 @@ export function ActiveRentalScreen({ navigation }: Props) {
 
   return (
     <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "600" }}>Active rental</Text>
+      <Text style={{ fontSize: 18, fontWeight: "600" }}>{act.Title}</Text>
 
-      <Text>Bike: {activeRental.bikeId} {bike.type}</Text>
-      <Text>Duration: {formatDurationFromMs(elapsedMs)}</Text>
-      <Text>Current cost: {liveCost.toFixed(2)}</Text>
+      <Text>{act.Bike}: {activeRental.bikeId} {bike.type}</Text>
+      <Text>{act.Duration}: {formatDurationFromMs(elapsedMs)}</Text>
+      <Text>{act.CurrCost}: {liveCost.toFixed(2)}</Text>
 
       <View style={{ gap: 10, marginTop: 8 }}>
-        <Button title="Report issue" onPress={onReportIssue} />
-        <Button title="Finish rental" onPress={onFinish} />
+        <Button title={act.ReportIssue} onPress={onReportIssue} />
+        <Button title={act.FinishRental} onPress={onFinish} />
       </View>
     </View>
   );

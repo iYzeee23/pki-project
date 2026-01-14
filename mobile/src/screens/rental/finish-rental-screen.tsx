@@ -3,10 +3,15 @@ import { Button, Text, TextInput, View } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RentalStackParamList } from "../../navigation/types";
 import { useDraftStore } from "../../stores/draft-store";
+import { useTranslation } from "react-i18next";
+import { finishRentalTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "FinishRental">;
 
 export function FinishRentalScreen({ route, navigation }: Props) {
+    const { t } = useTranslation();
+    const fin = finishRentalTexts(t);
+    
     const { bikeId } = route.params;
 
     const [description, setDescription] = useState("");
@@ -21,12 +26,12 @@ export function FinishRentalScreen({ route, navigation }: Props) {
 
     return (
         <View style={{ padding: 16, gap: 12 }}>
-            <Text style={{ fontSize: 16, fontWeight: "600" }}>Describe how was the bike ride</Text>
+            <Text style={{ fontSize: 16, fontWeight: "600" }}>{fin.Title}</Text>
 
-            <TextInput value={description} onChangeText={setDescription} placeholder="Bike ride was fun"
+            <TextInput value={description} onChangeText={setDescription} placeholder={fin.PlaceholderBike}
                 multiline style={{ minHeight: 120, borderWidth: 1, borderRadius: 10, padding: 12, }}/>
 
-            <Button title="Next" onPress={onNext} disabled={!canNext} />
+            <Button title={fin.Next} onPress={onNext} disabled={!canNext} />
         </View>
     );
 }

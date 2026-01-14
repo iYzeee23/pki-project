@@ -7,10 +7,16 @@ import * as rentalApi from "../../services/rental-api";
 import { useRentalStore } from "../../stores/rental-store";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { useMapStore } from "../../stores/map-store";
+import { useTranslation } from "react-i18next";
+import { commonTexts, qrScannerTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "QrScanner">;
 
 export function QrScannerScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const qrr = qrScannerTexts(t);
+  const com = commonTexts();
+  
   const [permission, requestPermission] = useCameraPermissions();
   const startControllerRef = useRef<AbortController | undefined>(undefined);
 
@@ -42,16 +48,16 @@ export function QrScannerScreen({ navigation }: Props) {
     setScanned(result.data);
 
     Alert.alert(
-      "Are you sure?",
-      `Scanned: ${result.data}`,
+      com.AreYouSure,
+      `${qrr.Scanned}: ${result.data}`,
       [
         {
-          text: "No",
+          text: com.No,
           style: "cancel",
           onPress: clear,
         },
         {
-          text: "Yes",
+          text: com.Yes,
           onPress: () => startRental(result.data),
         },
       ]
@@ -60,7 +66,7 @@ export function QrScannerScreen({ navigation }: Props) {
 
   const startRental = async (bikeId: string) => {
     if (!bikeId) {
-      Alert.alert("Unknown QR", "QR doesn't contain valid bike identificator");
+      Alert.alert(com.UnknownQR, qrr.UnknownQR);
       clear();
       return;
     }
@@ -82,7 +88,7 @@ export function QrScannerScreen({ navigation }: Props) {
     } 
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert("Error", getApiErrorMessage(e));
+      Alert.alert(com.Error, getApiErrorMessage(e));
       clear();
     } 
     finally {
@@ -101,8 +107,8 @@ export function QrScannerScreen({ navigation }: Props) {
   if (!permission.granted) {
     return (
       <View style={{ flex: 1, padding: 16, gap: 12, justifyContent: "center" }}>
-        <Text>This app requires camera permission in order to scan QR code</Text>
-        <Button title="Allow camera" onPress={requestPermission} />
+        <Text>{qrr.CameraPermission}</Text>
+        <Button title={qrr.AllowCamera} onPress={requestPermission} />
       </View>
     );
   }
@@ -113,11 +119,11 @@ export function QrScannerScreen({ navigation }: Props) {
         barcodeScannerSettings={{ barcodeTypes: ["qr"] }}/>
 
       <View style={{ padding: 12, gap: 8 }}>
-        <Text>Scan the QR code</Text>
+        <Text>{qrr.ScanQR}</Text>
 
         {busy && <ActivityIndicator />}
 
-        {scanned && <Button title="Scan again" disabled={busy} onPress={clear}/>}
+        {scanned && <Button title={qrr.ScanAgain} disabled={busy} onPress={clear}/>}
       </View>
     </View>
   );

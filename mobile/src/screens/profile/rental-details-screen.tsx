@@ -6,10 +6,16 @@ import * as rentalsApi from "../../services/rental-api";
 import * as bikesApi from "../../services/bike-api";
 import { BikeDto, formatDateTime, formatDurationFromStartEnd, RentalDto } from "@app/shared";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
+import { useTranslation } from "react-i18next";
+import { commonTexts, rentalDetailsTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "RentalDetails">;
 
 export function RentalDetailsScreen({ route }: Props) {
+  const { t } = useTranslation();
+  const rent = rentalDetailsTexts(t);
+  const com = commonTexts();
+  
   const { rentalId } = route.params;
 
   const [loading, setLoading] = useState(true);
@@ -33,7 +39,7 @@ export function RentalDetailsScreen({ route }: Props) {
       }
       catch (e: any) {
         if (isCanceled(e)) return;
-        Alert.alert("Error", getApiErrorMessage(e));
+        Alert.alert(com.Error, getApiErrorMessage(e));
       }
       finally {
         setLoading(false);
@@ -61,17 +67,17 @@ export function RentalDetailsScreen({ route }: Props) {
 
   return (
     <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>Rental details</Text>
+      <Text style={{ fontSize: 22, fontWeight: "700" }}>{rent.Title}</Text>
 
       <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 8 }}>
-        <Text><Text style={{ fontWeight: "700" }}>Bike id:</Text> {rental.bikeId}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Bike type:</Text> {bike.type}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Start:</Text> {startTime}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>End:</Text> {endTime}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Price per hour:</Text> {bike.pricePerHour}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Duration:</Text> {duration}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Total cost:</Text> {rental.totalCost}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>Description:</Text> {rental.description}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.BikeId}:</Text> {rental.bikeId}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.BikeType}:</Text> {bike.type}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.StartTime}:</Text> {startTime}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.EndTime}:</Text> {endTime}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.Price}:</Text> {bike.pricePerHour}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.Duration}:</Text> {duration}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.TotalCost}:</Text> {rental.totalCost}</Text>
+        <Text><Text style={{ fontWeight: "700" }}>{rent.Description}:</Text> {rental.description}</Text>
       </View>
     </View>
   );

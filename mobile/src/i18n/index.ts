@@ -70,7 +70,7 @@ i18n.use(initReactI18next).init({
   lng: deviceLang,
   fallbackLng: "en",
   ns: namespaces,
-  defaultNS: "common",
+  defaultNS: "login",
   interpolation: { escapeValue: false },
 });
 

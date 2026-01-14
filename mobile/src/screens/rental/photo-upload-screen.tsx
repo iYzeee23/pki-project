@@ -10,10 +10,16 @@ import { RentalStackParamList } from "../../navigation/types";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickMultipleImages, UploadFile } from "../../util/image-picker";
 import { useMapStore } from "../../stores/map-store";
+import { useTranslation } from "react-i18next";
+import { commonTexts, photoUploadTexts } from "../../util/i18n-builder";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "PhotoUpload">;
 
 export function PhotoUploadScreen({ route, navigation }: Props) {
+  const { t } = useTranslation();
+  const pht = photoUploadTexts(t);
+  const com = commonTexts();
+  
   const { mode } = route.params;
 
   const submitControllerRef = useRef<AbortController | undefined>(undefined);
@@ -40,7 +46,7 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
     } 
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert("Error", getApiErrorMessage(e));
+      Alert.alert(com.Error, getApiErrorMessage(e));
     }
   };
 
@@ -56,12 +62,12 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
 
   const onSubmit = async () => {
     if (!validateDraft()) {
-      Alert.alert("Error", "Missing information. Return back");
+      Alert.alert(com.Error, pht.MissingInformation);
       return;
     }
 
     if (files.length === 0) {
-      Alert.alert("Error", "Add at least one image");
+      Alert.alert(com.Error, pht.AddImage);
       return;
     }
 
@@ -83,14 +89,14 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
         }, signal);
 
         ownerId = issue.id;
-        message = "Successfully reported an issue";
+        message = pht.MsgSuccessfulIssue;
       } else {
         const rental = await rentalApi.finish({
           description: draft!.description,
         }, signal);
 
         ownerId = rental.id;
-        message = "Successfully finished the rental";
+        message = pht.MsgSuccessfulRental;
 
         markDirty();
         setActiveRental(undefined);
@@ -102,14 +108,14 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
         files: files
       }, signal);
 
-      Alert.alert("Success", message);
+      Alert.alert(com.Success, message);
 
       clearDraft();
       navigation.popToTop();
     } 
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert("Error", getApiErrorMessage(e));
+      Alert.alert(com.Error, getApiErrorMessage(e));
     } 
     finally {
       setSubmitting(false);
@@ -118,21 +124,21 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
 
   return (
     <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Button title="Add photos" onPress={onPickImages} disabled={submitting} />
+      <Button title={pht.AddPhotos} onPress={onPickImages} disabled={submitting} />
 
       <FlatList data={files} keyExtractor={(f) => f.uri} contentContainerStyle={{ gap: 12, paddingVertical: 8 }}
         renderItem={({ item }) => (
           <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
             <Image source={{ uri: item.uri }} style={{ width: "100%", height: 200 }} />
             <View style={{ padding: 8 }}>
-              <Button title="Remove" onPress={() => remove(item.uri)} disabled={submitting} />
+              <Button title={pht.Remove} onPress={() => remove(item.uri)} disabled={submitting} />
             </View>
           </View>
         )} />
 
       {submitting && <ActivityIndicator size="large" />}
 
-      <Button title="Submit" onPress={onSubmit} disabled={submitting} />
+      <Button title={pht.Submit} onPress={onSubmit} disabled={submitting} />
     </View>
   );
 }

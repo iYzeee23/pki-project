@@ -8,11 +8,13 @@ import { isoDateOnly, RentalDto } from "@app/shared";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTranslation } from "react-i18next";
+import { commonTexts, rentalHistoryTexts } from "../../util/i18n-builder";
 
-function EmptyState() {
+function EmptyState({ rent }: any) {
   return (
     <View style={{ padding: 12 }}>
-      <Text>No rentals for current filter.</Text>
+      <Text>{rent.NoRentals}</Text>
     </View>
   );
 }
@@ -20,9 +22,10 @@ function EmptyState() {
 type NonEmptyStateProps = {
   filtered: RentalDto[];
   navigation: any;
+  rent: any;
 };
 
-function NonEmptyState( {filtered, navigation}: NonEmptyStateProps) {
+function NonEmptyState( {filtered, navigation, rent}: NonEmptyStateProps) {
   return (
     <FlatList
       data={filtered}
@@ -35,8 +38,8 @@ function NonEmptyState( {filtered, navigation}: NonEmptyStateProps) {
             onPress={() => navigation.navigate("RentalDetails", { rentalId: item.id })}
             style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 6 }}
           >
-            <Text><Text style={{ fontWeight: "700" }}>Date:</Text> {day}</Text>
-            <Text><Text style={{ fontWeight: "700" }}>Bike:</Text> {item.bikeId}</Text>
+            <Text><Text style={{ fontWeight: "700" }}>{rent.Date}:</Text> {day}</Text>
+            <Text><Text style={{ fontWeight: "700" }}>{rent.Bike}:</Text> {item.bikeId}</Text>
           </TouchableOpacity>
         );
       }}
@@ -47,6 +50,10 @@ function NonEmptyState( {filtered, navigation}: NonEmptyStateProps) {
 type Props = NativeStackScreenProps<ProfileStackParamList, "RentalHistory">;
 
 export function RentalHistoryScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const rent = rentalHistoryTexts(t);
+  const com = commonTexts();
+  
   type FilterMode = "none" | "dateFrom" | "dateTo" | "bikeId";
 
   const [filterMode, setFilterMode] = useState<FilterMode>("none");
@@ -78,7 +85,7 @@ export function RentalHistoryScreen({ navigation }: Props) {
       }
       catch (e: any) {
         if (isCanceled(e)) return;
-        Alert.alert("Error", getApiErrorMessage(e));
+        Alert.alert(com.Error, getApiErrorMessage(e));
       }
       finally {
         setLoading(false);
@@ -137,20 +144,20 @@ export function RentalHistoryScreen({ navigation }: Props) {
 
   return (
     <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 10 }}>
-      <Text style={{ fontWeight: "700" }}>Filters</Text>
+      <Text style={{ fontWeight: "700" }}>{rent.Filters}</Text>
 
       <View style={{ borderWidth: 1, borderRadius: 10 }}>
         <Picker selectedValue={filterMode} onValueChange={(v) => setFilterMode(v)}>
-          <Picker.Item label="None" value="none" />
-          <Picker.Item label="Date from" value="dateFrom" />
-          <Picker.Item label="Date to" value="dateTo" />
-          <Picker.Item label="Bike id" value="bikeId" />
+          <Picker.Item label={rent.LabelNone} value="none" />
+          <Picker.Item label={rent.LabelDateFrom} value="dateFrom" />
+          <Picker.Item label={rent.LabelDateTo} value="dateTo" />
+          <Picker.Item label={rent.LabelBikeId} value="bikeId" />
         </Picker>
       </View>
 
       {filterMode === "bikeId" && (
         <TextInput style={{ borderWidth: 1, padding: 10, borderRadius: 10 }}
-          placeholder="Bike id" value={bikeIdFilter} onChangeText={setBikeIdFilter} autoCapitalize="none" />
+          placeholder={rent.PlaceholderBikeId} value={bikeIdFilter} onChangeText={setBikeIdFilter} autoCapitalize="none" />
       )}
 
       {(filterMode === "dateFrom" || filterMode === "dateTo") && (
@@ -158,8 +165,8 @@ export function RentalHistoryScreen({ navigation }: Props) {
           style={{ padding: 12, borderRadius: 12, borderWidth: 1 }}>
           <Text style={{ textAlign: "center", fontWeight: "600" }}>
             {filterMode === "dateFrom"
-              ? `Pick date from${dateFrom ? `: ${dateFrom.toISOString().slice(0, 10)}` : ""}`
-              : `Pick date to${dateTo ? `: ${dateTo.toISOString().slice(0, 10)}` : ""}`}
+              ? `${rent.PickDateFrom}${dateFrom ? `: ${dateFrom.toISOString().slice(0, 10)}` : ""}`
+              : `${rent.PickDateTo}${dateTo ? `: ${dateTo.toISOString().slice(0, 10)}` : ""}`}
           </Text>
         </TouchableOpacity>
       )}
@@ -179,14 +186,14 @@ export function RentalHistoryScreen({ navigation }: Props) {
 
       <TouchableOpacity onPress={() => clearFilters() }
         style={{ padding: 12, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>Clear filters</Text>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>{rent.ClearFilters}</Text>
       </TouchableOpacity>
 
-      {filtered.length === 0 ? <EmptyState /> : <NonEmptyState filtered={filtered} navigation={navigation} />}
+      {filtered.length === 0 ? <EmptyState rent={rent} /> : <NonEmptyState filtered={filtered} navigation={navigation} rent={rent} />}
 
       {filtered.length > 0 && (
         <View style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
-          <Text style={{ fontWeight: "700" }}>Total spent: {totalSpent}</Text>
+          <Text style={{ fontWeight: "700" }}>{rent.TotalSpent}: {totalSpent}</Text>
         </View>
       )}
     </View>

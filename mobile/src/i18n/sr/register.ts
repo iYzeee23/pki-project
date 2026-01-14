@@ -1,0 +1,22 @@
+export default {
+    ErrUsername: "Korisnicko ime je obavezno",
+    ErrPassword: "Lozinka je obavezna",
+    ErrLength: "Lozinka mora imati najmanje 6 karaktera",
+    ErrMissmatch: "Lozinke se ne poklapaju",
+    ErrFirstName: "Ime je obavezno",
+    ErrLastName: "Prezime je obavezno",
+    ErrPhone: "Broj telefona je obavezan",
+    ErrMail: "Email nije ispravan",
+    Register: "Registracija",
+    Change: "Promeni",
+    Remove: "Ukloni",
+    Username: "Korisnicko ime",
+    Password: "Lozinka",
+    ConfPassword: "Potvrdi lozinku",
+    FirstName: "Ime",
+    LastName: "Prezime",
+    Phone: "Telefon",
+    Email: "Email",
+    Creating: "Pravljenje...",
+    CreateAcc: "Kreiraj nalog"
+} as const;

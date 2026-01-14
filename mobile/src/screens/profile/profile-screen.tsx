@@ -1,15 +1,28 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Image, ActivityIndicator } from "react-native";
 import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { resolveImageUrl } from "../../util/config";
+import { useTranslation } from "react-i18next";
+import { profileTexts } from "../../util/i18n-builder";
+import i18n from "../../i18n";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "ProfileHome">;
 
 export function ProfileScreen({ navigation }: Props) {
+  const { t } = useTranslation();
+  const prof = profileTexts(t);
+  
   const me = useAuthStore(s => s.me);
   const logout = useAuthStore(s => s.logout);
+  const [lang, setLang] = useState(i18n.language);
+
+  useEffect(() => {
+    const handleChange = (lng: string) => setLang(lng);
+    i18n.on("languageChanged", handleChange);
+    return () => i18n.off("languageChanged", handleChange);
+  }, []);
 
   if (!me) {
     return (
@@ -23,7 +36,19 @@ export function ProfileScreen({ navigation }: Props) {
 
   return (
     <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>Profile</Text>
+    <View style={{ flexDirection: "row", gap: 12, marginBottom: 16 }}>
+      <TouchableOpacity onPress={() => i18n.changeLanguage("en")}
+        style={{ padding: 8, borderRadius: 8, borderWidth: 1 }}>
+        <Text style={{ textAlign: "center" }}>{prof.English}</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => i18n.changeLanguage("sr")}
+        style={{ padding: 8, borderRadius: 8, borderWidth: 1 }}>
+        <Text style={{ textAlign: "center" }}>{prof.Serbian}</Text>
+      </TouchableOpacity>
+    </View>
+
+      <Text style={{ fontSize: 22, fontWeight: "700" }}>{prof.Title}</Text>
 
       <View style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
         <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
@@ -36,16 +61,16 @@ export function ProfileScreen({ navigation }: Props) {
 
           <View style={{ gap: 6, flex: 1 }}>
             <Text>
-              <Text style={{ fontWeight: "700" }}>Username:</Text> {me.username}
+              <Text style={{ fontWeight: "700" }}>{prof.Username}:</Text> {me.username}
             </Text>
             <Text>
-              <Text style={{ fontWeight: "700" }}>Name:</Text> {me.firstName} {me.lastName}
+              <Text style={{ fontWeight: "700" }}>{prof.Name}:</Text> {me.firstName} {me.lastName}
             </Text>
             <Text>
-              <Text style={{ fontWeight: "700" }}>Email:</Text> {me.email}
+              <Text style={{ fontWeight: "700" }}>{prof.Email}:</Text> {me.email}
             </Text>
             <Text>
-              <Text style={{ fontWeight: "700" }}>Phone:</Text> {me.phone}
+              <Text style={{ fontWeight: "700" }}>{prof.Phone}:</Text> {me.phone}
             </Text>
           </View>
         </View>
@@ -53,23 +78,27 @@ export function ProfileScreen({ navigation }: Props) {
 
       <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}
         style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>Change profile settings</Text>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>{prof.ChangeProfile}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")}
         style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>Change password</Text>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>{prof.ChangePassword}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate("RentalHistory")}
         style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>Rental history</Text>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>{prof.RentalHistory}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={logout}
         style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>Logout</Text>
+        <Text style={{ textAlign: "center", fontWeight: "600" }}>{prof.Logout}</Text>
       </TouchableOpacity>
     </View>
   );
 }
+function async(arg0: number, arg1: number) {
+  throw new Error("Function not implemented.");
+}
+
