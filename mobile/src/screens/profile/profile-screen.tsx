@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, Image, ActivityIndicator } from "react-native";
 import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";

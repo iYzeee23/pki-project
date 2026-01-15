@@ -1,4 +1,3 @@
-import React from "react";
 import { View, ActivityIndicator } from "react-native";
 import { AuthStack } from "./auth-stack";
 import { AppTabs } from "./app-tabs";

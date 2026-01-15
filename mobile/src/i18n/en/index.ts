@@ -14,3 +14,4 @@ export { default as register } from "./register";
 export { default as rentalDetails } from "./rental-details";
 export { default as rentalHistory } from "./rental-history";
 export { default as reportIssue } from "./report-issue";
+export { default as filterSort } from "./filter-sort";

@@ -22,7 +22,8 @@ const resources = {
     register: en.register,
     rentalDetails: en.rentalDetails,
     rentalHistory: en.rentalHistory,
-    reportIssue: en.reportIssue
+    reportIssue: en.reportIssue,
+    filterSort: en.filterSort
   },
   sr: {
     activeRental: sr.activeRental,
@@ -40,7 +41,8 @@ const resources = {
     register: sr.register,
     rentalDetails: sr.rentalDetails,
     rentalHistory: sr.rentalHistory,
-    reportIssue: sr.reportIssue
+    reportIssue: sr.reportIssue,
+    filterSort: sr.filterSort
   },
 } as const;
 
@@ -62,7 +64,8 @@ const namespaces = [
   "register",
   "rentalDetails",
   "rentalHistory",
-  "reportIssue"
+  "reportIssue",
+  "filterSort"
 ];
 
 i18n.use(initReactI18next).init({

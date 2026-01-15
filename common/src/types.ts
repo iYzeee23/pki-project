@@ -16,3 +16,5 @@ export const PARKING_RADIUS_M = 50;
 
 export const LOCATION_CACHE_SERVER = new Map<string, string>();
 export const LOCATION_CACHE_MOBILE = new Map<string, string>();
+
+export type Draft = Record<string, string | number | Date | null | undefined>;

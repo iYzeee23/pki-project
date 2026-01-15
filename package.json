@@ -38,10 +38,7 @@
   },
   "overrides": {
     "react": "19.1.0",
-    "react-dom": "19.1.0"
-  },
-  "dependencies": {
-    "@react-native-community/datetimepicker": "^8.6.0",
-    "@react-native-picker/picker": "^2.11.4"
+    "react-dom": "19.1.0",
+    "diff": "8.0.3"
   }
 }

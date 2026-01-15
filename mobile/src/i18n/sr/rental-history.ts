@@ -11,5 +11,6 @@ export default {
     Bike: "Bicikl",
     Filters: "Filteri",
     ClearFilters: "Ocisti filtere",
-    TotalSpent: "Ukupno potroseno"
+    TotalSpent: "Ukupno potroseno",
+    Sort: "Sortiranje"
 } as const;

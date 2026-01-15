@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import * as profileApi from "../../services/profile-api";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";

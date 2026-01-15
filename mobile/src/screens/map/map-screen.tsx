@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, View } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { io, Socket } from "socket.io-client";
-
 import { useMapStore } from "../../stores/map-store";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { API_BASE_URL } from "../../util/config";
-
 import * as bikesApi from "../../services/bike-api";
 import * as rentalsApi from "../../services/rental-api";
 import { MapStackParamList } from "../../navigation/types";

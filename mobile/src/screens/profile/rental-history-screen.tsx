@@ -1,15 +1,14 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ActivityIndicator, Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import * as rentalsApi from "../../services/rental-api";
-import { isoDateOnly, RentalDto } from "@app/shared";
+import { Draft, isoDateOnly, RentalDto } from "@app/shared";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
-import { Picker } from "@react-native-picker/picker";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import { commonTexts, rentalHistoryTexts } from "../../util/i18n-builder";
+import { FilterFieldSpec, FilterSortSheet, FilterSortSheetHandle } from "../sheets/filter-sort-sheet";
 
 function EmptyState({ rent }: any) {
   return (
@@ -25,21 +24,22 @@ type NonEmptyStateProps = {
   rent: any;
 };
 
-function NonEmptyState( {filtered, navigation, rent}: NonEmptyStateProps) {
+function NonEmptyState({ filtered, navigation, rent }: NonEmptyStateProps) {
   return (
-    <FlatList
-      data={filtered}
-      keyExtractor={(item) => item.id}
-      contentContainerStyle={{ gap: 10 }}
+    <FlatList data={filtered} keyExtractor={(item) => item.id}
+      contentContainerStyle={{ gap: 10, paddingBottom: 8 }}
       renderItem={({ item }) => {
         const day = isoDateOnly(item.startAt);
         return (
           <TouchableOpacity
             onPress={() => navigation.navigate("RentalDetails", { rentalId: item.id })}
-            style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 6 }}
-          >
-            <Text><Text style={{ fontWeight: "700" }}>{rent.Date}:</Text> {day}</Text>
-            <Text><Text style={{ fontWeight: "700" }}>{rent.Bike}:</Text> {item.bikeId}</Text>
+            style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 6 }}>
+            <Text>
+              <Text style={{ fontWeight: "700" }}>{rent.Date}:</Text> {day}
+            </Text>
+            <Text>
+              <Text style={{ fontWeight: "700" }}>{rent.Bike}:</Text> {item.bikeId}
+            </Text>
           </TouchableOpacity>
         );
       }}
@@ -53,21 +53,17 @@ export function RentalHistoryScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const rent = rentalHistoryTexts(t);
   const com = commonTexts();
-  
-  type FilterMode = "none" | "dateFrom" | "dateTo" | "bikeId";
-
-  const [filterMode, setFilterMode] = useState<FilterMode>("none");
 
   const isFocused = useIsFocused();
 
   const [loading, setLoading] = useState(true);
   const [rentals, setRentals] = useState<RentalDto[]>([]);
 
-  const [dateFrom, setDateFrom] = useState<Date | null>(null);
-  const [dateTo, setDateTo] = useState<Date | null>(null);
-  const [bikeIdFilter, setBikeIdFilter] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState<Draft>({});
+  const [appliedSortKey, setAppliedSortKey] = useState<string>("date_desc");
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const filterSheetRef = useRef<FilterSortSheetHandle>(null);
+  const sortSheetRef = useRef<FilterSortSheetHandle>(null);
 
   useEffect(() => {
     if (!isFocused) return;
@@ -77,10 +73,9 @@ export function RentalHistoryScreen({ navigation }: Props) {
 
     const load = async () => {
       setLoading(true);
-
       try {
         const data = await rentalsApi.history(controller.signal);
-        const onlyFinished = data.filter(r => r.endAt !== null);
+        const onlyFinished = data.filter((r) => r.endAt !== null);
         setRentals(onlyFinished);
       }
       catch (e: any) {
@@ -99,30 +94,36 @@ export function RentalHistoryScreen({ navigation }: Props) {
     };
   }, [isFocused]);
 
+  const filterSpec: FilterFieldSpec[] = useMemo(() => [
+    { key: "day", label: rent.Date, kind: "date" },
+    { key: "bikeId", label: rent.LabelBikeId, kind: "text", placeholder: rent.PlaceholderBikeId },
+  ], [rent.Date, rent.LabelBikeId, rent.Bike, rent.PlaceholderBikeId]);
+
   const filtered = useMemo(() => {
-    const dateFromF = dateFrom ? dateFrom.toISOString().slice(0, 10) : "";
-    const dateToF = dateTo ? dateTo.toISOString().slice(0, 10) : "";
-    const bikeIdF = bikeIdFilter.trim().toLowerCase();
+    const dayF = appliedFilters.day instanceof Date ? appliedFilters.day.toISOString().slice(0, 10) : "";
+    const bikeIdF = String(appliedFilters.bikeId ?? "").trim().toLowerCase();
 
-    const filtered = rentals.filter(r => {
-      const date = isoDateOnly(r.startAt);
+    let out = rentals.filter((r) => {
+      const day = isoDateOnly(r.startAt);
 
-      if (dateFromF && date < dateFromF) return false;
-      if (dateToF && dateToF < date) return false;
-      if (bikeIdF && r.bikeId.toLowerCase().includes(bikeIdF)) return false;
+      if (dayF && day !== dayF) return false;
+      if (bikeIdF && !r.bikeId.toLowerCase().includes(bikeIdF)) return false;
 
       return true;
     });
 
-    return filtered;
-  }, [rentals, dateFrom, dateTo, bikeIdFilter]);
+    const copy = out.slice();
+    if (appliedSortKey === "date_desc") copy.sort((a, b) => (a.startAt < b.startAt ? 1 : -1));
+    else if (appliedSortKey === "date_asc") copy.sort((a, b) => (a.startAt > b.startAt ? 1 : -1));
+    else if (appliedSortKey === "cost_desc") copy.sort((a, b) => (b.totalCost! - a.totalCost!));
+    else if (appliedSortKey === "cost_asc") copy.sort((a, b) => (a.totalCost! - b.totalCost!));
+
+    return copy;
+  }, [rentals, appliedFilters, appliedSortKey]);
 
   const totalSpent = useMemo(() => {
     let sum = 0;
-
-    for (const r of filtered)
-      sum += r.totalCost!;
-
+    for (const r of filtered) sum += r.totalCost ?? 0;
     return sum;
   }, [filtered]);
 
@@ -134,68 +135,59 @@ export function RentalHistoryScreen({ navigation }: Props) {
     );
   }
 
-  function clearFilters() {
-    setFilterMode("none");
-    setDateFrom(null);
-    setDateTo(null);
-    setBikeIdFilter("");
-    setShowDatePicker(false);
+  function clearAppliedFilters() {
+    setAppliedFilters({});
   }
 
   return (
-    <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 10 }}>
-      <Text style={{ fontWeight: "700" }}>{rent.Filters}</Text>
+    <View style={{ flex: 1, padding: 12, gap: 12 }}>
+      <View style={{ flexDirection: "row", gap: 10 }}>
+        <TouchableOpacity onPress={() => filterSheetRef.current?.open()}
+          style={{ flex: 1, borderWidth: 1, borderRadius: 12, padding: 12 }}>
+          <Text style={{ textAlign: "center", fontWeight: "800" }}>{rent.Filters}</Text>
+        </TouchableOpacity>
 
-      <View style={{ borderWidth: 1, borderRadius: 10 }}>
-        <Picker selectedValue={filterMode} onValueChange={(v) => setFilterMode(v)}>
-          <Picker.Item label={rent.LabelNone} value="none" />
-          <Picker.Item label={rent.LabelDateFrom} value="dateFrom" />
-          <Picker.Item label={rent.LabelDateTo} value="dateTo" />
-          <Picker.Item label={rent.LabelBikeId} value="bikeId" />
-        </Picker>
+        <TouchableOpacity onPress={() => sortSheetRef.current?.open()}
+          style={{ flex: 1, borderWidth: 1, borderRadius: 12, padding: 12 }}>
+          <Text style={{ textAlign: "center", fontWeight: "800" }}>{rent.Sort}</Text>
+        </TouchableOpacity>
       </View>
 
-      {filterMode === "bikeId" && (
-        <TextInput style={{ borderWidth: 1, padding: 10, borderRadius: 10 }}
-          placeholder={rent.PlaceholderBikeId} value={bikeIdFilter} onChangeText={setBikeIdFilter} autoCapitalize="none" />
-      )}
-
-      {(filterMode === "dateFrom" || filterMode === "dateTo") && (
-        <TouchableOpacity onPress={() => setShowDatePicker(true)}
-          style={{ padding: 12, borderRadius: 12, borderWidth: 1 }}>
-          <Text style={{ textAlign: "center", fontWeight: "600" }}>
-            {filterMode === "dateFrom"
-              ? `${rent.PickDateFrom}${dateFrom ? `: ${dateFrom.toISOString().slice(0, 10)}` : ""}`
-              : `${rent.PickDateTo}${dateTo ? `: ${dateTo.toISOString().slice(0, 10)}` : ""}`}
-          </Text>
-        </TouchableOpacity>
-      )}
-
-      {showDatePicker && (filterMode === "dateFrom" || filterMode === "dateTo") && (
-        <DateTimePicker
-          value={(filterMode === "dateFrom" ? dateFrom : dateTo) ?? new Date()}
-          mode="date" display="default"
-          onChange={(_, selected) => {
-            setShowDatePicker(false);
-            if (!selected) return;
-            if (filterMode === "dateFrom") setDateFrom(selected);
-            else setDateTo(selected);
-          }}
-        />
-      )}
-
-      <TouchableOpacity onPress={() => clearFilters() }
-        style={{ padding: 12, borderRadius: 12, borderWidth: 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>{rent.ClearFilters}</Text>
+      <TouchableOpacity onPress={clearAppliedFilters}
+        style={{ borderWidth: 1, borderRadius: 12, padding: 12, opacity: 0.95 }}>
+        <Text style={{ textAlign: "center", fontWeight: "800" }}>{rent.ClearFilters}</Text>
       </TouchableOpacity>
 
-      {filtered.length === 0 ? <EmptyState rent={rent} /> : <NonEmptyState filtered={filtered} navigation={navigation} rent={rent} />}
+      {filtered.length === 0 ? (
+        <EmptyState rent={rent} />
+      ) : (
+        <NonEmptyState filtered={filtered} navigation={navigation} rent={rent} />
+      )}
 
       {filtered.length > 0 && (
         <View style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
-          <Text style={{ fontWeight: "700" }}>{rent.TotalSpent}: {totalSpent}</Text>
+          <Text style={{ fontWeight: "700" }}>
+            {rent.TotalSpent}: {totalSpent}
+          </Text>
         </View>
       )}
+
+      <FilterSortSheet ref={filterSheetRef} title={rent.Filters} kind="filter" onDiscard={() => {}}
+        filterSpec={filterSpec} initialDraft={appliedFilters} onApplyFilter={(next) => setAppliedFilters(next)}
+        getFilterSummary={(key, d) => {
+          if (key === "day") return d.day instanceof Date ? d.day.toISOString().slice(0, 10) : "";
+          if (key === "bikeId") return String(d.bikeId ?? "").trim();
+          return "";
+        }} />
+
+      <FilterSortSheet ref={sortSheetRef} title={rent.Sort} kind="sort" onDiscard={() => {}}
+        initialSortKey={appliedSortKey} onApplySort={(k) => setAppliedSortKey(k)}
+        sortSpec={[
+          { key: "date_desc", label: "Date (newest first)" },
+          { key: "date_asc", label: "Date (oldest first)" },
+          { key: "cost_desc", label: "Cost (high → low)" },
+          { key: "cost_asc", label: "Cost (low → high)" },
+        ]} />
     </View>
   );
 }

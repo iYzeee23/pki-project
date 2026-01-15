@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Alert, Button, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Button, FlatList, Image, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDraftStore } from "../../stores/draft-store";

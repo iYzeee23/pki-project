@@ -166,7 +166,8 @@ export function rentalHistoryTexts(t: TFunction) {
     Bike: t("Bike", { ns: "rentalHistory" }),
     Filters: t("Filters", { ns: "rentalHistory" }),
     ClearFilters: t("ClearFilters", { ns: "rentalHistory" }),
-    TotalSpent: t("TotalSpent", { ns: "rentalHistory" })
+    TotalSpent: t("TotalSpent", { ns: "rentalHistory" }),
+    Sort: t("Sort", { ns: "rentalHistory" })
   };
 }
 
@@ -217,5 +218,14 @@ export function reportIssueTexts(t: TFunction) {
   return {
     Description: t("Description", { ns: "reportIssue" }),
     Next: t("Next", { ns: "reportIssue" })
+  };
+}
+
+export function filterSortTexts(t: TFunction) {
+  return {
+    PickDate: t("PickDate", { ns: "filterSort" }),
+    Back: t("Back", { ns: "filterSort" }),
+    Apply: t("Apply", { ns: "filterSort" }),
+    Discard: t("Discard", { ns: "filterSort" })
   };
 }

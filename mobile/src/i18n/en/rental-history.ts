@@ -11,5 +11,6 @@ export default {
     Bike: "Bike",
     Filters: "Filters",
     ClearFilters: "Clear filters",
-    TotalSpent: "Total spent"
+    TotalSpent: "Total spent",
+    Sort: "Sort"
 } as const;

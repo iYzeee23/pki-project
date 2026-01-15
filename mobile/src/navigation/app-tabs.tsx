@@ -1,4 +1,3 @@
-import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AppTabsParamList } from "./types";
 import { MapStack } from "./map-stack";
