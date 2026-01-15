@@ -1,4 +1,6 @@
-export const API_BASE_URL = "http://192.168.0.14:3000";
+import Constants from "expo-constants";
+
+export const API_BASE_URL = Constants.expoConfig!.extra!.API_BASE_URL;
 
 export function resolveImageUrl(path: string) {
     return `${API_BASE_URL}${path}`;

@@ -10,6 +10,7 @@ import { MapStackParamList } from "../../navigation/types";
 import { getCached, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
 import { useTranslation } from "react-i18next";
 import { bikeDetailsTexts, commonTexts } from "../../util/i18n-builder";
+import i18n from "../../i18n";
 
 type Props = NativeStackScreenProps<MapStackParamList, "BikeDetails">;
 
@@ -17,6 +18,7 @@ export function BikeDetailsScreen({ route }: Props) {
   const { t } = useTranslation();
   const bikk = bikeDetailsTexts(t);
   const com = commonTexts();
+  const uiLang = i18n.language;
   
   const { bikeId } = route.params;
 
@@ -63,7 +65,7 @@ export function BikeDetailsScreen({ route }: Props) {
     if (!bike) return;
 
     const { lng, lat } = bike.location;
-    const key = keyOf({ lng: lng, lat: lat });
+    const key = keyOf({ lng: lng, lat: lat }, uiLang );
     const cached = getCached(LOCATION_CACHE_MOBILE, key);
 
     if (cached) {
@@ -78,7 +80,7 @@ export function BikeDetailsScreen({ route }: Props) {
 
     const loadLocationLabel = async () => {
       try {
-        const label = await geocodeApi.reverse(lng, lat, controller.signal);
+        const label = await geocodeApi.reverse(lng, lat, uiLang, controller.signal);
         setCached(LOCATION_CACHE_MOBILE, key, label);
         setLocationLabel(label);
       } 

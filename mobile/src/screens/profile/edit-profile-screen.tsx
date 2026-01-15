@@ -6,7 +6,7 @@ import { useAuthStore } from "../../stores/auth-store";
 import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";
 import * as profileApi from "../../services/profile-api";
-import { DEFAULT_PROFILE_PICTURE_RESOLVED, resolveImageUrl } from "../../util/config";
+import { DEFAULT_PROFILE_PICTURE, DEFAULT_PROFILE_PICTURE_RESOLVED, resolveImageUrl } from "../../util/config";
 import { useTranslation } from "react-i18next";
 import { commonTexts, editProfileTexts } from "../../util/i18n-builder";
 
@@ -58,6 +58,13 @@ export function EditProfileScreen({ navigation }: Props) {
     if (!email.trim() || !email.includes("@")) return edit.ErrMail;
     return null;
   };
+
+  const shouldDisable = () => {
+    const userErasedImage = file === null;
+    const userDoesntHaveImage = file === undefined && me.profileImagePath === DEFAULT_PROFILE_PICTURE;
+
+    return userErasedImage || userDoesntHaveImage;
+  }
 
   const onPick = async () => {
     const picked = await pickSingleImage();
@@ -116,7 +123,7 @@ export function EditProfileScreen({ navigation }: Props) {
             <Button title={edit.Change} onPress={onPick} />
           </View>
           <View style={{ flex: 1 }}>
-            <Button title={edit.Remove} disabled={file === null} onPress={() => setFile(null)} color="red" />
+            <Button title={edit.Remove} disabled={shouldDisable()} onPress={() => setFile(null)} color="red" />
           </View>
         </View>
       </View>

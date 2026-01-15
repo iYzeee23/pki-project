@@ -17,16 +17,16 @@ export function commonTexts() {
 
 export function changePasswordTexts(t: TFunction) {
   return {
-    Title: t("title", { ns: "changePassword" }),
-    OldPlaceholder: t("oldPlaceholder", { ns: "changePassword" }),
-    NewPlaceholder: t("newPlaceholder", { ns: "changePassword" }),
-    ConfPlaceholder: t("confPlaceholder", { ns: "changePassword" }),
-    Changing: t("changing", { ns: "changePassword" }),
-    Submit: t("submit", { ns: "changePassword" }),
-    ErrOldMissing: t("errOldMissing", { ns: "changePassword" }),
-    ErrNewMin: t("errNewMin", { ns: "changePassword" }),
-    ErrMismatch: t("changePassword.errMismatch", { ns: "changePassword" }),
-    SuccessMsg: t("successMsg", { ns: "changePassword" })
+    Title: t("Title", { ns: "changePassword" }),
+    OldPlaceholder: t("OldPlaceholder", { ns: "changePassword" }),
+    NewPlaceholder: t("NewPlaceholder", { ns: "changePassword" }),
+    ConfPlaceholder: t("ConfPlaceholder", { ns: "changePassword" }),
+    Changing: t("Changing", { ns: "changePassword" }),
+    Submit: t("Submit", { ns: "changePassword" }),
+    ErrOldMissing: t("ErrOldMissing", { ns: "changePassword" }),
+    ErrNewMin: t("ErrNewMin", { ns: "changePassword" }),
+    ErrMismatch: t("ErrMismatch", { ns: "changePassword" }),
+    SuccessMsg: t("SuccessMsg", { ns: "changePassword" })
   };
 }
 
@@ -210,7 +210,7 @@ export function qrScannerTexts(t: TFunction) {
     AllowCamera: t("AllowCamera", { ns: "qrScanner" }),
     ScanAgain: t("ScanAgain", { ns: "qrScanner" }),
     CameraPermission: t("CameraPermission", { ns: "qrScanner" }),
-    ScanQR: t("Scanned", { ns: "qrScanner" })
+    ScanQR: t("ScanQR", { ns: "qrScanner" })
   };
 }
 

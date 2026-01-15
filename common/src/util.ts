@@ -21,11 +21,11 @@ export function haversineMeters(bike: LngLat, spot: LngLat): number {
   return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
 }
 
-export function keyOf(location: LngLat) {
+export function keyOf(location: LngLat, language: string) {
   const lng = location.lng;
   const lat = location.lat;
 
-  return `${lng.toFixed(4)},${lat.toFixed(4)}`;
+  return `${lng.toFixed(4)},${lat.toFixed(4)},${language}}`;
 }
 
 export function getCached(cache: Map<string, string>, key: string) {

@@ -12,6 +12,7 @@ import { pickMultipleImages, UploadFile } from "../../util/image-picker";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
 import { commonTexts, photoUploadTexts } from "../../util/i18n-builder";
+import { CommonActions } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "PhotoUpload">;
 
@@ -111,7 +112,13 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
       Alert.alert(com.Success, message);
 
       clearDraft();
-      navigation.popToTop();
+      
+      navigation.getParent()?.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{ name: "MapTab", params: { screen: "MapScreen" } }],
+        })
+      );
     } 
     catch (e: any) {
       if (isCanceled(e)) return;

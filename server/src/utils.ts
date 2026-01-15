@@ -79,8 +79,17 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
     return bcrypt.compare(plain, hash);
 }
 
-export const NOMINATIM_BASE_URL = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=18";
-export const SUPPORTED_LANGUAGES_URL = "addressdetails=1&accept-language=sr-Latn,sr,en";
+export const NOMINATIM_BASE_URL = "https://nominatim.openstreetmap.org/reverse";
+export const NOMINATIM_QUERY_PARAMS = "format=jsonv2&zoom=18&addressdetails=1";
+
+export function toAcceptLanguage(uiLang: string): string {
+  const lang = uiLang.toLowerCase();
+  
+  if (lang.startsWith("en")) return "en;q=1.0,sr-Latn;q=0.8,sr;q=0.7";
+  if (lang.startsWith("sr")) return "sr-Latn;q=1.0,sr;q=0.9,en;q=0.7";
+
+  return "";
+}
 
 export function extractAddressName(address: any) {
     const postcode = address.postcode;
