@@ -2,6 +2,8 @@ import { NavLink, Outlet } from "react-router-dom";
 import { resolveImageUrl } from "@app/shared";
 import { VITE_API_BASE_URL } from "../util/config";
 import { Pressable } from "./pressable";
+import { useEffect } from "react";
+import { connectSocket, disconnectSocket } from "../util/socket";
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties => ({
   padding: "8px 10px",
@@ -14,6 +16,11 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties 
 
 export function AdminLayout() {
   const logoUrl = resolveImageUrl(VITE_API_BASE_URL, "/uploads/logo.png"); // promeni ekstenziju ako treba
+
+  useEffect(() => {
+    connectSocket();
+    return () => disconnectSocket();
+  }, []);
 
   return (
     <div style={{ minHeight: "100vh", display: "grid", gridTemplateRows: "64px 1fr" }}>

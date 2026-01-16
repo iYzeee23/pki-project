@@ -7,6 +7,7 @@ type BikesState = {
   clear: () => void;
   setBikes: (bikes: BikeDto[]) => void;
   upsertBike: (bike: BikeDto) => void;
+  removeBike: (id: string) => void;
   getById: (id: string) => BikeDto | undefined;
 };
 
@@ -27,6 +28,15 @@ export const useBikesStore = create<BikesState>((set, get) => ({
     };
 
     set(s => upsertOneBike(s));
+  },
+
+  removeBike: (id) => {
+      const removeOneBike = (store: BikesState) => {
+          const filtered = store.bikes.filter(b => b.id !== id);
+          return { bikes: filtered };
+      }
+
+      set(s => removeOneBike(s));
   },
 
   getById: (id) => get().bikes.find((b) => b.id === id)

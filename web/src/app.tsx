@@ -8,6 +8,9 @@ import { AdminLayout } from "./main/admin-layout";
 import { ProfilePage } from "./pages/profile/profile-page";
 import { EditProfilePage } from "./pages/profile/edit-profile-page";
 import { ChangePasswordPage } from "./pages/profile/change-password-page";
+import { MapPage } from "./pages/map/map-page";
+import { ParkingDetailsPanel } from "./panels/parking-details-panel";
+import { BikeDetailsPanel } from "./panels/bike-details-panel";
 
 function Placeholder({ title }: { title: string }) {
   return <div style={{ fontSize: 18, fontWeight: 900 }}>{title}</div>;
@@ -35,7 +38,12 @@ export function App() {
             <Route path="/profile/edit" element={<EditProfilePage />} />
             <Route path="/profile/password" element={<ChangePasswordPage />} />
 
-            <Route path="/map" element={<Placeholder title="Mapa (uskoro)" />} />
+            <Route path="/map" element={<MapPage />}>
+              <Route path="parking/:id" element={<ParkingDetailsPanel />} />
+              <Route path="bike/:id" element={<BikeDetailsPanel />} />
+              {/*<Route path="bike/:id/edit" element={<BikeEditDrawer />} />*/}
+            </Route>
+            
             <Route path="/rentals" element={<Placeholder title="Iznajmljivanja (uskoro)" />} />
             <Route path="/issues" element={<Placeholder title="Neispravnosti (uskoro)" />} />
           </Route>

@@ -36,7 +36,11 @@ export class BikesController {
     };
 
     const created = await BikeModel.create(doc);
+
     const dto: BikeDto = toBikeDto(created);
+    const io = req.app.get("io");
+    io.emit("bike:inserted", dto);
+
     res.status(201).json(dto);
   });
 
@@ -117,6 +121,9 @@ export class BikesController {
   remove = asyncHandler(async (req, res, _next) => {
     const deleted = await BikeModel.findByIdAndDelete(req.params.id);
     if (!deleted) throw new HttpError(404, "Bike not found");
+
+    const io = req.app.get("io");
+    io.emit("bike:deleted", req.params.id);
     
     res.status(204).json({ ok: true });
   });

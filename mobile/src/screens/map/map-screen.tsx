@@ -2,16 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, View } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { io, Socket } from "socket.io-client";
 import { useMapStore } from "../../stores/map-store";
 import { MapStackParamList } from "../../navigation/types";
 import { useBikesStore } from "../../stores/bike-store";
 import { useTranslation } from "react-i18next";
 import { commonTexts, mapTexts } from "../../util/i18n-builder";
-import { BikeDto, findInsideSpotId, isCanceled, LngLat, nearestSpots, RentalDto } from "@app/shared";
+import { findInsideSpotId, isCanceled, LngLat, nearestSpots, RentalDto } from "@app/shared";
 import { bikeApi, rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
-import { EXPO_API_BASE_URL } from "../../util/config";
 
 function locationToMapCenter(loc: LngLat) {
   return {
@@ -48,12 +46,10 @@ export function MapScreen({ navigation }: Props) {
   
   const bikes = useBikesStore(s => s.bikes);
   const setBikes = useBikesStore(s => s.setBikes);
-  const upsertBike = useBikesStore(s => s.upsertBike);
   
   const [activeRental, setActiveRental] = useState<RentalDto | undefined>(undefined);
 
   const mapRef = useRef<MapView | undefined>(undefined);
-  const socketRef = useRef<Socket | undefined>(undefined);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -91,19 +87,7 @@ export function MapScreen({ navigation }: Props) {
   }, [parkingSpots, dirty]);
 
   useEffect(() => {
-    const s = io(EXPO_API_BASE_URL, { transports: ["websocket"] });
-    socketRef.current = s;
-
-    s.on("bike:updated", (dto: BikeDto) => {
-      upsertBike(dto);
-    });
-
     markDirty();
-
-    return () => {
-      s.disconnect();
-      socketRef.current = undefined;
-    };
   }, []);
 
   const isActiveMode = !!activeRental?.bikeId;
