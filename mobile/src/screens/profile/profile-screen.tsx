@@ -3,10 +3,11 @@ import { Text, TouchableOpacity, View, Image, ActivityIndicator } from "react-na
 import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
-import { resolveImageUrl } from "../../util/config";
 import { useTranslation } from "react-i18next";
 import { profileTexts } from "../../util/i18n-builder";
 import i18n from "../../i18n";
+import { EXPO_API_BASE_URL } from "../../util/config";
+import { resolveImageUrl } from "@app/shared";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "ProfileHome">;
 
@@ -32,7 +33,7 @@ export function ProfileScreen({ navigation }: Props) {
     );
   }
 
-  const url = resolveImageUrl(me.profileImagePath);
+  const url = resolveImageUrl(EXPO_API_BASE_URL, me.profileImagePath);
 
   return (
     <View style={{ padding: 16, gap: 12 }}>

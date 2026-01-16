@@ -1,40 +1,48 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
-import './app.css'
-import MapView from "./components/map-view";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useAuthStore } from "./stores/auth-store";
+import { LoginPage } from "./pages/auth/login-page";
+import { ProtectedRoute } from "./main/protected-route";
+import { AdminLayout } from "./main/admin-layout";
+import { ProfilePage } from "./pages/profile/profile-page";
+import { EditProfilePage } from "./pages/profile/edit-profile-page";
+import { ChangePasswordPage } from "./pages/profile/change-password-page";
 
-function App() {
-  /*
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/app.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-  */
-
-  return <MapView />;
+function Placeholder({ title }: { title: string }) {
+  return <div style={{ fontSize: 18, fontWeight: 600 }}>{title}</div>;
 }
 
-export default App
+export function App() {
+  const hydrate = useAuthStore((s) => s.hydrate);
+
+  useEffect(() => {
+    hydrate();
+  }, [hydrate]);
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* public */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* protected */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route path="/" element={<Navigate to="/profile" replace />} />
+
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/edit" element={<EditProfilePage />} />
+            <Route path="/profile/password" element={<ChangePasswordPage />} />
+
+            <Route path="/map" element={<Placeholder title="Mapa (uskoro)" />} />
+            <Route path="/rentals" element={<Placeholder title="Iznajmljivanja (uskoro)" />} />
+            <Route path="/issues" element={<Placeholder title="Neispravnosti (uskoro)" />} />
+          </Route>
+        </Route>
+
+        {/* fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}

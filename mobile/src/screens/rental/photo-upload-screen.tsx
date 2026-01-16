@@ -3,16 +3,15 @@ import { ActivityIndicator, Alert, Button, FlatList, Image, View } from "react-n
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDraftStore } from "../../stores/draft-store";
 import { useRentalStore } from "../../stores/rental-store";
-import * as rentalApi from "../../services/rental-api";
-import * as issueApi from "../../services/issue-api";
-import * as imageApi from "../../services/image-api";
 import { RentalStackParamList } from "../../navigation/types";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickMultipleImages, UploadFile } from "../../util/image-picker";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
 import { commonTexts, photoUploadTexts } from "../../util/i18n-builder";
 import { CommonActions } from "@react-navigation/native";
+import { imageApi, issueApi, rentalApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
+import { isCanceled } from "@app/shared";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "PhotoUpload">;
 
@@ -103,11 +102,20 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
         setActiveRental(undefined);
       }
 
-      await imageApi.upload({
-        ownerId: ownerId,
-        ownerModel: mode,
-        files: files
-      }, signal);
+      const form = new FormData();
+
+      form.append("ownerId", ownerId);
+      form.append("ownerModel", mode);
+
+      for (const file of files) {
+          form.append("files", {
+              uri: file.uri,
+              name: file.name,
+              type: file.type,
+          } as any);
+      }
+
+      await imageApi.upload(form, signal);
 
       Alert.alert(com.Success, message);
 

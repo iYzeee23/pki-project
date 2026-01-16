@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
 import { useBikesStore } from "../../stores/bike-store";
-import * as bikesApi from "../../services/bike-api";
-import * as geocodeApi from "../../services/geocode-api";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { MapStackParamList } from "../../navigation/types";
-import { getCached, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
 import { useTranslation } from "react-i18next";
 import { bikeDetailsTexts, commonTexts } from "../../util/i18n-builder";
 import i18n from "../../i18n";
+import { bikeApi, geocodeApi } from "../../util/services";
+import { getCached, isCanceled, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
+import { getApiErrorMessage } from "../../util/http";
 
 type Props = NativeStackScreenProps<MapStackParamList, "BikeDetails">;
 
@@ -42,7 +40,7 @@ export function BikeDetailsScreen({ route }: Props) {
       setLoadingBike(true);
 
       try {
-        const b = await bikesApi.getById(bikeId, controller.signal);
+        const b = await bikeApi.getById(bikeId, controller.signal);
         setBike(b);
       }
       catch (e: any) {

@@ -1,5 +1,4 @@
-import type { UserDto, BikeDto, ParkingSpotDto, RentalDto, IssueDto, ImageDto } from "@app/shared";
-import type { BikeStatus, ImageSource } from "@app/shared";
+import { BikeDto, BikeStatus, ImageDto, ImageSource, IssueDto, ParkingSpotDto, RentalDto, UserDto } from "@app/shared";
 import type { User, Bike, ParkingSpot, Rental, Issue, Image } from "./models";
 import type { HydratedDocument } from "mongoose";
 

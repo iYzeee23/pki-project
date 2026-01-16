@@ -3,12 +3,12 @@ import { ActivityIndicator, Alert, FlatList, Text, TouchableOpacity, View } from
 import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
-import * as rentalsApi from "../../services/rental-api";
-import { Draft, isoDateOnly, RentalDto } from "@app/shared";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { useTranslation } from "react-i18next";
 import { commonTexts, rentalHistoryTexts } from "../../util/i18n-builder";
 import { FilterFieldSpec, FilterSortSheet, FilterSortSheetHandle } from "../sheets/filter-sort-sheet";
+import { Draft, isCanceled, isoDateOnly, RentalDto } from "@app/shared";
+import { rentalApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
 
 function EmptyState({ rent }: any) {
   return (
@@ -74,7 +74,7 @@ export function RentalHistoryScreen({ navigation }: Props) {
     const load = async () => {
       setLoading(true);
       try {
-        const data = await rentalsApi.history(controller.signal);
+        const data = await rentalApi.history(controller.signal);
         const onlyFinished = data.filter((r) => r.endAt !== null);
         setRentals(onlyFinished);
       }

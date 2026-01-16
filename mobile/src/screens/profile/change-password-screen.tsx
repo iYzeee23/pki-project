@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
-import * as profileApi from "../../services/profile-api";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { useTranslation } from "react-i18next";
 import { changePasswordTexts, commonTexts } from "../../util/i18n-builder";
+import { profileApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
+import { isCanceled } from "@app/shared";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "ChangePassword">;
 

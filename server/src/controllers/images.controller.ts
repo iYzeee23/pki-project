@@ -1,8 +1,8 @@
-import { ImageDto } from "@app/shared";
 import { saveImage } from "../image-utils";
 import { ImageModel } from "../models";
 import { asyncHandler, HttpError } from "../utils";
 import { toImageDto } from "../mappers";
+import { ImageDto } from "@app/shared";
 
 export class ImagesController {
   upload = asyncHandler(async (req, res, _next) => {

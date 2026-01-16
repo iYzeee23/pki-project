@@ -1,8 +1,7 @@
-import { type BikeDto, type BikeStatus } from "@app/shared";
-
 import { BikeModel } from "../models";
 import { toBikeDto } from "../mappers";
 import { asyncHandler, HttpError } from "../utils";
+import { BikeDto, BikeStatus } from "@app/shared";
 
 export class BikesController {
   list = asyncHandler(async (_req, res, _next) => {

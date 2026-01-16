@@ -4,15 +4,14 @@ import MapView, { Marker, Region } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { io, Socket } from "socket.io-client";
 import { useMapStore } from "../../stores/map-store";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
-import { API_BASE_URL } from "../../util/config";
-import * as bikesApi from "../../services/bike-api";
-import * as rentalsApi from "../../services/rental-api";
 import { MapStackParamList } from "../../navigation/types";
-import { BikeDto, LngLat, RentalDto, findInsideSpotId, nearestSpots } from "@app/shared";
 import { useBikesStore } from "../../stores/bike-store";
 import { useTranslation } from "react-i18next";
 import { commonTexts, mapTexts } from "../../util/i18n-builder";
+import { BikeDto, findInsideSpotId, isCanceled, LngLat, nearestSpots, RentalDto } from "@app/shared";
+import { bikeApi, rentalApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
+import { EXPO_API_BASE_URL } from "../../util/config";
 
 function locationToMapCenter(loc: LngLat) {
   return {
@@ -67,8 +66,8 @@ export function MapScreen({ navigation }: Props) {
           await loadParkingSpots(controller.signal);
 
         if (dirty) {
-          const bikes = await bikesApi.list(controller.signal);
-          const activeRental = await rentalsApi.active(controller.signal);
+          const bikes = await bikeApi.list(controller.signal);
+          const activeRental = await rentalApi.active(controller.signal);
 
           setBikes(bikes);
           setActiveRental(activeRental);
@@ -92,7 +91,7 @@ export function MapScreen({ navigation }: Props) {
   }, [parkingSpots, dirty]);
 
   useEffect(() => {
-    const s = io(API_BASE_URL, { transports: ["websocket"] });
+    const s = io(EXPO_API_BASE_URL, { transports: ["websocket"] });
     socketRef.current = s;
 
     s.on("bike:updated", (dto: BikeDto) => {

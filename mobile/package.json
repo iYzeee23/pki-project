@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "clean": "npx tsx ../common/src/clean.ts"
+    "clean": "npx tsx ../common/src/util/clean.ts"
   },
   "dependencies": {
     "@app/shared": "1.0.0",

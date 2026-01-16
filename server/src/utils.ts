@@ -1,7 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { LngLat, LOCATION_CACHE_SERVER } from "@app/shared";
 
 declare global {
   namespace Express {

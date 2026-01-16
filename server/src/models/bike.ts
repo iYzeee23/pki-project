@@ -1,5 +1,5 @@
-import mongoose, { InferSchemaType } from "mongoose";
 import { BIKE_STATUSES, GEOJSON_STRUCTURES } from "@app/shared";
+import mongoose, { InferSchemaType } from "mongoose";
 
 const bikeSchema = new mongoose.Schema(
     {

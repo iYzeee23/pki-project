@@ -9,6 +9,6 @@ export default ({ config }: any) => ({
   ...config,
   extra: {
     ...config.extra,
-    API_BASE_URL: process.env.API_BASE_URL
+    EXPO_API_BASE_URL: process.env.EXPO_API_BASE_URL
   }
 });

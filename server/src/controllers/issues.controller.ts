@@ -1,8 +1,7 @@
-import type { IssueDto } from "@app/shared";
-
 import { IssueModel, BikeModel } from "../models";
 import { toIssueDto } from "../mappers";
 import { asyncHandler, HttpError } from "../utils";
+import { IssueDto } from "@app/shared";
 
 export class IssuesController {
   create = asyncHandler(async (req, res, _next) => {

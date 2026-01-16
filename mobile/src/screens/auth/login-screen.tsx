@@ -3,9 +3,10 @@ import { View, Text, TextInput, Button, TouchableOpacity } from "react-native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/types";
 import { useAuthStore } from "../../stores/auth-store";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { useTranslation } from "react-i18next";
 import { loginTexts } from "../../util/i18n-builder";
+import { getApiErrorMessage } from "../../util/http";
+import { isCanceled } from "@app/shared";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Login">;
 

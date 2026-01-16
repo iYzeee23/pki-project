@@ -3,12 +3,13 @@ import { Alert, Button, Image, Text, TextInput, TouchableOpacity, View } from "r
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useAuthStore } from "../../stores/auth-store";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";
-import * as profileApi from "../../services/profile-api";
-import { DEFAULT_PROFILE_PICTURE, DEFAULT_PROFILE_PICTURE_RESOLVED, resolveImageUrl } from "../../util/config";
+import { EXPO_API_BASE_URL, DEFAULT_PROFILE_PICTURE_RESOLVED } from "../../util/config";
 import { useTranslation } from "react-i18next";
 import { commonTexts, editProfileTexts } from "../../util/i18n-builder";
+import { profileApi } from "../../util/services";
+import { DEFAULT_PROFILE_PICTURE, isCanceled, resolveImageUrl } from "@app/shared";
+import { getApiErrorMessage } from "../../util/http";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "EditProfile">;
 
@@ -39,7 +40,7 @@ export function EditProfileScreen({ navigation }: Props) {
 
   const [busy, setBusy] = useState(false);
 
-  const serverUri = resolveImageUrl(me.profileImagePath);
+  const serverUri = resolveImageUrl(EXPO_API_BASE_URL, me.profileImagePath);
   const displayUri = file ? 
     file.uri : file === null ?
     DEFAULT_PROFILE_PICTURE_RESOLVED : serverUri;
@@ -83,16 +84,23 @@ export function EditProfileScreen({ navigation }: Props) {
     setBusy(true);
 
     try {
-      const data = {
-        username: username.trim(),
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        phone: phone.trim(),
-        email: email.trim(),
-        file: file
-      } as profileApi.UpdateMePayload;
+      const form = new FormData();
 
-      const resp = await profileApi.updateMe(data, signal);
+      form.append("username", username.trim());
+      form.append("firstName", firstName.trim());
+      form.append("lastName", lastName.trim());
+      form.append("phone", phone.trim());
+      form.append("email", email.trim());
+
+      if (file) {
+          form.append("file", {
+              uri: file.uri,
+              name: file.name,
+              type: file.type,
+          } as any);        
+      }
+
+      const resp = await profileApi.updateMe(form, signal);
       setMe(resp);
 
       Alert.alert(

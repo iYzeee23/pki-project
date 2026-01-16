@@ -1,6 +1,5 @@
-import type { Request, Response } from "express";
+import { getCached, keyOf, LOCATION_CACHE_SERVER, setCached } from "@app/shared";
 import { asyncHandler, extractAddressName, HttpError, NOMINATIM_BASE_URL, NOMINATIM_QUERY_PARAMS, toAcceptLanguage } from "../utils";
-import { keyOf, getCached, LOCATION_CACHE_SERVER, setCached } from "@app/shared";
 
 export class GeocodeController {
     reverse = asyncHandler(async (req, res, _next) => {

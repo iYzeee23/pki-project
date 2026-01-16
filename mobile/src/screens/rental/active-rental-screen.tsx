@@ -2,14 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Button, Text, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
-import * as bikesApi from "../../services/bike-api";
 import { RentalStackParamList } from "../../navigation/types";
 import { useRentalStore } from "../../stores/rental-store";
-import { BikeDto, findInsideSpotId, formatDurationFromMs } from "@app/shared";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
 import { activeRentalTexts, commonTexts } from "../../util/i18n-builder";
+import { BikeDto, findInsideSpotId, formatDurationFromMs, isCanceled } from "@app/shared";
+import { bikeApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "ActiveRental">;
 
@@ -73,7 +73,7 @@ export function ActiveRentalScreen({ navigation }: Props) {
 
     const fetchBike = async () => {
       try {
-        const b = await bikesApi.getById(activeRental.bikeId, controller.signal);
+        const b = await bikeApi.getById(activeRental.bikeId, controller.signal);
         setBike(b);
       } 
       catch (e: any) {

@@ -1,41 +1,23 @@
+import { createHttp } from "@app/shared";
+import { EXPO_API_BASE_URL } from "./config";
+import { commonTexts } from "./i18n-builder";
 import axios from "axios";
-import { API_BASE_URL } from "./config";
 
-let authToken: string | null = null;
-
-let onUnauthorized: (() => void) | null = null;
-
-export function setAuthToken(token: string | null) {
-  authToken = token;
-}
-
-export function setOnUnauthorized(handler: (() => void) | null) {
-  onUnauthorized = handler;
-}
-
-export const http = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 15000,
+export const http = createHttp({
+  baseURL: EXPO_API_BASE_URL,
+  timeoutMs: 15000
 });
 
-http.interceptors.request.use(config => {
- if (authToken) {
-    config.headers = config.headers ?? {};
-    config.headers.Authorization = `Bearer ${authToken}`;
+export const setAuthToken = http.setAuthToken;
+export const setOnUnauthorized = http.setOnUnauthorized;
+
+export function getApiErrorMessage(err: unknown): string {
+  const com = commonTexts();
+
+  if (axios.isAxiosError(err)) {
+    const data = err.response?.data;
+    return data?.error ?? err.message ?? com.UnexpectedError;
   }
-
-  return config;
-});
-
-http.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    const status = err?.response?.status;
-    if (status === 401 && onUnauthorized)
-      onUnauthorized();
-
-    console.log("HTTP error:", err?.config?.method, err?.config?.url, err?.response?.status);
-
-    return Promise.reject(err);
-  }
-);
+  
+  return err instanceof Error ? err.message : com.UnexpectedError;
+}

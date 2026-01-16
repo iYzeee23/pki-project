@@ -1,8 +1,7 @@
-import { NUM_OF_NEAREST_OBJECTS, type ParkingSpotDto } from "@app/shared";
-
 import { ParkingSpotModel } from "../models";
 import { toParkingSpotDto } from "../mappers";
 import { asyncHandler, HttpError } from "../utils";
+import { NUM_OF_NEAREST_OBJECTS, ParkingSpotDto } from "@app/shared";
 
 export class ParkingSpotsController {
   list = asyncHandler(async (_req, res, _next) => {

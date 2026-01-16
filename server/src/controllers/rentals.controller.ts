@@ -1,8 +1,7 @@
-import { BikeDto, type RentalDto } from "@app/shared";
-
 import { RentalModel, BikeModel, ParkingSpotModel, ImageModel } from "../models";
 import { toBikeDto, toRentalDto } from "../mappers";
 import { asyncHandler, HttpError } from "../utils";
+import { BikeDto, RentalDto } from "@app/shared";
 
 export class RentalsController {
   start = asyncHandler(async (req, res, _next) => {

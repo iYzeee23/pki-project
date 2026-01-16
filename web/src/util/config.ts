@@ -1,0 +1,5 @@
+import { DEFAULT_PROFILE_PICTURE } from "@app/shared";
+
+export const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
+export const DEFAULT_PROFILE_PICTURE_RESOLVED = `${VITE_API_BASE_URL}${DEFAULT_PROFILE_PICTURE}`

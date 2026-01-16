@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import * as rentalApi from "../services/rental-api";
+import { rentalApi } from "../util/services";
 import { RentalDto } from "@app/shared";
 
 type RentalState = {

@@ -2,12 +2,11 @@ import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
-import * as rentalsApi from "../../services/rental-api";
-import * as bikesApi from "../../services/bike-api";
-import { BikeDto, formatDateTime, formatDurationFromStartEnd, RentalDto } from "@app/shared";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { useTranslation } from "react-i18next";
 import { commonTexts, rentalDetailsTexts } from "../../util/i18n-builder";
+import { BikeDto, formatDateTime, formatDurationFromStartEnd, isCanceled, RentalDto } from "@app/shared";
+import { bikeApi, rentalApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "RentalDetails">;
 
@@ -31,10 +30,10 @@ export function RentalDetailsScreen({ route }: Props) {
       setLoading(true);
 
       try {
-        const r = await rentalsApi.getById(rentalId, controller.signal);
+        const r = await rentalApi.getById(rentalId, controller.signal);
         setRental(r);
 
-        const b = await bikesApi.getById(r.bikeId, controller.signal);
+        const b = await bikeApi.getById(r.bikeId, controller.signal);
         setBike(b);
       }
       catch (e: any) {

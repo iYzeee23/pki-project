@@ -1,4 +1,3 @@
-// src/stores/bikes-store.ts
 import { BikeDto } from "@app/shared";
 import { create } from "zustand";
 

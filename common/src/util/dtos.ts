@@ -1,4 +1,4 @@
-import { BikeStatus, ImageSource, LngLat } from "./index";
+import { BikeStatus, ImageSource, LngLat } from "./types";
 
 export type UserDto = {
   id: string;

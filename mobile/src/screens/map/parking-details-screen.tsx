@@ -4,9 +4,9 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useMapStore } from "../../stores/map-store";
 import { useBikesStore } from "../../stores/bike-store";
 import { MapStackParamList } from "../../navigation/types";
-import { BikeDto, haversineMeters, PARKING_RADIUS_M } from "@app/shared";
 import { useTranslation } from "react-i18next";
 import { parkingDetailsTexts } from "../../util/i18n-builder";
+import { BikeDto, haversineMeters, PARKING_RADIUS_M } from "@app/shared";
 
 function EmptyState({park}: any) {
   return (

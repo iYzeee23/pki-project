@@ -3,13 +3,14 @@ import { View, Text, Button, Alert, ActivityIndicator } from "react-native";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RentalStackParamList } from "../../navigation/types";
-import * as rentalApi from "../../services/rental-api";
 import { useRentalStore } from "../../stores/rental-store";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
 import { commonTexts, qrScannerTexts } from "../../util/i18n-builder";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
+import { rentalApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
+import { isCanceled } from "@app/shared";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "QrScanner">;
 

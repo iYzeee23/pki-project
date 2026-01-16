@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import * as parkingApi from "../services/parking-api";
+import { parkingApi } from "../util/services";
 import { ParkingSpotDto } from "@app/shared";
 
 type MapState = {

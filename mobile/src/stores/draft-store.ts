@@ -1,4 +1,3 @@
-import { ImageSource } from "@app/shared";
 import { create } from "zustand";
 
 export type DraftFlow = {

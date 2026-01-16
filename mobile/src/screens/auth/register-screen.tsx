@@ -1,14 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { Alert, Button, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
-import { getApiErrorMessage, isCanceled } from "../../util/api-error";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";
-import * as authApi from "../../services/auth-api";
 import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/types";
 import { DEFAULT_PROFILE_PICTURE_RESOLVED } from "../../util/config";
 import { useTranslation } from "react-i18next";
 import { commonTexts, registerTexts } from "../../util/i18n-builder";
+import { authApi } from "../../util/services";
+import { getApiErrorMessage } from "../../util/http";
+import { isCanceled } from "@app/shared";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Register">;
 
@@ -70,17 +71,23 @@ export function RegisterScreen({}: Props) {
     setBusy(true);
 
     try {
-      const data = {
-        username: username.trim(),
-        password: password,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
-        phone: phone.trim(),
-        email: email.trim(),
-        file: file
-      } as authApi.RegisterPayload;
+      const form = new FormData();
+      form.append("username", username.trim());
+      form.append("password", password);
+      form.append("firstName", firstName.trim());
+      form.append("lastName", lastName.trim());
+      form.append("phone", phone.trim());
+      form.append("email", email.trim());
+
+      if (file) {
+        form.append("file", {
+          uri: file.uri,
+          name: file.name,
+          type: file.type,
+        } as any);
+      }
       
-      const resp = await authApi.register(data, signal);
+      const resp = await authApi.register(form, signal);
       await setSession({ token: resp.token, user: resp.user });
     }
     catch (e: any) {

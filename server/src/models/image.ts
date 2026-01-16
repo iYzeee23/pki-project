@@ -1,5 +1,5 @@
-import mongoose, { InferSchemaType } from "mongoose";
 import { IMAGE_SOURCES } from "@app/shared";
+import mongoose, { InferSchemaType } from "mongoose";
 
 const imageSchema = new mongoose.Schema(
     {

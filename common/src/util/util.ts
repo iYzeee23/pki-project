@@ -1,4 +1,4 @@
-import { ParkingSpotDto } from ".";
+import { ParkingSpotDto } from "./dtos";
 import { LngLat, NUM_OF_NEAREST_OBJECTS, PARKING_RADIUS_M } from "./types";
 
 export function haversineMeters(bike: LngLat, spot: LngLat): number {
@@ -90,4 +90,8 @@ export function nearestSpots(spots: ParkingSpotDto[], location: LngLat) {
     .map(s => ({ spot: s, distance: haversineMeters(location, s.location) }))
     .sort((a, b) => a.distance - b.distance)
     .slice(0, NUM_OF_NEAREST_OBJECTS);
+}
+
+export function resolveImageUrl(baseUrl: string, path: string) {
+    return `${baseUrl}${path}`;
 }

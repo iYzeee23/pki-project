@@ -1,10 +1,10 @@
 import { create } from "zustand";
-import * as SecureStore from "expo-secure-store";
-import * as authApi from "../services/auth-api";
-import { UserDto } from "@app/shared";
 import { setAuthToken, setOnUnauthorized } from "../util/http";
 import { useMapStore } from "./map-store";
 import { useBikesStore } from "./bike-store";
+import * as SecureStore from "expo-secure-store";
+import { authApi } from "../util/services";
+import { UserDto } from "@app/shared";
 
 type AuthState = {
   token: string | null;
@@ -58,7 +58,8 @@ export const useAuthStore = create<AuthState>((set, get) => {
     me: null,
 
     setMe: async (updated) => {
-      await SecureStore.setItemAsync(USER_KEY, JSON.stringify(updated));
+      if (updated) await SecureStore.setItemAsync(USER_KEY, JSON.stringify(updated));
+      else await SecureStore.deleteItemAsync(USER_KEY);
 
       set({ me: updated });
     },
@@ -94,14 +95,14 @@ export const useAuthStore = create<AuthState>((set, get) => {
         password: password
       };
 
-      const response = await authApi.login(payload, signal);
-      if (!response) throw new Error("Login failed");
+      const resp = await authApi.login(payload, signal);
+      if (!resp) throw new Error("Login failed");
 
-      await get().setSession(response);
+      await get().setSession(resp);
     },
 
     logout: async () => {
       await clearSessionLocal();
-    },
+    }
   };
 });

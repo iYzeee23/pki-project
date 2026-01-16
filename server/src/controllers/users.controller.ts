@@ -1,9 +1,8 @@
-import type { UserDto } from "@app/shared";
-
 import { UserModel } from "../models";
 import { toUserDto } from "../mappers";
 import { asyncHandler, hashPassword, signToken, verifyPassword, HttpError } from "../utils";
 import { deleteImage, saveImage } from "../image-utils";
+import { UserDto } from "@app/shared";
 
 export class UsersController {
   register = asyncHandler(async (req, res, _next) => {

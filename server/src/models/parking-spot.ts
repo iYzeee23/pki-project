@@ -1,5 +1,5 @@
-import mongoose, { InferSchemaType } from "mongoose";
 import { GEOJSON_STRUCTURES } from "@app/shared";
+import mongoose, { InferSchemaType } from "mongoose";
 
 const parkingSpotSchema = new mongoose.Schema(
     {
