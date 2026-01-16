@@ -1,30 +1,75 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { useAuthStore } from "../stores/auth-store";
+import { resolveImageUrl } from "@app/shared";
+import { VITE_API_BASE_URL } from "../util/config";
+import { Pressable } from "./pressable";
 
-const linkStyle: React.CSSProperties = { padding: "10px 12px", textDecoration: "none" };
+const navLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties => ({
+  padding: "8px 10px",
+  borderRadius: 12,
+  textDecoration: "none",
+  color: "inherit",
+  fontWeight: 800,
+  background: isActive ? "#28948d" : "transparent",
+});
 
 export function AdminLayout() {
-  const logout = useAuthStore((s) => s.logout);
+  const logoUrl = resolveImageUrl(VITE_API_BASE_URL, "/uploads/logo.png"); // promeni ekstenziju ako treba
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "220px 1fr", minHeight: "100vh" }}>
-      <aside style={{ borderRight: "1px solid #ddd", padding: 12 }}>
-        <div style={{ fontWeight: 700, marginBottom: 12 }}>Admin</div>
+    <div style={{ minHeight: "100vh", display: "grid", gridTemplateRows: "64px 1fr" }}>
+      <header
+        style={{
+          borderBottom: "1px solid #e5e5e5",
+          display: "grid",
+          alignItems: "center",
+          padding: "0 16px",
+        }}
+      >
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr auto 1fr",
+            alignItems: "center",
+            maxWidth: 1100,
+            margin: "0 auto",
+            width: "100%",
+            gap: 12,
+          }}
+        >
+          {/* Left: Logo -> profile */}
+          <NavLink
+            to="/profile"
+            style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#111" }}
+          >
+            <img src={logoUrl} alt="logo" style={{ height: 34, width: 34, objectFit: "contain" }} />
+            <div style={{ fontWeight: 900 }}>BikeShare Admin</div>
+          </NavLink>
 
-        <nav style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-          <NavLink to="/map" style={linkStyle}>Map</NavLink>
-          <NavLink to="/rentals" style={linkStyle}>Rentals</NavLink>
-          <NavLink to="/issues" style={linkStyle}>Issues</NavLink>
-          <NavLink to="/profile" style={linkStyle}>Profile</NavLink>
-        </nav>
+          {/* Center: menu */}
+          <nav style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+            <NavLink to="/map" style={navLinkStyle}>Mapa</NavLink>
+            <NavLink to="/rentals" style={navLinkStyle}>Iznajmljivanja</NavLink>
+            <NavLink to="/issues" style={navLinkStyle}>Neispravnosti</NavLink>
+            <NavLink to="/profile" style={navLinkStyle}>Profil</NavLink>
+          </nav>
 
-        <div style={{ marginTop: 16 }}>
-          <button onClick={logout}>Logout</button>
+          {/* Right: language placeholder */}
+          <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Pressable
+              disabled
+              title="Dolazi kasnije"
+              style={{ border: "1px solid #e5e5e5", padding: "8px 12px", borderRadius: 12, fontWeight: 800 }}
+            >
+              SR ▾
+            </Pressable>
+          </div>
         </div>
-      </aside>
+      </header>
 
       <main style={{ padding: 16 }}>
-        <Outlet />
+        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+          <Outlet />
+        </div>
       </main>
     </div>
   );

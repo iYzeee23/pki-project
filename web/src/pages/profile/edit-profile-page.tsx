@@ -1,12 +1,14 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/auth-store";
 import { profileApi } from "../../util/services";
+import { Pressable } from "../../main/pressable";
+import { isCanceled } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
+import { CenterLayout } from "../../main/center-layout";
 
 export function EditProfilePage() {
   const nav = useNavigate();
-
   const me = useAuthStore((s) => s.me);
   const setMe = useAuthStore((s) => s.setMe);
 
@@ -22,12 +24,26 @@ export function EditProfilePage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const submitControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    () => {
+        return submitControllerRef.current?.abort();
+    }
+  }, []);
+
   if (!me) return null;
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    submitControllerRef.current?.abort();
+    submitControllerRef.current = new AbortController();
+
+    const signal = submitControllerRef.current.signal;
+
     setBusy(true);
+    setError(null);
 
     try {
       const fd = new FormData();
@@ -38,67 +54,74 @@ export function EditProfilePage() {
       fd.append("email", email.trim());
       if (file) fd.append("file", file);
 
-      const updated = await profileApi.updateMe(fd);
-      // store update
-      await Promise.resolve(setMe(updated));
+      const updated = await profileApi.updateMe(fd, signal);
+      setMe(updated);
       nav("/profile", { replace: true });
-    } catch (e2: unknown) {
-      setError(getApiErrorMessage(e2));
-    } finally {
+    }
+    catch (e: any) {
+      if (isCanceled(e)) return;
+      setError(getApiErrorMessage(e));
+    }
+    finally {
       setBusy(false);
     }
   };
 
+  const btn: React.CSSProperties = {
+    border: "1px solid #e5e5e5",
+    padding: "10px 14px",
+    borderRadius: 12,
+    fontWeight: 900,
+  };
+
   return (
-    <div style={{ maxWidth: 520 }}>
-      <h2>Edit profile</h2>
+    <CenterLayout centerY={false}>
+        <div style={{ maxWidth: 520 }}>
+            <h2 style={{ marginTop: 0 }}>Izmena profila</h2>
 
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <label>
-          Username
-          <input value={username} onChange={(e) => setUsername(e.target.value)} />
-        </label>
+            <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
+                <label style={{ display: "grid", gap: 6 }}>
+                    Username
+                    <input value={username} onChange={(e) => setUsername(e.target.value)} />
+                </label>
 
-        <label>
-          First name
-          <input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-        </label>
+                <label style={{ display: "grid", gap: 6 }}>
+                    Ime
+                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                </label>
 
-        <label>
-          Last name
-          <input value={lastName} onChange={(e) => setLastName(e.target.value)} />
-        </label>
+                <label style={{ display: "grid", gap: 6 }}>
+                    Prezime
+                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                </label>
 
-        <label>
-          Phone
-          <input value={phone} onChange={(e) => setPhone(e.target.value)} />
-        </label>
+                <label style={{ display: "grid", gap: 6 }}>
+                    Telefon
+                    <input value={phone} onChange={(e) => setPhone(e.target.value)} />
+                </label>
 
-        <label>
-          Email
-          <input value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
+                <label style={{ display: "grid", gap: 6 }}>
+                    Email
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} />
+                </label>
 
-        <label>
-          Profile picture (optional)
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-          />
-        </label>
+                <label style={{ display: "grid", gap: 6 }}>
+                    Profilna slika (opciono)
+                    <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+                </label>
 
-        <div style={{ display: "flex", gap: 10 }}>
-          <button type="button" onClick={() => nav(-1)} disabled={busy}>
-            Back
-          </button>
-          <button type="submit" disabled={busy}>
-            {busy ? "Čuvam..." : "Sačuvaj"}
-          </button>
+                <div style={{ display: "flex", gap: 10 }}>
+                    <Pressable type="button"  onClick={() => nav(-1)} disabled={busy} style={btn}>Nazad</Pressable>
+
+                    <Pressable type="submit" disabled={busy}
+                        style={{ ...btn, background: "#111", borderColor: "#111", color: "#fff" }}>
+                        {busy ? "Čuvam..." : "Sačuvaj"}
+                    </Pressable>
+                </div>
+
+                {error ? <div style={{ color: "crimson" }}>{error}</div> : null}
+            </form>
         </div>
-
-        {error ? <div style={{ color: "crimson" }}>{error}</div> : null}
-      </form>
-    </div>
+    </CenterLayout>
   );
 }

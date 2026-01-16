@@ -21,7 +21,7 @@ export class UsersController {
     if (exists) throw new HttpError(409, "Username or email already exists");
 
     const passwordHash = await hashPassword(body.password);
-    const profileImagePath = saveImage(req.file?.buffer, req.file?.originalname);
+    const profileImagePath = await saveImage(req.file?.buffer, req.file?.originalname, req.file?.mimetype);
 
     const user = await UserModel.create({
       username: body.username,
@@ -93,7 +93,7 @@ export class UsersController {
     user.email = body.email;
 
     deleteImage(user.profileImagePath);
-    user.profileImagePath = saveImage(req.file?.buffer, req.file?.originalname);
+    user.profileImagePath = await saveImage(req.file?.buffer, req.file?.originalname, req.file?.mimetype);
 
     await user.save();
 

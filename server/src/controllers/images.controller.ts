@@ -14,7 +14,7 @@ export class ImagesController {
       ownerModel: string;
     };
 
-    const paths = files.map(f => saveImage(f.buffer, f.originalname));
+    const paths = files.map(f => saveImage(f.buffer, f.originalname, f.mimetype));
     const created = await ImageModel.insertMany(
       paths.map(p => ({
         ownerId: body.ownerId,

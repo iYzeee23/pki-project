@@ -1,15 +1,16 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/auth-store";
 import { isCanceled } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
+import { CenterLayout } from "../../main/center-layout";
+import { Pressable } from "../../main/pressable";
 
 export function LoginPage() {
   const login = useAuthStore((s) => s.login);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,52 +20,60 @@ export function LoginPage() {
 
   const submitControllerRef = useRef<AbortController | null>(null);
 
-  const onSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
+  useEffect(() => {
+    () => {
+      return submitControllerRef.current?.abort();
+    }
+  }, []);
+
+  const onSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
 
     submitControllerRef.current?.abort();
     submitControllerRef.current = new AbortController();
+
     const signal = submitControllerRef.current.signal;
 
     setBusy(true);
+    setError(null);
+
     try {
       await login(username.trim(), password, signal);
       nav(from, { replace: true });
     } 
-    catch (e2: any) {
-      if (isCanceled(e2)) return;
-      setError(getApiErrorMessage(e2));
-    }
+    catch (e: any) {
+      if (isCanceled(e)) return;
+      setError(getApiErrorMessage(e));
+    } 
     finally {
       setBusy(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: 360, margin: "60px auto" }}>
-      <h2>Admin Login</h2>
+    <CenterLayout>
+      <div style={{ width: 420, maxWidth: "100%", border: "1px solid #e5e5e5", borderRadius: 16, padding: 16, }}>
+        <h2 style={{ marginTop: 0 }}>Admin prijava</h2>
 
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <input
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
+        <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
+          <label style={{ display: "grid", gap: 6 }}>
+            Korisničko ime
+            <input value={username} onChange={(e) => setUsername(e.target.value)} />
+          </label>
 
-        <input
-          placeholder="Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+          <label style={{ display: "grid", gap: 6 }}>
+            Lozinka
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          </label>
 
-        <button disabled={busy} type="submit">
-          {busy ? "U toku..." : "Prijava"}
-        </button>
+            <Pressable type="submit" variant="primary" disabled={busy}
+              style={{ width: "100%", background: "#111", color: "#fff", padding: "10px", borderRadius: 12, fontWeight: 900 }}>
+              {busy ? "Prijavljivanje..." : "Prijavi se"}
+            </Pressable>
 
-        {error ? <div style={{ color: "crimson" }}>{error}</div> : null}
-      </form>
-    </div>
+          {error ? <div style={{ color: "crimson" }}>{error}</div> : null}
+        </form>
+      </div>
+    </CenterLayout>
   );
 }
