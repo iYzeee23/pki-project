@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { FilterSortBar, type CommonFilters } from "../../main/filter-sort-bar";
+import { FilterSortBar, type CommonFilters } from "../../elements/filter-sort-bar";
 import { rentalApi } from "../../util/services";
 import { isoDateOnly, type RentalDto } from "@app/shared";
+import { Pressable } from "../../elements/pressable";
 
 const DEFAULT_FILTERS: CommonFilters = {
   userId: "",
@@ -82,7 +83,7 @@ export function RentalsPage() {
 
         <div style={{ display: "grid", gap: 10 }}>
           {view.map((r) => (
-            <button
+            <Pressable
               key={r.id}
               onClick={() => nav(`/rentals/${r.id}`, { state: { from: loc.pathname + loc.search } })}
               style={{
@@ -92,6 +93,7 @@ export function RentalsPage() {
                 border: "1px solid #e5e5e5",
                 background: "#fff",
                 cursor: "pointer",
+                color: "black"
               }}
             >
               <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
@@ -101,7 +103,7 @@ export function RentalsPage() {
 
               <div style={{ opacity: 0.9 }}>User: {r.userId}</div>
               <div style={{ opacity: 0.9 }}>Bike: {r.bikeId}</div>
-            </button>
+            </Pressable>
           ))}
 
           {!busy && view.length === 0 ? <div>Nema rezultata.</div> : null}

@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { BIKE_STATUSES, type BikeDto, type BikeStatus } from "@app/shared";
-import { useBikesStore } from "../stores/bike-store";
-import { useDraftStore } from "../stores/draft-store";
-import { bikeApi } from "../util/services";
-import { Panel } from "./panel";
-import { Pressable } from "../main/pressable";
-import { bikeAvailableIcon, bikeBusyIcon, bikeOtherIcon } from "../util/pin-colors";
+import { useBikesStore } from "../../stores/bike-store";
+import { useDraftStore } from "../../stores/draft-store";
+import { bikeApi } from "../../util/services";
+import { bikeAvailableIcon, bikeBusyIcon, bikeOtherIcon } from "../../util/pin-colors";
+import { Panel } from "../panel";
+import { TextField } from "../../elements/text-field";
+import { SelectField } from "../../elements/select-field";
+import { Pressable } from "../../elements/pressable";
 
 export function BikeEditPanel() {
   const { id } = useParams();
@@ -123,12 +125,12 @@ export function BikeEditPanel() {
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
         <label style={{ display: "grid", gap: 6 }}>
           <b>Tip</b>
-          <input value={type} onChange={(e) => setType(e.target.value)} />
+          <TextField value={type} onChange={(e) => setType(e.target.value)} />
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
           <b>Cena/sat</b>
-          <input
+          <TextField
             value={pricePerHour}
             onChange={(e) => setPricePerHour(e.target.value)}
             inputMode="numeric"
@@ -137,11 +139,11 @@ export function BikeEditPanel() {
 
         <label style={{ display: "grid", gap: 6 }}>
           <b>Status</b>
-          <select value={status} onChange={(e) => setStatus(e.target.value as BikeStatus)}>
+          <SelectField value={status} onChange={(e) => setStatus(e.target.value as BikeStatus)}>
             {BIKE_STATUSES.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
-          </select>
+          </SelectField>
         </label>
 
         <div style={{ display: "grid", gap: 6 }}>

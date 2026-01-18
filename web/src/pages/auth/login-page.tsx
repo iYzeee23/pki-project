@@ -4,7 +4,8 @@ import { useAuthStore } from "../../stores/auth-store";
 import { isCanceled } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
 import { CenterLayout } from "../../main/center-layout";
-import { Pressable } from "../../main/pressable";
+import { Pressable } from "../../elements/pressable";
+import { TextField } from "../../elements/text-field";
 
 export function LoginPage() {
   const login = useAuthStore((s) => s.login);
@@ -58,12 +59,12 @@ export function LoginPage() {
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
           <label style={{ display: "grid", gap: 6 }}>
             Korisničko ime
-            <input value={username} onChange={(e) => setUsername(e.target.value)} />
+            <TextField value={username} onChange={(e) => setUsername(e.target.value)} />
           </label>
 
           <label style={{ display: "grid", gap: 6 }}>
             Lozinka
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <TextField type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </label>
 
             <Pressable type="submit" variant="primary" disabled={busy}

@@ -2,12 +2,16 @@ import { Link } from "react-router-dom";
 import { DEFAULT_PROFILE_PICTURE, resolveImageUrl } from "@app/shared";
 import { useAuthStore } from "../../stores/auth-store";
 import { VITE_API_BASE_URL } from "../../util/config";
-import { Pressable } from "../../main/pressable";
+import { Pressable } from "../../elements/pressable";
 import { CenterLayout } from "../../main/center-layout";
+import { useState } from "react";
+import { ImagePreview } from "../../elements/image-preview";
 
 export function ProfilePage() {
   const me = useAuthStore((s) => s.me);
   const logout = useAuthStore((s) => s.logout);
+
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   if (!me) return null;
 
@@ -31,8 +35,17 @@ export function ProfilePage() {
             </div>
 
             <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                <img src={imgUrl} alt="profile" style={{ width: 80, height: 80, borderRadius: 16, objectFit: "cover" }} />
-                
+                <img
+                src={imgUrl} alt="Profile" onClick={() => setPreviewOpen(true)}
+                style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: 20,
+                    objectFit: "cover",
+                    cursor: "zoom-in",
+                    border: "1px solid #e5e5e5",
+                }} />
+
                 <div>
                     <div style={{ fontSize: 18, fontWeight: 900 }}>{me.firstName} {me.lastName}</div>
                     <div style={{ opacity: 0.8 }}>@{me.username}</div>
@@ -51,6 +64,12 @@ export function ProfilePage() {
                     <Pressable style={actionBtn}>Promeni lozinku</Pressable>
                 </Link>
             </div>
+
+            <ImagePreview
+            isOpen={previewOpen}
+            src={imgUrl}
+            alt="Profilna slika"
+            onClose={() => setPreviewOpen(false)}/>
         </div>
     </CenterLayout>
   );

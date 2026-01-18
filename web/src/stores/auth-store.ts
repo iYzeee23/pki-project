@@ -100,7 +100,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       const resp = await authApi.login(payload, signal);
       if (!resp) throw new Error("Login failed");
 
-      get().setSession(resp);
+      await get().setSession(resp);
     },
 
     logout: () => {

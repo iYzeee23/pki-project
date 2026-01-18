@@ -8,6 +8,7 @@ import { profileTexts } from "../../util/i18n-builder";
 import i18n from "../../i18n";
 import { EXPO_API_BASE_URL } from "../../util/config";
 import { resolveImageUrl } from "@app/shared";
+import { ImagePreview } from "../sheets/image-preview";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "ProfileHome">;
 
@@ -18,6 +19,8 @@ export function ProfileScreen({ navigation }: Props) {
   const me = useAuthStore(s => s.me);
   const logout = useAuthStore(s => s.logout);
   const [lang, setLang] = useState(i18n.language);
+
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   useEffect(() => {
     const handleChange = (lng: string) => setLang(lng);
@@ -54,10 +57,9 @@ export function ProfileScreen({ navigation }: Props) {
       <View style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
         <View style={{ flexDirection: "row", gap: 12, alignItems: "center" }}>
           {url ? (
-            <Image
-              source={{ uri: url }}
-              style={{ width: 96, height: 96, borderRadius: 48 }}
-            />
+            <TouchableOpacity onPress={() => setPreviewOpen(true)} activeOpacity={0.8}>
+              <Image source={{ uri: url }} style={{ width: 96, height: 96, borderRadius: 48 }} />
+            </TouchableOpacity>
           ) : null}
 
           <View style={{ gap: 6, flex: 1 }}>
@@ -96,10 +98,12 @@ export function ProfileScreen({ navigation }: Props) {
         style={{ padding: 14, borderRadius: 12, borderWidth: 1 }}>
         <Text style={{ textAlign: "center", fontWeight: "600" }}>{prof.Logout}</Text>
       </TouchableOpacity>
+
+      <ImagePreview
+        visible={previewOpen}
+        uri={url}
+        onClose={() => setPreviewOpen(false)}
+      />
     </View>
   );
 }
-function async(arg0: number, arg1: number) {
-  throw new Error("Function not implemented.");
-}
-

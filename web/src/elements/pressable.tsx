@@ -9,10 +9,11 @@ export function Pressable({
   disabled,
   style,
   children,
+  type,
   ...rest
 }: PropsWithChildren<PressableProps>) {
   const base: React.CSSProperties = {
-    display: "inline-flex",
+    display: "block",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 12,
@@ -24,22 +25,19 @@ export function Pressable({
     opacity: disabled ? 0.6 : 1,
     border: "1px solid #e5e5e5",
     background: variant === "primary" ? "#111" : "#fff",
-    color: variant === "primary" ? "#fff" : "#111",
+    color: variant === "primary" ? "#fff" : "#111"
   };
 
   return (
     <button
       {...rest}
+      type={type ?? "button"}
       disabled={disabled}
       style={{ ...base, ...style }}
-      onMouseDown={(e) => {
+      onMouseEnter={(e) => {
         if (disabled) return;
-        e.currentTarget.style.transform = "scale(0.98)";
-        rest.onMouseDown?.(e);
-      }}
-      onMouseUp={(e) => {
-        e.currentTarget.style.transform = "scale(1)";
-        rest.onMouseUp?.(e);
+        e.currentTarget.style.transform = "scale(0.97)";
+        rest.onMouseEnter?.(e);
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.transform = "scale(1)";

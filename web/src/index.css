@@ -65,3 +65,16 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+input, select {
+  font: inherit;
+}
+
+input:focus, select:focus, input:hover, select:hover {
+  border-color: #7aa7ff !important;
+  box-shadow: 0 0 0 3px rgba(122, 167, 255, 0.25);
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}

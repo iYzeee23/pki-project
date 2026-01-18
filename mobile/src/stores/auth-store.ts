@@ -65,6 +65,9 @@ export const useAuthStore = create<AuthState>((set, get) => {
     },
 
     setSession: async (payload) => {
+      if (payload.user.isAdmin)
+        throw new Error("This account is admin account. Please, try with user account");
+
       setAuthToken(payload.token);
       attachUnauthorizedHandler();
 

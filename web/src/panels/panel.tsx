@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { Pressable } from "../main/pressable";
+import { Pressable } from "../elements/pressable";
 
 
 export function Panel({

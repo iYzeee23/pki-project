@@ -1,11 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { useBikesStore } from "../stores/bike-store";
 import { getCached, keyOf, LOCATION_CACHE_WEB, setCached } from "@app/shared";
-import { geocodeApi } from "../util/services";
-import { Panel } from "./panel";
-import { Pressable } from "../main/pressable";
 import { QRCodeCanvas } from "qrcode.react";
+import { useBikesStore } from "../../stores/bike-store";
+import { geocodeApi } from "../../util/services";
+import { Panel } from "../panel";
+import { Pressable } from "../../elements/pressable";
 
 export function BikeDetailsPanel() {
   const { id } = useParams();

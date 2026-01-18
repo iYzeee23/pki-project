@@ -8,7 +8,9 @@ let socket: Socket | null = null;
 export function connectSocket() {
   if (socket) return socket;
 
-  socket = io(VITE_API_BASE_URL, { transports: ["websocket"] });
+  socket = io(VITE_API_BASE_URL, { 
+    transports: ["polling", "websocket"] 
+  });
 
   socket.on("bike:inserted", (dto: BikeDto) => {
     useBikesStore.getState().upsertBike(dto);

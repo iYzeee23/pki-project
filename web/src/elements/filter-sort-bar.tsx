@@ -1,4 +1,7 @@
+import { DateField } from "./date-field";
 import { Pressable } from "./pressable";
+import { SelectField } from "./select-field";
+import { TextField } from "./text-field";
 
 export type SortDir = "asc" | "desc";
 
@@ -29,12 +32,13 @@ export function FilterSortBar({
         borderRadius: 14,
         background: "#fff",
         marginBottom: 12,
+        color: "black"
       }}
     >
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
         <label style={{ display: "grid", gap: 6 }}>
           <b>User</b>
-          <input
+          <TextField
             value={value.userId}
             onChange={(e) => onChange({ ...value, userId: e.target.value })}
             placeholder="userId..."
@@ -43,7 +47,7 @@ export function FilterSortBar({
 
         <label style={{ display: "grid", gap: 6 }}>
           <b>Bike ID</b>
-          <input
+          <TextField
             value={value.bikeId}
             onChange={(e) => onChange({ ...value, bikeId: e.target.value })}
             placeholder="bikeId..."
@@ -52,8 +56,7 @@ export function FilterSortBar({
 
         <label style={{ display: "grid", gap: 6 }}>
           <b>Datum</b>
-          <input
-            type="date"
+          <DateField
             value={value.day}
             onChange={(e) => onChange({ ...value, day: e.target.value })}
           />
@@ -63,25 +66,25 @@ export function FilterSortBar({
       <div style={{ display: "flex", gap: 10, alignItems: "end" }}>
         <label style={{ display: "grid", gap: 6 }}>
           <b>Sort by</b>
-          <select
+          <SelectField
             value={value.sortBy}
             onChange={(e) => onChange({ ...value, sortBy: e.target.value as any })}
           >
             <option value="day">Datum</option>
             <option value="userId">User</option>
             <option value="bikeId">Bike ID</option>
-          </select>
+          </SelectField>
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
           <b>Direction</b>
-          <select
+          <SelectField
             value={value.sortDir}
             onChange={(e) => onChange({ ...value, sortDir: e.target.value as any })}
           >
             <option value="desc">DESC</option>
             <option value="asc">ASC</option>
-          </select>
+          </SelectField>
         </label>
 
         <Pressable type="button" onClick={onReset} variant="secondary" style={{ marginLeft: "auto" }}>

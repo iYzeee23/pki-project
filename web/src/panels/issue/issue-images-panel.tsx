@@ -1,10 +1,10 @@
 import { resolveImageUrl, type ImageDto } from "@app/shared";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { imageApi } from "../util/services";
-import { Panel } from "./panel";
-import { DEFAULT_PROFILE_PICTURE_RESOLVED, VITE_API_BASE_URL } from "../util/config";
-import { Pressable } from "../main/pressable";
+import { imageApi } from "../../util/services";
+import { Panel } from "../panel";
+import { DEFAULT_PROFILE_PICTURE_RESOLVED, VITE_API_BASE_URL } from "../../util/config";
+import { Pressable } from "../../elements/pressable";
 
 export function IssueImagesPanel() {
   const { id } = useParams();

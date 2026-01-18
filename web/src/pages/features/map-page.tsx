@@ -5,15 +5,20 @@ import type { LatLngExpression } from "leaflet";
 import { useMapStore } from "../../stores/map-store";
 import { useBikesStore } from "../../stores/bike-store";
 import { bikeApi, parkingApi } from "../../util/services";
-import { findInsideSpotId } from "@app/shared";
+import { findInsideSpotId, isCanceled, type BikeStatus } from "@app/shared";
 import { bikeAvailableIcon, bikeBusyIcon, bikeOtherIcon, parkingIcon } from "../../util/pin-colors";
 import { MapClickPicker } from "../../util/map-click-picker";
 import { useDraftStore } from "../../stores/draft-store";
+import { getApiErrorMessage } from "../../util/http";
+import { SelectField } from "../../elements/select-field";
 
 export function MapPage() {
   const nav = useNavigate();
 
   const parkingSpots = useMapStore((s) => s.parkingSpots);
+  const bikeStatusFilter = useMapStore(s => s.bikeStatusFilter);
+  const setBikeStatusFilter = useMapStore(s => s.setBikeStatusFilter);
+
   const bikes = useBikesStore((s) => s.bikes);
   const setBikes = useBikesStore((s) => s.setBikes);
 
@@ -26,28 +31,65 @@ export function MapPage() {
     const ac = new AbortController();
 
     (async () => {
-      const [spots, bs] = await Promise.all([
-        parkingApi.list(ac.signal),
-        bikeApi.list(ac.signal),
-      ]);
+      try {
+        const [spots, bs] = await Promise.all([
+          parkingApi.list(ac.signal),
+          bikeApi.list(ac.signal),
+        ]);
 
-      useMapStore.setState({ parkingSpots: spots });
-      setBikes(bs);
-    })().catch(console.error);
+        useMapStore.setState({ parkingSpots: spots });
+        setBikes(bs);
+      } catch (e: any) {
+        if (isCanceled(e)) return;
+        console.log(getApiErrorMessage(e));
+      }
+    })();
 
     return () => ac.abort();
   }, [setBikes]);
 
+  const bikesFiltered = useMemo(() => {
+    if (bikeStatusFilter === "All") return bikes;
+    return bikes.filter(b => b.status === bikeStatusFilter);
+  }, [bikes, bikeStatusFilter]);
+
   const bikesOutside = useMemo(() => {
-    return bikes.filter(b => !findInsideSpotId(b.location, parkingSpots))
-  }, [bikes, parkingSpots]);
+    return bikesFiltered.filter(b => !findInsideSpotId(b.location, parkingSpots))
+  }, [bikesFiltered, parkingSpots]);
+
+  const parkingIdsWithFilteredBikes = useMemo(() => {
+    const ids = new Set<string>();
+
+    for (const b of bikesFiltered) {
+      const insideId = findInsideSpotId(b.location, parkingSpots);
+      if (insideId) ids.add(insideId);
+    }
+
+    return ids;
+  }, [bikesFiltered, parkingSpots]);
+
+  const visibleParkingSpots = useMemo(() => {
+    if (bikeStatusFilter === "All") return parkingSpots;
+    return parkingSpots.filter(p => parkingIdsWithFilteredBikes.has(p.id));
+  }, [parkingSpots, bikeStatusFilter, parkingIdsWithFilteredBikes]);
 
   const center: LatLngExpression = [44.80796, 20.44864];
 
   const isPicking = !!editingBikeId;
 
   return (
-    <div style={{ position: "relative", height: "calc(100vh - 64px)" }}>
+    <div style={{ position: "relative", height: "calc(100vh - 145px)" }}>
+      <SelectField
+        value={bikeStatusFilter}
+        onChange={(e) => (setBikeStatusFilter(e.target.value as BikeStatus | "All")) }
+      >
+        <option value="All">All</option>
+        <option value="Available">Available</option>
+        <option value="Busy">Busy</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="Off">Off</option>
+      </SelectField>
+
       <MapContainer center={center} zoom={14} style={{ height: "100%", width: "100%" }}>
         <MapClickPicker
           enabled={!!editingBikeId}
@@ -74,7 +116,7 @@ export function MapPage() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {!isPicking && parkingSpots.map((p) => (
+        {!isPicking && visibleParkingSpots.map((p) => (
           <Marker
             icon={parkingIcon}
             key={p.id}

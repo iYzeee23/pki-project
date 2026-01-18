@@ -2,10 +2,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/auth-store";
 import { profileApi } from "../../util/services";
-import { Pressable } from "../../main/pressable";
+import { Pressable } from "../../elements/pressable";
 import { isCanceled } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
 import { CenterLayout } from "../../main/center-layout";
+import { TextField } from "../../elements/text-field";
+import { FileField } from "../../elements/file-field";
 
 export function EditProfilePage() {
   const nav = useNavigate();
@@ -19,7 +21,7 @@ export function EditProfilePage() {
   const [lastName, setLastName] = useState(initial?.lastName ?? "");
   const [phone, setPhone] = useState(initial?.phone ?? "");
   const [email, setEmail] = useState(initial?.email ?? "");
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | undefined | null>(undefined);
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -76,45 +78,45 @@ export function EditProfilePage() {
 
   return (
     <CenterLayout centerY={false}>
-        <div style={{ maxWidth: 520 }}>
+        <div style={{ maxWidth: 520, width: 300 }}>
             <h2 style={{ marginTop: 0 }}>Izmena profila</h2>
 
             <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
                 <label style={{ display: "grid", gap: 6 }}>
                     Username
-                    <input value={username} onChange={(e) => setUsername(e.target.value)} />
+                    <TextField value={username} onChange={(e) => setUsername(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
                     Ime
-                    <input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+                    <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
                     Prezime
-                    <input value={lastName} onChange={(e) => setLastName(e.target.value)} />
+                    <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
                     Telefon
-                    <input value={phone} onChange={(e) => setPhone(e.target.value)} />
+                    <TextField value={phone} onChange={(e) => setPhone(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
                     Email
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <TextField value={email} onChange={(e) => setEmail(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
                     Profilna slika (opciono)
-                    <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+                    <FileField profilePath={me.profileImagePath} accept="image/*" value={file} onChange={setFile} />
                 </label>
 
                 <div style={{ display: "flex", gap: 10 }}>
                     <Pressable type="button"  onClick={() => nav(-1)} disabled={busy} style={btn}>Nazad</Pressable>
 
                     <Pressable type="submit" disabled={busy}
-                        style={{ ...btn, background: "#111", borderColor: "#111", color: "#fff" }}>
+                        style={btn}>
                         {busy ? "Čuvam..." : "Sačuvaj"}
                     </Pressable>
                 </div>

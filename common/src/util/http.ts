@@ -40,13 +40,15 @@ export function createHttp(options: CreateHttpOptions): HttpClient {
         (err) => {
         const status = err?.response?.status;
         if (status === 401 && onUnauthorized) onUnauthorized();
-
-        console.log(
-            "HTTP error:",
-            err?.config?.method,
-            err?.config?.url,
-            err?.response?.status
-        );
+        
+        if (!isCanceled(err)) {
+            console.log(
+                "HTTP error:",
+                err?.config?.method,
+                err?.config?.url,
+                err?.response?.status
+            );
+        }
 
         return Promise.reject(err);
         }

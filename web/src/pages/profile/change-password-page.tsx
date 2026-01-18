@@ -3,14 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { profileApi } from "../../util/services";
 import { isCanceled } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
-import { Pressable } from "../../main/pressable";
+import { Pressable } from "../../elements/pressable";
 import { CenterLayout } from "../../main/center-layout";
+import { TextField } from "../../elements/text-field";
 
 export function ChangePasswordPage() {
   const nav = useNavigate();
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [confNewPassword, setConfNewPassword] = useState("");
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +37,11 @@ export function ChangePasswordPage() {
     setError(null);
 
     try {
-      if (!oldPassword || !newPassword) throw new Error("Popuni oba polja.");
+      if (!oldPassword || !newPassword || !confNewPassword)
+        throw new Error("Popunite sva polja");
+
+      if (newPassword !== confNewPassword)
+        throw new Error("Nove lozinke se ne poklapaju");
 
       await profileApi.changePassword({ oldPassword, newPassword }, signal);
       nav("/profile", { replace: true });
@@ -64,12 +70,17 @@ export function ChangePasswordPage() {
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
           <label style={{ display: "grid", gap: 6 }}>
             Stara lozinka
-            <input type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+            <TextField type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
           </label>
 
           <label style={{ display: "grid", gap: 6 }}>
             Nova lozinka
-            <input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <TextField type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+          </label>
+
+          <label style={{ display: "grid", gap: 6 }}>
+            Potvrda nove lozinke
+            <TextField type="password" value={confNewPassword} onChange={(e) => setConfNewPassword(e.target.value)} />
           </label>
 
           <div style={{ display: "flex", gap: 10 }}>

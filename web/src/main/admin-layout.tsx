@@ -1,7 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { resolveImageUrl } from "@app/shared";
 import { VITE_API_BASE_URL } from "../util/config";
-import { Pressable } from "./pressable";
+import { Pressable } from "../elements/pressable";
 import { useEffect } from "react";
 import { connectSocket, disconnectSocket } from "../util/socket";
 

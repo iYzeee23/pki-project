@@ -10,14 +10,14 @@ import { EditProfilePage } from "./pages/profile/edit-profile-page";
 import { ChangePasswordPage } from "./pages/profile/change-password-page";
 import { MapPage } from "./pages/features/map-page";
 import { ParkingDetailsPanel } from "./panels/parking-details-panel";
-import { BikeDetailsPanel } from "./panels/bike-details-panel";
-import { BikeEditPanel } from "./panels/bike-edit-panel";
 import { RentalsPage } from "./pages/features/rentals-page";
-import { RentalDetailsPanel } from "./panels/rental-details-panel";
-import { RentalImagesPanel } from "./panels/rental-images-panel";
 import { IssuesPage } from "./pages/features/issues-page";
-import { IssueDetailsPanel } from "./panels/issue-details-panel";
-import { IssueImagesPanel } from "./panels/issue-images-panel";
+import { BikeDetailsPanel } from "./panels/bike/bike-details-panel";
+import { BikeEditPanel } from "./panels/bike/bike-edit-panel";
+import { RentalImagesPanel } from "./panels/rental/rental-images-panel";
+import { RentalDetailsPanel } from "./panels/rental/rental-details-panel";
+import { IssueDetailsPanel } from "./panels/issue/issue-details-panel";
+import { IssueImagesPanel } from "./panels/issue/issue-images-panel";
 
 export function App() {
   const hydrate = useAuthStore((s) => s.hydrate);

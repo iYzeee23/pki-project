@@ -1,19 +1,19 @@
-import type { RentalDto } from "@app/shared";
+import type { IssueDto } from "@app/shared";
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { rentalApi } from "../util/services";
-import { Panel } from "./panel";
-import { Pressable } from "../main/pressable";
+import { issueApi } from "../../util/services";
+import { Panel } from "../panel";
+import { Pressable } from "../../elements/pressable";
 
-export function RentalDetailsPanel() {
+export function IssueDetailsPanel() {
   const { id } = useParams();
-  const rentalId = id!;
+  const issueId = id!;
   const nav = useNavigate();
   const loc = useLocation();
 
   const from = (loc.state as any)?.from as string | undefined;
 
-  const [item, setItem] = useState<RentalDto | null>(null);
+  const [item, setItem] = useState<IssueDto | null>(null);
   const [busy, setBusy] = useState(false);
 
   const ctrl = useRef<AbortController | null>(null);
@@ -24,16 +24,16 @@ export function RentalDetailsPanel() {
     const signal = ctrl.current.signal;
 
     setBusy(true);
-    rentalApi
-      .getById(rentalId, signal)
+    issueApi
+      .getById(issueId, signal)
       .then(setItem)
       .catch(() => {})
       .finally(() => setBusy(false));
 
     return () => ctrl.current?.abort();
-  }, [rentalId]);
+  }, [issueId]);
 
-  const closeTo = () => (from ? nav(from) : nav("/rentals"));
+  const closeTo = () => (from ? nav(from) : nav("/issues"));
 
   return (
     <Panel title="Detalji iznajmljivanja" onClose={closeTo}>
@@ -43,15 +43,13 @@ export function RentalDetailsPanel() {
           <div><b>ID:</b> {item.id}</div>
           <div><b>User:</b> {item.userId}</div>
           <div><b>Bike:</b> {item.bikeId}</div>
-          <div><b>Start:</b> {item.startAt}</div>
-          <div><b>End:</b> {item.endAt ?? "—"}</div>
-          <div><b>Total:</b> {item.totalCost ?? "—"}</div>
+          <div><b>Start:</b> {item.reportedAt}</div>
           <div><b>Opis:</b> {item.description}</div>
 
           <Pressable
             type="button"
             onClick={() =>
-              nav(`/rentals/${item.id}/images`, { state: { from: `/rentals/${item.id}` } })
+              nav(`/issues/${item.id}/images`, { state: { from: `/issues/${item.id}` } })
             }
           >
             Prikaži fotografije
