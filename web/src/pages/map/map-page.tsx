@@ -6,8 +6,9 @@ import { useMapStore } from "../../stores/map-store";
 import { useBikesStore } from "../../stores/bike-store";
 import { bikeApi, parkingApi } from "../../util/services";
 import { findInsideSpotId } from "@app/shared";
-import { bikeFreeIcon, bikeOtherIcon, parkingIcon } from "../../util/pin-colors";
-
+import { bikeAvailableIcon, bikeBusyIcon, bikeOtherIcon, parkingIcon } from "../../util/pin-colors";
+import { MapClickPicker } from "../../util/map-click-picker";
+import { useDraftStore } from "../../stores/draft-store";
 
 export function MapPage() {
   const nav = useNavigate();
@@ -15,6 +16,11 @@ export function MapPage() {
   const parkingSpots = useMapStore((s) => s.parkingSpots);
   const bikes = useBikesStore((s) => s.bikes);
   const setBikes = useBikesStore((s) => s.setBikes);
+
+  const editingBikeId = useDraftStore(s => s.editingBikeId);
+  const pinColor = useDraftStore(s => s.pinColor);
+  const pickedLocation = useDraftStore(s => s.pickedLocation);
+  const setPickedLocation = useDraftStore(s => s.setPickedLocation);
 
   useEffect(() => {
     const ac = new AbortController();
@@ -36,19 +42,39 @@ export function MapPage() {
     return bikes.filter(b => !findInsideSpotId(b.location, parkingSpots))
   }, [bikes, parkingSpots]);
 
-  const center: LatLngExpression =
-    parkingSpots[0] ? [parkingSpots[0].location.lat, parkingSpots[0].location.lng] : [44.7866, 20.4489];
+  const center: LatLngExpression = [44.80796, 20.44864];
+
+  const isPicking = !!editingBikeId;
 
   return (
     <div style={{ position: "relative", height: "calc(100vh - 64px)" }}>
       <MapContainer center={center} zoom={14} style={{ height: "100%", width: "100%" }}>
+        <MapClickPicker
+          enabled={!!editingBikeId}
+          onPick={pick => setPickedLocation(pick)}
+        />
+
+        {editingBikeId && pickedLocation && pinColor ? (
+          <Marker
+            position={[pickedLocation.lat, pickedLocation.lng]}
+            icon={pinColor}
+            draggable
+            eventHandlers={{
+              dragend: (e) => {
+                const m = e.target as L.Marker;
+                const p = m.getLatLng();
+                setPickedLocation({ lng: p.lng, lat: p.lat });
+              },
+            }}
+          />
+        ) : null}
+
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Parking */}
-        {parkingSpots.map((p) => (
+        {!isPicking && parkingSpots.map((p) => (
           <Marker
             icon={parkingIcon}
             key={p.id}
@@ -61,22 +87,24 @@ export function MapPage() {
           </Marker>
         ))}
 
-        {/* Bikes outside parkings */}
-        {bikesOutside.map((b) => (
-          <Marker
-            icon={b.status === "Available" ? bikeFreeIcon : bikeOtherIcon}
-            key={b.id}
-            position={[b.location.lat, b.location.lng]}
+        {!isPicking && bikesOutside.map((bike) => {
+              const pinColor = bike.status === "Available" ?
+                  bikeAvailableIcon : bike.status === "Busy" ?
+                  bikeBusyIcon : bikeOtherIcon;
+
+          return <Marker
+            icon={pinColor}
+            key={bike.id}
+            position={[bike.location.lat, bike.location.lng]}
             eventHandlers={{
-              click: () => nav(`/map/bike/${b.id}`),
+              click: () => nav(`/map/bike/${bike.id}`),
             }}
           >
-            <Popup>{b.type}</Popup>
+            <Popup>{bike.type}</Popup>
           </Marker>
-        ))}
+        })}
       </MapContainer>
 
-      {/* Panel route renders here */}
       <Outlet />
     </div>
   );

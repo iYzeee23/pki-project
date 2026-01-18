@@ -11,6 +11,7 @@ import { ChangePasswordPage } from "./pages/profile/change-password-page";
 import { MapPage } from "./pages/map/map-page";
 import { ParkingDetailsPanel } from "./panels/parking-details-panel";
 import { BikeDetailsPanel } from "./panels/bike-details-panel";
+import { BikeEditPanel } from "./panels/bike-edit-panel";
 
 function Placeholder({ title }: { title: string }) {
   return <div style={{ fontSize: 18, fontWeight: 900 }}>{title}</div>;
@@ -28,10 +29,8 @@ export function App() {
       <Routes>
         <Route path="/" element={<IndexRoute />} />
 
-        {/* public */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* protected */}
         <Route element={<ProtectedRoute />}>
           <Route element={<AdminLayout />}>
             <Route path="/profile" element={<ProfilePage />} />
@@ -41,7 +40,7 @@ export function App() {
             <Route path="/map" element={<MapPage />}>
               <Route path="parking/:id" element={<ParkingDetailsPanel />} />
               <Route path="bike/:id" element={<BikeDetailsPanel />} />
-              {/*<Route path="bike/:id/edit" element={<BikeEditDrawer />} />*/}
+              <Route path="bike/:id/edit" element={<BikeEditPanel />} />
             </Route>
             
             <Route path="/rentals" element={<Placeholder title="Iznajmljivanja (uskoro)" />} />

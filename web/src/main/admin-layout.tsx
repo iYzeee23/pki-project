@@ -39,20 +39,17 @@ export function AdminLayout() {
             alignItems: "center",
             maxWidth: 1100,
             margin: "0 auto",
-            width: "100%",
+            width: "35%",
             gap: 12,
           }}
         >
-          {/* Left: Logo -> profile */}
           <NavLink
             to="/profile"
-            style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#111" }}
+            style={{ display: "flex", alignItems: "center", textDecoration: "none", color: "#111" }}
           >
-            <img src={logoUrl} alt="logo" style={{ height: 34, width: 34, objectFit: "contain" }} />
-            <div style={{ fontWeight: 900 }}>BikeShare Admin</div>
+            <img src={logoUrl} alt="logo" style={{ height: 50, width: 50, objectFit: "contain" }} />
           </NavLink>
 
-          {/* Center: menu */}
           <nav style={{ display: "flex", gap: 8, justifyContent: "center" }}>
             <NavLink to="/map" style={navLinkStyle}>Mapa</NavLink>
             <NavLink to="/rentals" style={navLinkStyle}>Iznajmljivanja</NavLink>
@@ -60,12 +57,11 @@ export function AdminLayout() {
             <NavLink to="/profile" style={navLinkStyle}>Profil</NavLink>
           </nav>
 
-          {/* Right: language placeholder */}
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Pressable
               disabled
               title="Dolazi kasnije"
-              style={{ border: "1px solid #e5e5e5", padding: "8px 12px", borderRadius: 12, fontWeight: 800 }}
+              style={{ border: "1px solid #e5e5e5", padding: "8px", borderRadius: 12, fontWeight: 800 }}
             >
               SR ▾
             </Pressable>

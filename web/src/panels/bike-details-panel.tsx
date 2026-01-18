@@ -5,6 +5,7 @@ import { getCached, keyOf, LOCATION_CACHE_WEB, setCached } from "@app/shared";
 import { geocodeApi } from "../util/services";
 import { Panel } from "./panel";
 import { Pressable } from "../main/pressable";
+import { QRCodeCanvas } from "qrcode.react";
 
 export function BikeDetailsPanel() {
   const { id } = useParams();
@@ -60,7 +61,7 @@ export function BikeDetailsPanel() {
         <div><b>Tip:</b> {bike.type}</div>
         <div><b>Status:</b> {bike.status}</div>
         <div><b>Cena/sat:</b> {bike.pricePerHour}</div>
-        <div><b>QR:</b> {bike.qrCode}</div>
+        <div><b>ID:</b> {bike.id}</div>
 
         <div>
           <b>Koordinate:</b> {bike.location.lat.toFixed(5)}, {bike.location.lng.toFixed(5)}
@@ -80,6 +81,28 @@ export function BikeDetailsPanel() {
             Nazad
           </Pressable>
         </div>
+
+        <div style={{ display: "grid", gap: 6, paddingTop: 20 }}>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              padding: 12,
+              background: "#fff",
+            }}
+          >
+            <QRCodeCanvas
+              value={bike.id}
+              size={160}
+            />
+          </div>
+
+          <div style={{ textAlign: "center", opacity: 0.7, fontSize: 12 }}>
+            Skeniranje → ID bicikla
+          </div>
+        </div>
+
       </div>
     </Panel>
   );
