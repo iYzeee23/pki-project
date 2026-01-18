@@ -13,8 +13,6 @@ export function ProfilePage() {
 
   const imgPath = me.profileImagePath || DEFAULT_PROFILE_PICTURE;
   const imgUrl = resolveImageUrl(VITE_API_BASE_URL, imgPath);
-  console.log(imgPath)
-  console.log(imgUrl)
 
   const actionBtn: React.CSSProperties = {
     border: "1px solid #e5e5e5",

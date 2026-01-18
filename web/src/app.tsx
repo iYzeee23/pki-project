@@ -8,14 +8,16 @@ import { AdminLayout } from "./main/admin-layout";
 import { ProfilePage } from "./pages/profile/profile-page";
 import { EditProfilePage } from "./pages/profile/edit-profile-page";
 import { ChangePasswordPage } from "./pages/profile/change-password-page";
-import { MapPage } from "./pages/map/map-page";
+import { MapPage } from "./pages/features/map-page";
 import { ParkingDetailsPanel } from "./panels/parking-details-panel";
 import { BikeDetailsPanel } from "./panels/bike-details-panel";
 import { BikeEditPanel } from "./panels/bike-edit-panel";
-
-function Placeholder({ title }: { title: string }) {
-  return <div style={{ fontSize: 18, fontWeight: 900 }}>{title}</div>;
-}
+import { RentalsPage } from "./pages/features/rentals-page";
+import { RentalDetailsPanel } from "./panels/rental-details-panel";
+import { RentalImagesPanel } from "./panels/rental-images-panel";
+import { IssuesPage } from "./pages/features/issues-page";
+import { IssueDetailsPanel } from "./panels/issue-details-panel";
+import { IssueImagesPanel } from "./panels/issue-images-panel";
 
 export function App() {
   const hydrate = useAuthStore((s) => s.hydrate);
@@ -43,8 +45,15 @@ export function App() {
               <Route path="bike/:id/edit" element={<BikeEditPanel />} />
             </Route>
             
-            <Route path="/rentals" element={<Placeholder title="Iznajmljivanja (uskoro)" />} />
-            <Route path="/issues" element={<Placeholder title="Neispravnosti (uskoro)" />} />
+            <Route path="/rentals" element={<RentalsPage />}>
+              <Route path=":id" element={<RentalDetailsPanel />} />
+              <Route path=":id/images" element={<RentalImagesPanel />} />
+            </Route>
+
+            <Route path="/issues" element={<IssuesPage />}>
+              <Route path=":id" element={<IssueDetailsPanel />} />
+              <Route path=":id/images" element={<IssueImagesPanel />} />
+            </Route>
           </Route>
         </Route>
 

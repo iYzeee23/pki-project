@@ -11,4 +11,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // user
 router.post("/upload", requireAuth, upload.array("files", 10), c.upload);
 
+// admin
+router.get("/fetch/:model/:id", requireAuth, requireAdmin, c.fetch);
+
 export default router;

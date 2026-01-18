@@ -11,8 +11,8 @@ router.get("/nearest", requireAuth, c.nearest);
 router.get("/:id", requireAuth, c.getById);
 
 // admin
-router.post("/", requireAuth, requireAdmin, c.create);
-router.put("/:id", requireAuth, requireAdmin, c.update);
-router.delete("/:id", requireAuth, requireAdmin, c.remove);
+router.post("/create", requireAuth, requireAdmin, c.create);
+router.put("/update/:id", requireAuth, requireAdmin, c.update);
+router.delete("/remove/:id", requireAuth, requireAdmin, c.remove);
 
 export default router;

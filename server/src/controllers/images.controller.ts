@@ -26,4 +26,12 @@ export class ImagesController {
     const dtos: ImageDto[] = created.map(m => toImageDto(m as any));
     res.status(201).json(dtos);
   });
+
+  fetch = asyncHandler(async (req, res, _next) => {
+    const images = await ImageModel
+      .find({ ownerModel: req.params.model, ownerId: req.params.id });
+
+    const dtos: ImageDto[] = images.map(m => toImageDto(m));
+    res.json(dtos);
+  });
 }

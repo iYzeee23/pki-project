@@ -11,6 +11,6 @@ router.get("/mine", requireAuth, c.myList);
 router.get("/:id", requireAuth, c.getById);
 
 // admin
-router.get("/", requireAuth, requireAdmin, c.listAll);
+router.get("/admin/list", requireAuth, requireAdmin, c.list);
 
 export default router;

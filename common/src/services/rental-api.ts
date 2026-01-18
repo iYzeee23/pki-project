@@ -25,6 +25,13 @@ export function createRentalApi(http: AxiosInstance) {
       return data as RentalDto;
     },
 
+    async list(signal?: AbortSignal) {
+      const res = await http.get("/rentals/admin/list", { signal: signal });
+
+      const data = res.data;
+      return data as RentalDto[];
+    },
+
     async active(signal?: AbortSignal) {
       const res = await http.get("/rentals/active", { signal: signal });
       

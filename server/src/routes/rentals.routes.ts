@@ -13,6 +13,6 @@ router.get("/history", requireAuth, c.history);
 router.get("/:id", requireAuth, c.getById);
 
 // admin
-router.get("/", requireAuth, requireAdmin, c.listAll);
+router.get("/admin/list", requireAuth, requireAdmin, c.list);
 
 export default router;

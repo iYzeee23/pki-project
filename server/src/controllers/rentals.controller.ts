@@ -92,7 +92,7 @@ export class RentalsController {
     res.json(dtos);
   });
 
-  listAll = asyncHandler(async (_req, res, _next) => {
+  list = asyncHandler(async (_req, res, _next) => {
     const rentals = await RentalModel
       .find()
       .sort({ startAt: -1 });

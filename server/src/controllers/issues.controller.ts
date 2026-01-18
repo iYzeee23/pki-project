@@ -32,7 +32,7 @@ export class IssuesController {
     res.json(dtos);
   });
 
-  listAll = asyncHandler(async (_req, res, _next) => {
+  list = asyncHandler(async (_req, res, _next) => {
     const issues = await IssueModel
       .find()
       .sort({ reportedAt: -1 });
