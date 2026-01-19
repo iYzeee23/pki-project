@@ -5,8 +5,13 @@ import { useBikesStore } from "../stores/bike-store";
 import { haversineMeters, PARKING_RADIUS_M } from "@app/shared";
 import { Panel } from "./panel";
 import { Pressable } from "../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { parkingTexts } from "../i18n/i18n-builder";
 
 export function ParkingDetailsPanel() {
+  const { t } = useTranslation();
+  const pdp = parkingTexts(t);
+
   const { id } = useParams();
   const nav = useNavigate();
   const loc = useLocation();
@@ -27,15 +32,15 @@ export function ParkingDetailsPanel() {
   if (!spot) return null;
 
   return (
-    <Panel title={`Parking: ${spot.name}`} onClose={() => nav("/map")}>
+    <Panel title={`${pdp.Parking}: ${spot.name}`} onClose={() => nav("/map")}>
       <div style={{ display: "grid", gap: 10 }}>
         <div>
-          <b>Koordinate:</b> {spot.location.lat.toFixed(5)}, {spot.location.lng.toFixed(5)}
+          <b>{pdp.Coordinates}:</b> {spot.location.lat.toFixed(5)}, {spot.location.lng.toFixed(5)}
         </div>
 
-        <div style={{ fontWeight: 900, marginTop: 6 }}>Bicikli na parkingu</div>
+        <div style={{ fontWeight: 900, marginTop: 6 }}>{pdp.Bikes}</div>
 
-        {bikesHere.length === 0 ? <div>Nema bicikala.</div> : null}
+        {bikesHere.length === 0 ? <div>{pdp.NoBikes}</div> : null}
 
         {bikesHere.map((b) => (
           <Pressable

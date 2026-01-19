@@ -3,7 +3,7 @@ import { Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/bottom-sheet";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
-import { filterSortTexts } from "../../util/i18n-builder";
+import { filterSortTexts } from "../../i18n/i18n-builder";
 import { Draft } from "@app/shared";
 
 export type SheetKind = "filter" | "sort";

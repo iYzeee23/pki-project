@@ -11,8 +11,13 @@ import { MapClickPicker } from "../../util/map-click-picker";
 import { useDraftStore } from "../../stores/draft-store";
 import { getApiErrorMessage } from "../../util/http";
 import { SelectField } from "../../elements/select-field";
+import { useTranslation } from "react-i18next";
+import { mapTexts } from "../../i18n/i18n-builder";
 
 export function MapPage() {
+  const { t } = useTranslation();
+  const mpp = mapTexts(t);
+
   const nav = useNavigate();
 
   const parkingSpots = useMapStore((s) => s.parkingSpots);
@@ -83,11 +88,11 @@ export function MapPage() {
         value={bikeStatusFilter}
         onChange={(e) => (setBikeStatusFilter(e.target.value as BikeStatus | "All")) }
       >
-        <option value="All">All</option>
-        <option value="Available">Available</option>
-        <option value="Busy">Busy</option>
-        <option value="Maintenance">Maintenance</option>
-        <option value="Off">Off</option>
+        <option value="All">{mpp.All}</option>
+        <option value="Available">{mpp.Available}</option>
+        <option value="Busy">{mpp.Busy}</option>
+        <option value="Maintenance">{mpp.Maintenance}</option>
+        <option value="Off">{mpp.Off}</option>
       </SelectField>
 
       <MapContainer center={center} zoom={14} style={{ height: "100%", width: "100%" }}>

@@ -1,6 +1,6 @@
 import { createHttp } from "@app/shared";
 import { EXPO_API_BASE_URL } from "./config";
-import { commonTexts } from "./i18n-builder";
+import { commonTexts } from "../i18n/i18n-builder";
 import axios from "axios";
 
 export const http = createHttp({

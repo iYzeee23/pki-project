@@ -6,7 +6,7 @@ import { RentalStackParamList } from "../../navigation/types";
 import { useRentalStore } from "../../stores/rental-store";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
-import { commonTexts, qrScannerTexts } from "../../util/i18n-builder";
+import { commonTexts, qrScannerTexts } from "../../i18n/i18n-builder";
 import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";

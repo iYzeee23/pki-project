@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDraftStore } from "../../stores/draft-store";
 import { RentalStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { reportIssueTexts } from "../../util/i18n-builder";
+import { reportIssueTexts } from "../../i18n/i18n-builder";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "ReportIssue">;
 

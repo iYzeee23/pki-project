@@ -6,8 +6,14 @@ import { useBikesStore } from "../../stores/bike-store";
 import { geocodeApi } from "../../util/services";
 import { Panel } from "../panel";
 import { Pressable } from "../../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { bikeDetailsTexts, commonTexts } from "../../i18n/i18n-builder";
 
 export function BikeDetailsPanel() {
+  const { t } = useTranslation();
+  const bdp = bikeDetailsTexts(t);
+  const com = commonTexts();
+
   const { id } = useParams();
   const nav = useNavigate();
   const loc = useLocation();
@@ -21,13 +27,12 @@ export function BikeDetailsPanel() {
 
   const locKey = useMemo(() => {
     if (!bike) return null;
-    return keyOf(bike.location, "sr-Latn");
+    return keyOf(bike.location, bdp.Language);
   }, [bike]);
 
   useEffect(() => {
     if (!bike || !locKey) return;
 
-    // cache hit
     const cached = getCached(LOCATION_CACHE_WEB, locKey);
     if (cached) {
       setAddr(cached);
@@ -40,14 +45,12 @@ export function BikeDetailsPanel() {
 
     setAddrBusy(true);
     geocodeApi
-      .reverse(bike.location.lng, bike.location.lat, "sr-Latn", signal)
+      .reverse(bike.location.lng, bike.location.lat, bdp.Language, signal)
       .then((label) => {
         setCached(LOCATION_CACHE_WEB, locKey, label);
         setAddr(label);
       })
-      .catch(() => {
-        // ignoriši (npr abort / offline)
-      })
+      .catch(() => {})
       .finally(() => setAddrBusy(false));
 
     return () => controllerRef.current?.abort();
@@ -56,29 +59,29 @@ export function BikeDetailsPanel() {
   if (!bike) return null;
 
   return (
-    <Panel title="Bicikl" onClose={() => nav("/map")}>
+    <Panel title={bdp.Bike} onClose={() => nav("/map")}>
       <div style={{ display: "grid", gap: 10 }}>
-        <div><b>Tip:</b> {bike.type}</div>
-        <div><b>Status:</b> {bike.status}</div>
-        <div><b>Cena/sat:</b> {bike.pricePerHour}</div>
-        <div><b>ID:</b> {bike.id}</div>
+        <div><b>{bdp.Type}:</b> {bike.type}</div>
+        <div><b>{bdp.Status}:</b> {bike.status}</div>
+        <div><b>{bdp.Price}:</b> {bike.pricePerHour}</div>
+        <div><b>{bdp.ID}:</b> {bike.id}</div>
 
         <div>
-          <b>Koordinate:</b> {bike.location.lat.toFixed(5)}, {bike.location.lng.toFixed(5)}
+          <b>{bdp.Coordinates}:</b> {bike.location.lat.toFixed(5)}, {bike.location.lng.toFixed(5)}
         </div>
 
         <div>
-          <b>Adresa:</b>{" "}
-          {addrBusy ? "Učitavanje..." : addr ?? "—"}
+          <b>{bdp.Address}:</b>{" "}
+          {addrBusy ? bdp.Loading : addr ?? "—"}
         </div>
 
         <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
           <Pressable type="button" onClick={() => nav(`/map/bike/${bike.id}/edit`)}>
-            Izmeni
+            {bdp.Edit}
           </Pressable>
 
           <Pressable type="button" onClick={() =>(from ? nav(from) : nav("/map"))} variant="secondary">
-            Nazad
+            {com.Back}
           </Pressable>
         </div>
 
@@ -99,7 +102,7 @@ export function BikeDetailsPanel() {
           </div>
 
           <div style={{ textAlign: "center", opacity: 0.7, fontSize: 12 }}>
-            Skeniranje → ID bicikla
+            {bdp.Scan}
           </div>
         </div>
 

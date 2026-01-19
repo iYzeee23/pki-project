@@ -6,8 +6,14 @@ import { getApiErrorMessage } from "../../util/http";
 import { Pressable } from "../../elements/pressable";
 import { CenterLayout } from "../../main/center-layout";
 import { TextField } from "../../elements/text-field";
+import { useTranslation } from "react-i18next";
+import { changePasswordTexts, commonTexts } from "../../i18n/i18n-builder";
 
 export function ChangePasswordPage() {
+  const { t } = useTranslation();
+  const cpp = changePasswordTexts(t);
+  const com = commonTexts();
+
   const nav = useNavigate();
 
   const [oldPassword, setOldPassword] = useState("");
@@ -38,10 +44,10 @@ export function ChangePasswordPage() {
 
     try {
       if (!oldPassword || !newPassword || !confNewPassword)
-        throw new Error("Popunite sva polja");
+        throw new Error(cpp.ErrAllFields);
 
       if (newPassword !== confNewPassword)
-        throw new Error("Nove lozinke se ne poklapaju");
+        throw new Error(cpp.ErrMismatch);
 
       await profileApi.changePassword({ oldPassword, newPassword }, signal);
       nav("/profile", { replace: true });
@@ -65,30 +71,30 @@ export function ChangePasswordPage() {
   return (
     <CenterLayout centerY={false}>
       <div style={{ maxWidth: 520 }}>
-        <h2 style={{ marginTop: 0 }}>Promena lozinke</h2>
+        <h2 style={{ marginTop: 0 }}>{cpp.ChangePasswords}</h2>
 
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
           <label style={{ display: "grid", gap: 6 }}>
-            Stara lozinka
+            {cpp.CurrentPassword}
             <TextField type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
           </label>
 
           <label style={{ display: "grid", gap: 6 }}>
-            Nova lozinka
+            {cpp.NewPassword}
             <TextField type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
           </label>
 
           <label style={{ display: "grid", gap: 6 }}>
-            Potvrda nove lozinke
+            {cpp.ConfNewPassword}
             <TextField type="password" value={confNewPassword} onChange={(e) => setConfNewPassword(e.target.value)} />
           </label>
 
           <div style={{ display: "flex", gap: 10 }}>
-              <Pressable type="button" onClick={() => nav(-1)} disabled={busy} style={btn}>Nazad</Pressable>
+              <Pressable type="button" onClick={() => nav(-1)} disabled={busy} style={btn}>{com.Back}</Pressable>
 
               <Pressable type="submit" disabled={busy}
-                style={{ ...btn, background: "#111", borderColor: "#111", color: "#fff" }}>
-                {busy ? "Menjam..." : "Promeni"}
+                style={btn}>
+                {busy ? cpp.Changing : cpp.Change}
               </Pressable>
           </div>
 

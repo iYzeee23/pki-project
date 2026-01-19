@@ -5,8 +5,14 @@ import { imageApi } from "../../util/services";
 import { Panel } from "../panel";
 import { DEFAULT_PROFILE_PICTURE_RESOLVED, VITE_API_BASE_URL } from "../../util/config";
 import { Pressable } from "../../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { commonTexts, rentalImagesTexts } from "../../i18n/i18n-builder";
 
 export function RentalImagesPanel() {
+  const { t } = useTranslation();
+  const rip = rentalImagesTexts(t);
+  const com = commonTexts();
+
   const { id } = useParams();
   const ownerId = id!;
   const nav = useNavigate();
@@ -37,8 +43,8 @@ export function RentalImagesPanel() {
   const closeTo = () => (from ? nav(from) : nav(`/rentals/${ownerId}`));
 
   return (
-    <Panel title="Fotografije (iznajmljivanje)" onClose={closeTo}>
-      {busy ? <div>Učitavanje...</div> : null}
+    <Panel title={rip.RentalImages} onClose={closeTo}>
+      {busy ? <div>{rip.Loading}</div> : null}
 
       <div style={{ display: "grid", gap: 12 }}>
         {items.map((img) => (
@@ -52,10 +58,10 @@ export function RentalImagesPanel() {
           </div>
         ))}
 
-        {!busy && items.length === 0 ? <div>Nema fotografija.</div> : null}
+        {!busy && items.length === 0 ? <div>{rip.NoImages}</div> : null}
 
         <Pressable type="button" variant="secondary" onClick={closeTo}>
-          Nazad
+          {com.Back}
         </Pressable>
       </div>
     </Panel>

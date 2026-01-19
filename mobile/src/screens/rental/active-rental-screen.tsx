@@ -6,7 +6,7 @@ import { RentalStackParamList } from "../../navigation/types";
 import { useRentalStore } from "../../stores/rental-store";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
-import { activeRentalTexts, commonTexts } from "../../util/i18n-builder";
+import { activeRentalTexts, commonTexts } from "../../i18n/i18n-builder";
 import { BikeDto, findInsideSpotId, formatDurationFromMs, isCanceled } from "@app/shared";
 import { bikeApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";

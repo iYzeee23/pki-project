@@ -4,8 +4,14 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Panel } from "../panel";
 import { Pressable } from "../../elements/pressable";
 import { rentalApi } from "../../util/services";
+import { useTranslation } from "react-i18next";
+import { commonTexts, rentalDetailsTexts } from "../../i18n/i18n-builder";
 
 export function RentalDetailsPanel() {
+  const { t } = useTranslation();
+  const rdp = rentalDetailsTexts(t);
+  const com = commonTexts();
+
   const { id } = useParams();
   const rentalId = id!;
   const nav = useNavigate();
@@ -36,17 +42,17 @@ export function RentalDetailsPanel() {
   const closeTo = () => (from ? nav(from) : nav("/rentals"));
 
   return (
-    <Panel title="Detalji iznajmljivanja" onClose={closeTo}>
-      {busy && !item ? <div>Učitavanje...</div> : null}
+    <Panel title={rdp.RentalDetails} onClose={closeTo}>
+      {busy && !item ? <div>{rdp.Loading}</div> : null}
       {!item ? null : (
         <div style={{ display: "grid", gap: 10 }}>
-          <div><b>ID:</b> {item.id}</div>
-          <div><b>User:</b> {item.userId}</div>
-          <div><b>Bike:</b> {item.bikeId}</div>
-          <div><b>Start:</b> {item.startAt}</div>
-          <div><b>End:</b> {item.endAt ?? "—"}</div>
-          <div><b>Total:</b> {item.totalCost ?? "—"}</div>
-          <div><b>Opis:</b> {item.description}</div>
+          <div><b>{rdp.ID}:</b> {item.id}</div>
+          <div><b>{rdp.User}:</b> {item.userId}</div>
+          <div><b>{rdp.Bike}:</b> {item.bikeId}</div>
+          <div><b>{rdp.Start}:</b> {item.startAt}</div>
+          <div><b>{rdp.End}:</b> {item.endAt ?? "—"}</div>
+          <div><b>{rdp.Total}:</b> {item.totalCost ?? "—"}</div>
+          <div><b>{rdp.Description}:</b> {item.description}</div>
 
           <Pressable
             type="button"
@@ -54,11 +60,11 @@ export function RentalDetailsPanel() {
               nav(`/rentals/${item.id}/images`, { state: { from: `/rentals/${item.id}` } })
             }
           >
-            Prikaži fotografije
+            {rdp.ShowImages}
           </Pressable>
 
           <Pressable type="button" variant="secondary" onClick={closeTo}>
-            Nazad
+            {com.Back}
           </Pressable>
         </div>
       )}

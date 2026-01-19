@@ -5,6 +5,7 @@ import { useBikesStore } from "./bike-store";
 import * as SecureStore from "expo-secure-store";
 import { authApi } from "../util/services";
 import { UserDto } from "@app/shared";
+import { commonTexts } from "../i18n/i18n-builder";
 
 type AuthState = {
   token: string | null;
@@ -24,6 +25,8 @@ const USER_KEY = "auth_user";
 let unauthorizedInProgress = false;
 
 export const useAuthStore = create<AuthState>((set, get) => {
+  const com = commonTexts();
+
   const clearSessionLocal = async () => {
     setAuthToken(null);
     setOnUnauthorized(null);
@@ -66,7 +69,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
 
     setSession: async (payload) => {
       if (payload.user.isAdmin)
-        throw new Error("This account is admin account. Please, try with user account");
+        throw new Error(com.ErrAdminAcc);
 
       setAuthToken(payload.token);
       attachUnauthorizedHandler();
@@ -99,7 +102,7 @@ export const useAuthStore = create<AuthState>((set, get) => {
       };
 
       const resp = await authApi.login(payload, signal);
-      if (!resp) throw new Error("Login failed");
+      if (!resp) throw new Error(com.LoginFailed);
 
       await get().setSession(resp);
     },

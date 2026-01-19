@@ -6,7 +6,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/types";
 import { DEFAULT_PROFILE_PICTURE_RESOLVED } from "../../util/config";
 import { useTranslation } from "react-i18next";
-import { commonTexts, registerTexts } from "../../util/i18n-builder";
+import { commonTexts, registerTexts } from "../../i18n/i18n-builder";
 import { authApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";

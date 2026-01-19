@@ -4,8 +4,14 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { issueApi } from "../../util/services";
 import { Panel } from "../panel";
 import { Pressable } from "../../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { commonTexts, issueDetailsTexts } from "../../i18n/i18n-builder";
 
 export function IssueDetailsPanel() {
+  const { t } = useTranslation();
+  const idp = issueDetailsTexts(t);
+  const com = commonTexts();
+
   const { id } = useParams();
   const issueId = id!;
   const nav = useNavigate();
@@ -36,15 +42,15 @@ export function IssueDetailsPanel() {
   const closeTo = () => (from ? nav(from) : nav("/issues"));
 
   return (
-    <Panel title="Detalji iznajmljivanja" onClose={closeTo}>
-      {busy && !item ? <div>Učitavanje...</div> : null}
+    <Panel title={idp.IssueDetails} onClose={closeTo}>
+      {busy && !item ? <div>{idp.Loading}</div> : null}
       {!item ? null : (
         <div style={{ display: "grid", gap: 10 }}>
-          <div><b>ID:</b> {item.id}</div>
-          <div><b>User:</b> {item.userId}</div>
-          <div><b>Bike:</b> {item.bikeId}</div>
-          <div><b>Start:</b> {item.reportedAt}</div>
-          <div><b>Opis:</b> {item.description}</div>
+          <div><b>{idp.ID}:</b> {item.id}</div>
+          <div><b>{idp.User}:</b> {item.userId}</div>
+          <div><b>{idp.Bike}:</b> {item.bikeId}</div>
+          <div><b>{idp.Start}:</b> {item.reportedAt}</div>
+          <div><b>{idp.Description}:</b> {item.description}</div>
 
           <Pressable
             type="button"
@@ -52,11 +58,11 @@ export function IssueDetailsPanel() {
               nav(`/issues/${item.id}/images`, { state: { from: `/issues/${item.id}` } })
             }
           >
-            Prikaži fotografije
+            {idp.ShowImages}
           </Pressable>
 
           <Pressable type="button" variant="secondary" onClick={closeTo}>
-            Nazad
+            {com.Back}
           </Pressable>
         </div>
       )}

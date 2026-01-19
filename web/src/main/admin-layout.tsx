@@ -4,6 +4,9 @@ import { VITE_API_BASE_URL } from "../util/config";
 import { Pressable } from "../elements/pressable";
 import { useEffect } from "react";
 import { connectSocket, disconnectSocket } from "../util/socket";
+import { useTranslation } from "react-i18next";
+import { adminTexts } from "../i18n/i18n-builder";
+import i18n from "../i18n";
 
 const navLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties => ({
   padding: "8px 10px",
@@ -15,7 +18,10 @@ const navLinkStyle = ({ isActive }: { isActive: boolean }): React.CSSProperties 
 });
 
 export function AdminLayout() {
-  const logoUrl = resolveImageUrl(VITE_API_BASE_URL, "/uploads/logo.png"); // promeni ekstenziju ako treba
+  const { t } = useTranslation();
+  const adm = adminTexts(t);
+  
+  const logoUrl = resolveImageUrl(VITE_API_BASE_URL, "/uploads/logo.png");
 
   useEffect(() => {
     connectSocket();
@@ -51,19 +57,19 @@ export function AdminLayout() {
           </NavLink>
 
           <nav style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-            <NavLink to="/map" style={navLinkStyle}>Mapa</NavLink>
-            <NavLink to="/rentals" style={navLinkStyle}>Iznajmljivanja</NavLink>
-            <NavLink to="/issues" style={navLinkStyle}>Neispravnosti</NavLink>
-            <NavLink to="/profile" style={navLinkStyle}>Profil</NavLink>
+            <NavLink to="/map" style={navLinkStyle}>{adm.Map}</NavLink>
+            <NavLink to="/rentals" style={navLinkStyle}>{adm.Rentals}</NavLink>
+            <NavLink to="/issues" style={navLinkStyle}>{adm.Issues}</NavLink>
+            <NavLink to="/profile" style={navLinkStyle}>{adm.Profile}</NavLink>
           </nav>
 
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
             <Pressable
-              disabled
-              title="Dolazi kasnije"
+              title={adm.Language}
+              onClick={() => i18n.changeLanguage(i18n.language === "sr" ? "en" : "sr")}
               style={{ border: "1px solid #e5e5e5", padding: "8px", borderRadius: 12, fontWeight: 800 }}
             >
-              SR ▾
+              {adm.Language}
             </Pressable>
           </div>
         </div>

@@ -6,7 +6,7 @@ import { useMapStore } from "../../stores/map-store";
 import { MapStackParamList } from "../../navigation/types";
 import { useBikesStore } from "../../stores/bike-store";
 import { useTranslation } from "react-i18next";
-import { commonTexts, mapTexts } from "../../util/i18n-builder";
+import { commonTexts, mapTexts } from "../../i18n/i18n-builder";
 import { findInsideSpotId, isCanceled, LngLat, nearestSpots, RentalDto } from "@app/shared";
 import { bikeApi, rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";

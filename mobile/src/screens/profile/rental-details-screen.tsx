@@ -3,7 +3,7 @@ import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { commonTexts, rentalDetailsTexts } from "../../util/i18n-builder";
+import { commonTexts, rentalDetailsTexts } from "../../i18n/i18n-builder";
 import { BikeDto, formatDateTime, formatDurationFromStartEnd, isCanceled, RentalDto } from "@app/shared";
 import { bikeApi, rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";

@@ -4,6 +4,8 @@ import { FilterSortBar, type CommonFilters } from "../../elements/filter-sort-ba
 import { issueApi } from "../../util/services";
 import { isoDateOnly, type IssueDto } from "@app/shared";
 import { Pressable } from "../../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { issuesTexts } from "../../i18n/i18n-builder";
 
 const DEFAULT_FILTERS: CommonFilters = {
   userId: "",
@@ -14,6 +16,9 @@ const DEFAULT_FILTERS: CommonFilters = {
 };
 
 export function IssuesPage() {
+  const { t } = useTranslation();
+  const isp = issuesTexts(t);
+
   const nav = useNavigate();
   const loc = useLocation();
 
@@ -71,7 +76,7 @@ export function IssuesPage() {
   return (
     <div style={{ position: "relative" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: 14 }}>
-        <h2 style={{ margin: "6px 0 12px" }}>Iznajmljivanja</h2>
+        <h2 style={{ margin: "6px 0 12px" }}>{isp.Issues}</h2>
 
         <FilterSortBar
           value={filters}
@@ -79,7 +84,7 @@ export function IssuesPage() {
           onReset={() => setFilters(DEFAULT_FILTERS)}
         />
 
-        {busy ? <div>Učitavanje...</div> : null}
+        {busy ? <div>{isp.Loading}</div> : null}
 
         <div style={{ display: "grid", gap: 10 }}>
           {view.map((r) => (
@@ -100,12 +105,12 @@ export function IssuesPage() {
                 <div style={{ fontWeight: 900 }}>{isoDateOnly(r.reportedAt)}</div>
               </div>
 
-              <div style={{ opacity: 0.9 }}>User: {r.userId}</div>
-              <div style={{ opacity: 0.9 }}>Bike: {r.bikeId}</div>
+              <div style={{ opacity: 0.9 }}>{isp.User}: {r.userId}</div>
+              <div style={{ opacity: 0.9 }}>{isp.Bike}: {r.bikeId}</div>
             </Pressable>
           ))}
 
-          {!busy && view.length === 0 ? <div>Nema rezultata.</div> : null}
+          {!busy && view.length === 0 ? <div>{isp.NoResults}</div> : null}
         </div>
       </div>
 

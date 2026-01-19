@@ -9,8 +9,13 @@ import { Panel } from "../panel";
 import { TextField } from "../../elements/text-field";
 import { SelectField } from "../../elements/select-field";
 import { Pressable } from "../../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { bikeEditTexts } from "../../i18n/i18n-builder";
 
 export function BikeEditPanel() {
+  const { t } = useTranslation();
+  const bep = bikeEditTexts(t);
+
   const { id } = useParams();
   const bikeId = id!;
   const nav = useNavigate();
@@ -85,9 +90,9 @@ export function BikeEditPanel() {
     if (!bike) return;
 
     const pph = Number(pricePerHour);
-    if (!type.trim()) return alert("Unesi tip bicikla.");
-    if (!Number.isFinite(pph) || pph <= 0) return alert("Cena po satu mora biti broj > 0.");
-    if (!effectiveLoc) return alert("Lokacija nije dostupna.");
+    if (!type.trim()) return alert(bep.ErrBikeType);
+    if (!Number.isFinite(pph) || pph <= 0) return alert(bep.ErrPrice);
+    if (!effectiveLoc) return alert(bep.ErrLocation);
 
     saveCtrl.current?.abort();
     saveCtrl.current = new AbortController();
@@ -110,9 +115,9 @@ export function BikeEditPanel() {
       setBike(updated);
 
       stopPickLocation();
-      nav(`/map/bike/${bikeId}`); // nazad na details
+      nav(`/map/bike/${bikeId}`);
     } catch (err: any) {
-      alert(err?.message ?? "Greska pri cuvanju.");
+      alert(err?.message ?? bep.ErrSaving);
     } finally {
       setBusy(false);
     }
@@ -121,15 +126,15 @@ export function BikeEditPanel() {
   if (!bike) return null;
 
   return (
-    <Panel title="Izmena bicikla" onClose={onClose}>
+    <Panel title={bep.BikeEdit} onClose={onClose}>
       <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Tip</b>
+          <b>{bep.Type}</b>
           <TextField value={type} onChange={(e) => setType(e.target.value)} />
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Cena/sat</b>
+          <b>{bep.Price}</b>
           <TextField
             value={pricePerHour}
             onChange={(e) => setPricePerHour(e.target.value)}
@@ -138,7 +143,7 @@ export function BikeEditPanel() {
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Status</b>
+          <b>{bep.Status}</b>
           <SelectField value={status} onChange={(e) => setStatus(e.target.value as BikeStatus)}>
             {BIKE_STATUSES.map((s) => (
               <option key={s} value={s}>{s}</option>
@@ -147,7 +152,7 @@ export function BikeEditPanel() {
         </label>
 
         <div style={{ display: "grid", gap: 6 }}>
-          <b>Lokacija</b>
+          <b>{bep.Location}</b>
           <div style={{ opacity: 0.85 }}>
             {effectiveLoc?.lat.toFixed(5)}, {effectiveLoc?.lng.toFixed(5)}
           </div>
@@ -155,26 +160,26 @@ export function BikeEditPanel() {
           {editingBikeId === bikeId ? (
             <div style={{ display: "flex", gap: 10 }}>
               <Pressable type="button" onClick={onCancelPick}>
-                Prekini biranje
+                {bep.StopPicking}
               </Pressable>
               <div style={{ opacity: 0.7, alignSelf: "center" }}>
-                Klikni na mapu ili prevuci marker
+                {bep.MapOrMarker}
               </div>
             </div>
           ) : (
             <Pressable type="button" onClick={onStartPick}>
-              Izmeni lokaciju preko mape
+              {bep.ChangeLocation}
             </Pressable>
           )}
         </div>
 
         <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
           <Pressable type="submit" disabled={busy} variant="primary">
-            {busy ? "Cuvanje..." : "Sacuvaj"}
+            {busy ? bep.Saving : bep.Save}
           </Pressable>
 
           <Pressable type="button" onClick={onClose} variant="secondary">
-            Odustani
+            {bep.Dismiss}
           </Pressable>
         </div>
       </form>

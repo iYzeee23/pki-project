@@ -4,6 +4,8 @@ import { FilterSortBar, type CommonFilters } from "../../elements/filter-sort-ba
 import { rentalApi } from "../../util/services";
 import { isoDateOnly, type RentalDto } from "@app/shared";
 import { Pressable } from "../../elements/pressable";
+import { useTranslation } from "react-i18next";
+import { rentalsTexts } from "../../i18n/i18n-builder";
 
 const DEFAULT_FILTERS: CommonFilters = {
   userId: "",
@@ -14,6 +16,9 @@ const DEFAULT_FILTERS: CommonFilters = {
 };
 
 export function RentalsPage() {
+  const { t } = useTranslation();
+  const rnp = rentalsTexts(t);
+
   const nav = useNavigate();
   const loc = useLocation();
 
@@ -71,7 +76,7 @@ export function RentalsPage() {
   return (
     <div style={{ position: "relative" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: 14 }}>
-        <h2 style={{ margin: "6px 0 12px" }}>Iznajmljivanja</h2>
+        <h2 style={{ margin: "6px 0 12px" }}>{rnp.Rentals}</h2>
 
         <FilterSortBar
           value={filters}
@@ -79,7 +84,7 @@ export function RentalsPage() {
           onReset={() => setFilters(DEFAULT_FILTERS)}
         />
 
-        {busy ? <div>Učitavanje...</div> : null}
+        {busy ? <div>{rnp.Loading}</div> : null}
 
         <div style={{ display: "grid", gap: 10 }}>
           {view.map((r) => (
@@ -98,15 +103,15 @@ export function RentalsPage() {
             >
               <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
                 <div style={{ fontWeight: 900 }}>{isoDateOnly(r.startAt)}</div>
-                <div style={{ opacity: 0.7 }}>{r.totalCost ?? "—"} RSD</div>
+                <div style={{ opacity: 0.7 }}>{r.totalCost ?? "—"} {rnp.RSD}</div>
               </div>
 
-              <div style={{ opacity: 0.9 }}>User: {r.userId}</div>
-              <div style={{ opacity: 0.9 }}>Bike: {r.bikeId}</div>
+              <div style={{ opacity: 0.9 }}>{rnp.User}: {r.userId}</div>
+              <div style={{ opacity: 0.9 }}>{rnp.Bike}: {r.bikeId}</div>
             </Pressable>
           ))}
 
-          {!busy && view.length === 0 ? <div>Nema rezultata.</div> : null}
+          {!busy && view.length === 0 ? <div>{rnp.NoResults}</div> : null}
         </div>
       </div>
 

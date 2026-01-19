@@ -7,7 +7,7 @@ import { RentalStackParamList } from "../../navigation/types";
 import { pickMultipleImages, UploadFile } from "../../util/image-picker";
 import { useMapStore } from "../../stores/map-store";
 import { useTranslation } from "react-i18next";
-import { commonTexts, photoUploadTexts } from "../../util/i18n-builder";
+import { commonTexts, photoUploadTexts } from "../../i18n/i18n-builder";
 import { CommonActions } from "@react-navigation/native";
 import { imageApi, issueApi, rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";

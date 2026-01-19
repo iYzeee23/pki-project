@@ -5,7 +5,7 @@ import { useMapStore } from "../../stores/map-store";
 import { useBikesStore } from "../../stores/bike-store";
 import { MapStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { parkingDetailsTexts } from "../../util/i18n-builder";
+import { parkingDetailsTexts } from "../../i18n/i18n-builder";
 import { BikeDto, haversineMeters, PARKING_RADIUS_M } from "@app/shared";
 
 function EmptyState({park}: any) {

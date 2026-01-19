@@ -3,7 +3,7 @@ import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { changePasswordTexts, commonTexts } from "../../util/i18n-builder";
+import { changePasswordTexts, commonTexts } from "../../i18n/i18n-builder";
 import { profileApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";

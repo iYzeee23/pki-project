@@ -1,5 +1,5 @@
 import type { TFunction } from "i18next";
-import i18n from "../i18n";
+import i18n from ".";
 
 export function commonTexts() {
   return {
@@ -11,7 +11,25 @@ export function commonTexts() {
     AreYouSure: i18n.t("AreYouSure", { ns: "common" }),
     No: i18n.t("No", { ns: "common" }),
     Yes: i18n.t("Yes", { ns: "common" }),
-    UnknownQR: i18n.t("UnknownQR", { ns: "common" })
+    UnknownQR: i18n.t("UnknownQR", { ns: "common" }),
+    ErrAdminAcc: i18n.t("ErrAdminAcc", { ns: "common" }),
+    LoginFailed: i18n.t("LoginFailed", { ns: "common" }),
+    Map: i18n.t("Map", { ns: "common" }),
+    Rental: i18n.t("Rental", { ns: "common" }),
+    Profile: i18n.t("Profile", { ns: "common" }),
+    Login: i18n.t("Login", { ns: "common" }),
+    Registration: i18n.t("Registration", { ns: "common" }),
+    Parking: i18n.t("Parking", { ns: "common" }),
+    Bike: i18n.t("Bike", { ns: "common" }),
+    EditProfile: i18n.t("EditProfile", { ns: "common" }),
+    ChangePassword: i18n.t("ChangePassword", { ns: "common" }),
+    RentalHistory: i18n.t("RentalHistory", { ns: "common" }),
+    RentalDetails: i18n.t("RentalDetails", { ns: "common" }),
+    ActiveRental: i18n.t("ActiveRental", { ns: "common" }),
+    QrScanner: i18n.t("QrScanner", { ns: "common" }),
+    FinishRental: i18n.t("FinishRental", { ns: "common" }),
+    PhotoUpload: i18n.t("PhotoUpload", { ns: "common" }),
+    ReportIssue: i18n.t("ReportIssue", { ns: "common" })
   };
 }
 

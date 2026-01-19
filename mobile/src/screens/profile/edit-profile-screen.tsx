@@ -6,7 +6,7 @@ import { useAuthStore } from "../../stores/auth-store";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";
 import { EXPO_API_BASE_URL, DEFAULT_PROFILE_PICTURE_RESOLVED } from "../../util/config";
 import { useTranslation } from "react-i18next";
-import { commonTexts, editProfileTexts } from "../../util/i18n-builder";
+import { commonTexts, editProfileTexts } from "../../i18n/i18n-builder";
 import { profileApi } from "../../util/services";
 import { DEFAULT_PROFILE_PICTURE, isCanceled, resolveImageUrl } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";

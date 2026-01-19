@@ -3,15 +3,18 @@ import { MapStackParamList } from "./types";
 import { MapScreen } from "../screens/map/map-screen";
 import { ParkingDetailsScreen } from "../screens/map/parking-details-screen";
 import { BikeDetailsScreen } from "../screens/map/bike-details-screen";
+import { commonTexts } from "../i18n/i18n-builder";
 
 const Stack = createNativeStackNavigator<MapStackParamList>();
 
 export function MapStack() {
+  const com = commonTexts();
+    
   return (
     <Stack.Navigator>
-      <Stack.Screen name="MapHome" component={MapScreen} options={{ title: "Map" }} />
-      <Stack.Screen name="ParkingDetails" component={ParkingDetailsScreen} options={{ title: "Parking" }} />
-      <Stack.Screen name="BikeDetails" component={BikeDetailsScreen} options={{ title: "Bike" }} />
+      <Stack.Screen name="MapHome" component={MapScreen} options={{ title: com.Map }} />
+      <Stack.Screen name="ParkingDetails" component={ParkingDetailsScreen} options={{ title: com.Parking }} />
+      <Stack.Screen name="BikeDetails" component={BikeDetailsScreen} options={{ title: com.Bike }} />
     </Stack.Navigator>
   );
 }

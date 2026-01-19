@@ -4,10 +4,13 @@ import { MapStack } from "./map-stack";
 import { RentalStack } from "./rental-stack";
 import { ProfileStack } from "./profile-stack";
 import { Ionicons } from "@expo/vector-icons";
+import { commonTexts } from "../i18n/i18n-builder";
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
 export function AppTabs() {
+  const com = commonTexts();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -25,9 +28,9 @@ export function AppTabs() {
         },
       })}
     >
-      <Tab.Screen name="MapTab" component={MapStack} options={{ title: "Map" }} />
-      <Tab.Screen name="RentalTab" component={RentalStack} options={{ title: "Rental" }} />
-      <Tab.Screen name="ProfileTab" component={ProfileStack} options={{ title: "Profile" }} />
+      <Tab.Screen name="MapTab" component={MapStack} options={{ title: com.Map }} />
+      <Tab.Screen name="RentalTab" component={RentalStack} options={{ title: com.Rental }} />
+      <Tab.Screen name="ProfileTab" component={ProfileStack} options={{ title: com.Profile }} />
     </Tab.Navigator>
   );
 }

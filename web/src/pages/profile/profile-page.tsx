@@ -6,8 +6,13 @@ import { Pressable } from "../../elements/pressable";
 import { CenterLayout } from "../../main/center-layout";
 import { useState } from "react";
 import { ImagePreview } from "../../elements/image-preview";
+import { useTranslation } from "react-i18next";
+import { profileTexts } from "../../i18n/i18n-builder";
 
 export function ProfilePage() {
+  const { t } = useTranslation();
+  const ppp = profileTexts(t);
+
   const me = useAuthStore((s) => s.me);
   const logout = useAuthStore((s) => s.logout);
 
@@ -29,9 +34,9 @@ export function ProfilePage() {
     <CenterLayout centerY={false}>
         <div style={{ display: "grid", gap: 14, maxWidth: 720 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <h2 style={{ margin: 0 }}>Profil</h2>
+                <h2 style={{ margin: 0 }}>{ppp.Profile}</h2>
                 
-                <Pressable style={{ ...actionBtn }} onClick={logout}>Odjava</Pressable>
+                <Pressable style={{ ...actionBtn }} onClick={logout}>{ppp.Logout}</Pressable>
             </div>
 
             <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
@@ -52,23 +57,23 @@ export function ProfilePage() {
                 </div>
             </div>
 
-            <div><b>Email:</b> {me.email}</div>
-            <div><b>Telefon:</b> {me.phone}</div>
+            <div><b>{ppp.Email}:</b> {me.email}</div>
+            <div><b>{ppp.Phone}:</b> {me.phone}</div>
 
             <div style={{ display: "flex", gap: 10 }}>
                 <Link to="/profile/edit" style={{ textDecoration: "none" }}>
-                    <Pressable style={actionBtn}>Izmeni podatke</Pressable>
+                    <Pressable style={actionBtn}>{ppp.EditProfile}</Pressable>
                 </Link>
 
                 <Link to="/profile/password" style={{ textDecoration: "none" }}>
-                    <Pressable style={actionBtn}>Promeni lozinku</Pressable>
+                    <Pressable style={actionBtn}>{ppp.ChangePassword}</Pressable>
                 </Link>
             </div>
 
             <ImagePreview
             isOpen={previewOpen}
             src={imgUrl}
-            alt="Profilna slika"
+            alt={ppp.ProfPicture}
             onClose={() => setPreviewOpen(false)}/>
         </div>
     </CenterLayout>

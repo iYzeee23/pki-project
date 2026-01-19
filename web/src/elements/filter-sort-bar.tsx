@@ -1,14 +1,16 @@
+import { useTranslation } from "react-i18next";
 import { DateField } from "./date-field";
 import { Pressable } from "./pressable";
 import { SelectField } from "./select-field";
 import { TextField } from "./text-field";
+import { filterSortTexts } from "../i18n/i18n-builder";
 
 export type SortDir = "asc" | "desc";
 
 export type CommonFilters = {
   userId: string;
   bikeId: string;
-  day: string; // YYYY-MM-DD
+  day: string; 
   sortBy: "userId" | "bikeId" | "day";
   sortDir: SortDir;
 };
@@ -22,6 +24,9 @@ export function FilterSortBar({
   onChange: (next: CommonFilters) => void;
   onReset: () => void;
 }) {
+  const { t } = useTranslation();
+  const fsb = filterSortTexts(t);
+
   return (
     <div
       style={{
@@ -37,25 +42,25 @@ export function FilterSortBar({
     >
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
         <label style={{ display: "grid", gap: 6 }}>
-          <b>User</b>
+          <b>{fsb.User}</b>
           <TextField
             value={value.userId}
             onChange={(e) => onChange({ ...value, userId: e.target.value })}
-            placeholder="userId..."
+            placeholder={fsb.PlaceholderUserId}
           />
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Bike ID</b>
+          <b>{fsb.BikeId}</b>
           <TextField
             value={value.bikeId}
             onChange={(e) => onChange({ ...value, bikeId: e.target.value })}
-            placeholder="bikeId..."
+            placeholder={fsb.PlaceholderBikeId}
           />
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Datum</b>
+          <b>{fsb.Date}</b>
           <DateField
             value={value.day}
             onChange={(e) => onChange({ ...value, day: e.target.value })}
@@ -65,30 +70,30 @@ export function FilterSortBar({
 
       <div style={{ display: "flex", gap: 10, alignItems: "end" }}>
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Sort by</b>
+          <b>{fsb.SortBy}</b>
           <SelectField
             value={value.sortBy}
             onChange={(e) => onChange({ ...value, sortBy: e.target.value as any })}
           >
-            <option value="day">Datum</option>
-            <option value="userId">User</option>
-            <option value="bikeId">Bike ID</option>
+            <option value="day">{fsb.Date}</option>
+            <option value="userId">{fsb.User}</option>
+            <option value="bikeId">{fsb.BikeId}</option>
           </SelectField>
         </label>
 
         <label style={{ display: "grid", gap: 6 }}>
-          <b>Direction</b>
+          <b>{fsb.Direction}</b>
           <SelectField
             value={value.sortDir}
             onChange={(e) => onChange({ ...value, sortDir: e.target.value as any })}
           >
-            <option value="desc">DESC</option>
-            <option value="asc">ASC</option>
+            <option value="desc">{fsb.Desc}</option>
+            <option value="asc">{fsb.Asc}</option>
           </SelectField>
         </label>
 
         <Pressable type="button" onClick={onReset} variant="secondary" style={{ marginLeft: "auto" }}>
-          Reset
+          {fsb.Reset}
         </Pressable>
       </div>
     </div>

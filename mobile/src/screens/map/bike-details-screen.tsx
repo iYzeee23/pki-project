@@ -4,7 +4,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useBikesStore } from "../../stores/bike-store";
 import { MapStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { bikeDetailsTexts, commonTexts } from "../../util/i18n-builder";
+import { bikeDetailsTexts, commonTexts } from "../../i18n/i18n-builder";
 import i18n from "../../i18n";
 import { bikeApi, geocodeApi } from "../../util/services";
 import { getCached, isCanceled, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";

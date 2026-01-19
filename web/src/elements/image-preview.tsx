@@ -1,5 +1,6 @@
 import * as React from "react";
 import { Pressable } from "./pressable";
+import { commonTexts } from "../i18n/i18n-builder";
 
 export function ImagePreview({
   isOpen,
@@ -12,6 +13,8 @@ export function ImagePreview({
   alt?: string;
   onClose: () => void;
 }) {
+  const com = commonTexts();
+
   React.useEffect(() => {
     if (!isOpen) return;
 
@@ -50,7 +53,7 @@ export function ImagePreview({
       >
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Pressable type="button" variant="secondary" onClick={onClose}>
-            Zatvori
+            {com.Close}
           </Pressable>
         </div>
 

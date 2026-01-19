@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { AuthStackParamList } from "../../navigation/types";
 import { useAuthStore } from "../../stores/auth-store";
 import { useTranslation } from "react-i18next";
-import { loginTexts } from "../../util/i18n-builder";
+import { loginTexts } from "../../i18n/i18n-builder";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";
 

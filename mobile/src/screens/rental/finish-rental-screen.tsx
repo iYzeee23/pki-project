@@ -4,7 +4,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RentalStackParamList } from "../../navigation/types";
 import { useDraftStore } from "../../stores/draft-store";
 import { useTranslation } from "react-i18next";
-import { finishRentalTexts } from "../../util/i18n-builder";
+import { finishRentalTexts } from "../../i18n/i18n-builder";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "FinishRental">;
 

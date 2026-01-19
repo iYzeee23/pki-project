@@ -6,8 +6,13 @@ import { getApiErrorMessage } from "../../util/http";
 import { CenterLayout } from "../../main/center-layout";
 import { Pressable } from "../../elements/pressable";
 import { TextField } from "../../elements/text-field";
+import { useTranslation } from "react-i18next";
+import { loginTexts } from "../../i18n/i18n-builder";
 
 export function LoginPage() {
+  const { t } = useTranslation();
+  const lgp = loginTexts(t);
+
   const login = useAuthStore((s) => s.login);
 
   const [username, setUsername] = useState("");
@@ -54,23 +59,23 @@ export function LoginPage() {
   return (
     <CenterLayout>
       <div style={{ width: 420, maxWidth: "100%", border: "1px solid #e5e5e5", borderRadius: 16, padding: 16, }}>
-        <h2 style={{ marginTop: 0 }}>Admin prijava</h2>
+        <h2 style={{ marginTop: 0 }}>{lgp.AdminLogin}</h2>
 
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
           <label style={{ display: "grid", gap: 6 }}>
-            Korisničko ime
+            {lgp.Username}
             <TextField value={username} onChange={(e) => setUsername(e.target.value)} />
           </label>
 
           <label style={{ display: "grid", gap: 6 }}>
-            Lozinka
+            {lgp.Password}
             <TextField type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
           </label>
 
-            <Pressable type="submit" variant="primary" disabled={busy}
-              style={{ width: "100%", background: "#111", color: "#fff", padding: "10px", borderRadius: 12, fontWeight: 900 }}>
-              {busy ? "Prijavljivanje..." : "Prijavi se"}
-            </Pressable>
+          <Pressable type="submit" variant="primary" disabled={busy}
+            style={{ width: "100%", background: "#111", color: "#fff", padding: "10px", borderRadius: 12, fontWeight: 900 }}>
+            {busy ? lgp.Logging : lgp.Login}
+          </Pressable>
 
           {error ? <div style={{ color: "crimson" }}>{error}</div> : null}
         </form>

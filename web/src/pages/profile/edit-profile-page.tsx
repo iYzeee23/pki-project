@@ -8,8 +8,14 @@ import { getApiErrorMessage } from "../../util/http";
 import { CenterLayout } from "../../main/center-layout";
 import { TextField } from "../../elements/text-field";
 import { FileField } from "../../elements/file-field";
+import { useTranslation } from "react-i18next";
+import { commonTexts, editProfileTexts } from "../../i18n/i18n-builder";
 
 export function EditProfilePage() {
+  const { t } = useTranslation();
+  const epp = editProfileTexts(t);
+  const com = commonTexts();
+
   const nav = useNavigate();
   const me = useAuthStore((s) => s.me);
   const setMe = useAuthStore((s) => s.setMe);
@@ -79,45 +85,45 @@ export function EditProfilePage() {
   return (
     <CenterLayout centerY={false}>
         <div style={{ maxWidth: 520, width: 300 }}>
-            <h2 style={{ marginTop: 0 }}>Izmena profila</h2>
+            <h2 style={{ marginTop: 0 }}>{epp.EditProfile}</h2>
 
             <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
                 <label style={{ display: "grid", gap: 6 }}>
-                    Username
+                    {epp.Username}
                     <TextField value={username} onChange={(e) => setUsername(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
-                    Ime
+                    {epp.FirstName}
                     <TextField value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
-                    Prezime
+                    {epp.LastName}
                     <TextField value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
-                    Telefon
+                    {epp.Phone}
                     <TextField value={phone} onChange={(e) => setPhone(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
-                    Email
+                    {epp.Email}
                     <TextField value={email} onChange={(e) => setEmail(e.target.value)} />
                 </label>
 
                 <label style={{ display: "grid", gap: 6 }}>
-                    Profilna slika (opciono)
+                    {epp.ProfPicture}
                     <FileField profilePath={me.profileImagePath} accept="image/*" value={file} onChange={setFile} />
                 </label>
 
                 <div style={{ display: "flex", gap: 10 }}>
-                    <Pressable type="button"  onClick={() => nav(-1)} disabled={busy} style={btn}>Nazad</Pressable>
+                    <Pressable type="button"  onClick={() => nav(-1)} disabled={busy} style={btn}>{com.Back}</Pressable>
 
                     <Pressable type="submit" disabled={busy}
                         style={btn}>
-                        {busy ? "Čuvam..." : "Sačuvaj"}
+                        {busy ? epp.Saving : epp.Save}
                     </Pressable>
                 </div>
 

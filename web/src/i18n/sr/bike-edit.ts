@@ -1,0 +1,17 @@
+export default {
+  ErrBikeType: "Unesite tip bicikla",
+  ErrPrice: "Cena po satu mora biti veca od 0",
+  ErrLocation: "Lokacija nije dostupna",
+  ErrSaving: "Greska pri cuvanju",
+  BikeEdit: "Izmena bicikla",
+  Saving: "Cuvanje...",
+  Save: "Sacuvaj",
+  Type: "Tip",
+  Price: "Cena po satu",
+  Status: "Status",
+  Location: "Lokacija",
+  StopPicking: "Prekini izbor",
+  MapOrMarker: "Kliknite na mapu ili pomerite marker",
+  ChangeLocation: "Promeni lokaciju na mapi",
+  Dismiss: "Zatvori",
+} as const;

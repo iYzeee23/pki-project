@@ -4,7 +4,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { commonTexts, rentalHistoryTexts } from "../../util/i18n-builder";
+import { commonTexts, rentalHistoryTexts } from "../../i18n/i18n-builder";
 import { FilterFieldSpec, FilterSortSheet, FilterSortSheetHandle } from "../sheets/filter-sort-sheet";
 import { Draft, isCanceled, isoDateOnly, RentalDto } from "@app/shared";
 import { rentalApi } from "../../util/services";

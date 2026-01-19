@@ -4,7 +4,7 @@ import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
-import { profileTexts } from "../../util/i18n-builder";
+import { profileTexts } from "../../i18n/i18n-builder";
 import i18n from "../../i18n";
 import { EXPO_API_BASE_URL } from "../../util/config";
 import { resolveImageUrl } from "@app/shared";
