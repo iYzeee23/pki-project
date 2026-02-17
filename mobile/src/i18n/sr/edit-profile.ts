@@ -15,5 +15,7 @@ export default {
     Saving: "Cuvanje...",
     SaveProfile: "Sacuvaj",
     MissingUser: "Korisnik nedostaje",
-    Title: "Izmena profila"
+    Title: "Izmena profila",
+    ChangePhoto: "Promeni fotografiju",
+    ErrorPlaceholder: "Ovde \u0107e se prikazati gre\u0161ka ukoliko postoji"
 } as const;

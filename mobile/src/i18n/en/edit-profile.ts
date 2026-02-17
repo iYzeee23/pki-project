@@ -15,5 +15,7 @@ export default {
     Saving: "Saving...",
     SaveProfile: "Save",
     MissingUser: "Missing user",
-    Title: "Edit profile"
+    Title: "Edit profile",
+    ChangePhoto: "Change photo",
+    ErrorPlaceholder: "Error will be shown here if exists"
 } as const;

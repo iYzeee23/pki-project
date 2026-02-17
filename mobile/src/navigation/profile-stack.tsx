@@ -13,12 +13,17 @@ export function ProfileStack() {
   const com = commonTexts();
     
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ title: com.Profile }} />
-      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: com.EditProfile }} />
-      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: com.ChangePassword }} />
-      <Stack.Screen name="RentalHistory" component={RentalHistoryScreen} options={{ title: com.RentalHistory }} />
-      <Stack.Screen name="RentalDetails" component={RentalDetailsScreen} options={{ title: com.RentalDetails }} />
+    <Stack.Navigator screenOptions={{
+      headerShadowVisible: false,
+      headerStyle: { backgroundColor: "#fff" },
+      headerTitle: "",
+      headerTintColor: "#333",
+    }}>
+      <Stack.Screen name="ProfileHome" component={ProfileScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
+      <Stack.Screen name="RentalHistory" component={RentalHistoryScreen} />
+      <Stack.Screen name="RentalDetails" component={RentalDetailsScreen} />
     </Stack.Navigator>
   );
 }

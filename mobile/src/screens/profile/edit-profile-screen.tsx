@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, Button, Image, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useAuthStore } from "../../stores/auth-store";
@@ -10,6 +11,8 @@ import { commonTexts, editProfileTexts } from "../../i18n/i18n-builder";
 import { profileApi } from "../../util/services";
 import { DEFAULT_PROFILE_PICTURE, isCanceled, resolveImageUrl } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
+
+const GREEN = "#2E7D32";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "EditProfile">;
 
@@ -23,7 +26,7 @@ export function EditProfileScreen({ navigation }: Props) {
 
   if (!me) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+      <View style={styles.loadingContainer}>
         <Text>{edit.MissingUser}</Text>
       </View>
     );
@@ -37,6 +40,7 @@ export function EditProfileScreen({ navigation }: Props) {
   const [phone, setPhone] = useState(me.phone);
   const [email, setEmail] = useState(me.email);
   const [file, setFile] = useState<UploadFile | undefined | null>(undefined);
+  const [error, setError] = useState("");
 
   const [busy, setBusy] = useState(false);
 
@@ -74,7 +78,11 @@ export function EditProfileScreen({ navigation }: Props) {
 
   const onSave = async () => {
     const err = validate();
-    if (err) return Alert.alert(com.Error, err);
+    if (err) {
+      setError(err);
+      return;
+    }
+    setError("");
 
     saveControllerRef.current?.abort();
     saveControllerRef.current = new AbortController();
@@ -113,7 +121,7 @@ export function EditProfileScreen({ navigation }: Props) {
     }
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert(com.Error, getApiErrorMessage(e));
+      setError(getApiErrorMessage(e));
     }
     finally {
       setBusy(false);
@@ -121,40 +129,163 @@ export function EditProfileScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={{ padding: 16, gap: 10 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>{edit.Title}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      <Text style={styles.title}>{edit.Title}</Text>
 
-      <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
-        <Image source={{ uri: displayUri }} style={{ width: "100%", height: 220 }} />
-        <View style={{ padding: 8, flexDirection: "row", gap: 8 }}>
-          <View style={{ flex: 1 }}>
-            <Button title={edit.Change} onPress={onPick} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Button title={edit.Remove} disabled={shouldDisable()} onPress={() => setFile(null)} color="red" />
-          </View>
-        </View>
+      {/* Image + Change/Remove */}
+      <View style={styles.imageContainer}>
+        <Image source={{ uri: displayUri }} style={styles.image} />
+      </View>
+      <View style={styles.photoActions}>
+        <TouchableOpacity onPress={onPick} disabled={busy}>
+          <Text style={styles.changePhotoText}>{edit.ChangePhoto}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setFile(null)} disabled={busy || shouldDisable()}>
+          <Text style={[styles.removeText, (busy || shouldDisable()) && styles.disabledText]}>
+            {edit.Remove}
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={edit.Username} value={username} onChangeText={setUsername} autoCapitalize="none" />
+      <View style={styles.divider} />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={edit.FirstName} value={firstName} onChangeText={setFirstName} />
+      {/* Input fields */}
+      <Text style={styles.label}>{edit.Username}</Text>
+      <TextInput style={styles.input} placeholder={edit.Username} value={username}
+        onChangeText={setUsername} autoCapitalize="none" editable={!busy} />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={edit.LastName} value={lastName} onChangeText={setLastName} />
+      <Text style={styles.label}>{edit.FirstName}</Text>
+      <TextInput style={styles.input} placeholder={edit.FirstName} value={firstName}
+        onChangeText={setFirstName} editable={!busy} />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={edit.Phone} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+      <Text style={styles.label}>{edit.LastName}</Text>
+      <TextInput style={styles.input} placeholder={edit.LastName} value={lastName}
+        onChangeText={setLastName} editable={!busy} />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={edit.Email} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+      <Text style={styles.label}>{edit.Phone}</Text>
+      <TextInput style={styles.input} placeholder={edit.Phone} value={phone}
+        onChangeText={setPhone} keyboardType="phone-pad" editable={!busy} />
 
-      <TouchableOpacity disabled={busy} onPress={onSave}
-        style={{ padding: 14, borderRadius: 12, borderWidth: 1, opacity: busy ? 0.6 : 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>{busy ? edit.Saving : edit.SaveProfile}</Text>
+      <Text style={styles.label}>{edit.Email}</Text>
+      <TextInput style={styles.input} placeholder={edit.Email} value={email}
+        onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" editable={!busy} />
+
+      {error ? (
+        <Text style={styles.errorText}>{error}</Text>
+      ) : null}
+
+      <TouchableOpacity
+        style={[styles.saveButton, busy && styles.saveButtonDisabled]}
+        onPress={onSave}
+        disabled={busy}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.saveButtonText}>
+          {busy ? edit.Saving : edit.SaveProfile}
+        </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imageContainer: {
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    marginBottom: 8,
+  },
+  image: {
+    width: "100%",
+    height: 220,
+  },
+  photoActions: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: 20,
+    marginBottom: 12,
+  },
+  changePhotoText: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: GREEN,
+  },
+  removeText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#d32f2f",
+  },
+  disabledText: {
+    opacity: 0.3,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#e0e0e0",
+    marginHorizontal: 40,
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    marginBottom: 12,
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: GREEN,
+    marginTop: 10,
+    marginBottom: 2,
+    paddingHorizontal: 8,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    fontSize: 15,
+    color: "#333",
+    marginBottom: 4,
+  },
+  errorText: {
+    fontSize: 13,
+    color: "#d32f2f",
+    marginTop: 12,
+  },
+  errorPlaceholder: {
+    fontSize: 13,
+    color: "#d32f2f",
+    marginTop: 12,
+    opacity: 0.7,
+  },
+  saveButton: {
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+});

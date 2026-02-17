@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useBikesStore } from "../../stores/bike-store";
 import { MapStackParamList } from "../../navigation/types";
@@ -7,8 +7,17 @@ import { useTranslation } from "react-i18next";
 import { bikeDetailsTexts, commonTexts } from "../../i18n/i18n-builder";
 import i18n from "../../i18n";
 import { bikeApi, geocodeApi } from "../../util/services";
-import { getCached, isCanceled, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
+import { BikeStatus, getCached, isCanceled, keyOf, LOCATION_CACHE_MOBILE, setCached } from "@app/shared";
 import { getApiErrorMessage } from "../../util/http";
+
+const GREEN = "#2E7D32";
+
+const STATUS_COLORS: Record<BikeStatus, string> = {
+  Available: "#2E7D32",
+  Busy: "#d32f2f",
+  Maintenance: "#f9a825",
+  Off: "#757575",
+};
 
 type Props = NativeStackScreenProps<MapStackParamList, "BikeDetails">;
 
@@ -102,25 +111,82 @@ export function BikeDetailsScreen({ route }: Props) {
 
   if (loading || !bike) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={GREEN} />
       </View>
     );
   }
 
   return (
-    <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>{bikk.Details}</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
+      <Text style={styles.title}>{bikk.Details}</Text>
 
-      <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 8 }}>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Id}:</Text> {bike.id}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Type}:</Text> {bike.type}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Price}:</Text> {bike.pricePerHour}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Status}:</Text> {bike.status}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Location}:</Text> {locationLabel}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Lat}:</Text> {bike.location.lat}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{bikk.Lng}:</Text> {bike.location.lng}</Text>
+      <View style={[styles.infoCard, { borderLeftWidth: 4, borderLeftColor: STATUS_COLORS[bike.status] }]}>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Id}:</Text> {bike.id}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Type}:</Text> {bike.type}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Price}:</Text> {bike.pricePerHour}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Status}:</Text> {bike.status}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Location}:</Text> {locationLabel}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Lat}:</Text> {bike.location.lat}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{bikk.Lng}:</Text> {bike.location.lng}
+        </Text>
       </View>
-    </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContent: {
+    paddingHorizontal: 28,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    marginBottom: 16,
+  },
+  infoCard: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    padding: 16,
+    paddingLeft: 14,
+    gap: 6,
+  },
+  infoText: {
+    fontSize: 15,
+    color: "#333",
+    lineHeight: 22,
+  },
+  bold: {
+    fontWeight: "700",
+  },
+});

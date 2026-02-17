@@ -1,5 +1,14 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, Button, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { pickSingleImage, UploadFile } from "../../util/image-picker";
 import { useAuthStore } from "../../stores/auth-store";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -10,6 +19,9 @@ import { commonTexts, registerTexts } from "../../i18n/i18n-builder";
 import { authApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+const GREEN = "#2E7D32";
 
 type Props = NativeStackScreenProps<AuthStackParamList, "Register">;
 
@@ -30,6 +42,7 @@ export function RegisterScreen({}: Props) {
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [file, setFile] = useState<UploadFile | undefined>(undefined);
+  const [error, setError] = useState("");
 
   const [busy, setBusy] = useState(false);
 
@@ -61,7 +74,12 @@ export function RegisterScreen({}: Props) {
 
   const onSubmit = async () => {
     const err = validate();
-    if (err) return Alert.alert(com.Error, err);
+    if (err) {
+      setError(err);
+      return;
+    }
+
+    setError("");
 
     submitControllerRef.current?.abort();
     submitControllerRef.current = new AbortController();
@@ -92,7 +110,7 @@ export function RegisterScreen({}: Props) {
     }
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert(com.Error, getApiErrorMessage(e));
+      setError(getApiErrorMessage(e));
     }
     finally {
       setBusy(false);
@@ -100,46 +118,209 @@ export function RegisterScreen({}: Props) {
   };
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16, gap: 10 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>{reg.Register}</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled"
+    >
+      {/* Logo */}
+      <View style={styles.logoContainer}>
+        <MaterialCommunityIcons name="bike" size={64} color={GREEN} />
+        <Text style={styles.logoText}>BikeLand</Text>
+      </View>
 
-      <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
-        <Image source={{ uri: displayUri }} style={{ width: "100%", height: 220 }} />
-        <View style={{ padding: 8, flexDirection: "row", gap: 8 }}>
-          <View style={{ flex: 1 }}>
-            <Button title={reg.Change} onPress={onPick} />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Button title={reg.Remove} disabled={file === undefined} onPress={() => setFile(undefined)} color="red" />
-          </View>
+      {/* Profile picture */}
+      <View style={styles.avatarSection}>
+        <View style={styles.imageWrapper}>
+          <Image source={{ uri: displayUri }} style={styles.image} />
+        </View>
+        <View style={styles.avatarActions}>
+          <TouchableOpacity onPress={onPick}>
+            <Text style={styles.changeText}>{reg.Change}</Text>
+          </TouchableOpacity>
+          <View style={styles.divider} />
+          <TouchableOpacity disabled={file === undefined} onPress={() => setFile(undefined)}>
+            <Text style={[styles.removeText, file === undefined && styles.disabledText]}>
+              {reg.Remove}
+            </Text>
+          </TouchableOpacity>
         </View>
       </View>
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.Username} value={username} onChangeText={setUsername} autoCapitalize="none" />
+      {/* Form fields */}
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder={reg.Username}
+          placeholderTextColor="#999"
+          value={username}
+          onChangeText={setUsername}
+          autoCapitalize="none"
+        />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.Password} value={password} onChangeText={setPassword} secureTextEntry />
+        <TextInput
+          style={styles.input}
+          placeholder={reg.Password}
+          placeholderTextColor="#999"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+        />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.ConfPassword} value={passwordConf} onChangeText={setPasswordConf} secureTextEntry />
+        <TextInput
+          style={styles.input}
+          placeholder={reg.ConfPassword}
+          placeholderTextColor="#999"
+          value={passwordConf}
+          onChangeText={setPasswordConf}
+          secureTextEntry
+        />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.FirstName} value={firstName} onChangeText={setFirstName} />
+        <TextInput
+          style={styles.input}
+          placeholder={reg.FirstName}
+          placeholderTextColor="#999"
+          value={firstName}
+          onChangeText={setFirstName}
+        />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.LastName} value={lastName} onChangeText={setLastName} />
+        <TextInput
+          style={styles.input}
+          placeholder={reg.LastName}
+          placeholderTextColor="#999"
+          value={lastName}
+          onChangeText={setLastName}
+        />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.Phone} value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+        <TextInput
+          style={styles.input}
+          placeholder={reg.Phone}
+          placeholderTextColor="#999"
+          value={phone}
+          onChangeText={setPhone}
+          keyboardType="phone-pad"
+        />
 
-      <TextInput style={{ borderWidth: 1, padding: 12, borderRadius: 10 }}
-        placeholder={reg.Email} value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+        <TextInput
+          style={styles.input}
+          placeholder={reg.Email}
+          placeholderTextColor="#999"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+      </View>
 
-      <TouchableOpacity disabled={busy} onPress={onSubmit}
-        style={{ padding: 14, borderRadius: 12, borderWidth: 1, opacity: busy ? 0.6 : 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>{busy ? reg.Creating : reg.CreateAcc}</Text>
+      {/* Error */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      {/* Submit button */}
+      <TouchableOpacity
+        disabled={busy}
+        onPress={onSubmit}
+        style={[styles.submitButton, busy && styles.submitButtonDisabled]}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.submitButtonText}>
+          {busy ? reg.Creating : reg.CreateAcc}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContent: {
+    paddingHorizontal: 32,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 24,
+    gap: 8,
+  },
+  logoText: {
+    fontSize: 48,
+    fontWeight: "700",
+    color: GREEN,
+  },
+  avatarSection: {
+    alignItems: "center",
+    marginBottom: 28,
+  },
+  imageWrapper: {
+    width: "100%",
+    height: 220,
+    borderRadius: 12,
+    overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "#ddd",
+    marginBottom: 10,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  avatarActions: {
+    alignItems: "center",
+    gap: 4,
+  },
+  changeText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#333",
+  },
+  divider: {
+    width: 24,
+    height: 2,
+    backgroundColor: "#333",
+    marginVertical: 2,
+  },
+  removeText: {
+    fontSize: 14,
+    color: "#333",
+  },
+  disabledText: {
+    color: "#bbb",
+  },
+  form: {
+    gap: 14,
+    marginBottom: 16,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
+    paddingHorizontal: 4,
+    paddingVertical: 12,
+    fontSize: 15,
+    color: "#333",
+  },
+  errorText: {
+    color: "#d32f2f",
+    fontSize: 14,
+    marginBottom: 12,
+  },
+  submitButton: {
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginTop: 4,
+  },
+  submitButtonDisabled: {
+    opacity: 0.6,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+});

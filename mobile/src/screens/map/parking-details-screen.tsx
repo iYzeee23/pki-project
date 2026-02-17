@@ -1,18 +1,25 @@
 import { useMemo } from "react";
-import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useMapStore } from "../../stores/map-store";
 import { useBikesStore } from "../../stores/bike-store";
 import { MapStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
 import { parkingDetailsTexts } from "../../i18n/i18n-builder";
-import { BikeDto, haversineMeters, PARKING_RADIUS_M } from "@app/shared";
+import { BikeDto, BikeStatus, haversineMeters, PARKING_RADIUS_M } from "@app/shared";
+
+const GREEN = "#2E7D32";
+
+const STATUS_COLORS: Record<BikeStatus, string> = {
+  Available: "#2E7D32",
+  Busy: "#d32f2f",
+  Maintenance: "#f9a825",
+  Off: "#757575",
+};
 
 function EmptyState({park}: any) {
   return (
-    <View style={{ gap: 10 }}>
-      <Text>{park.NoBikes}</Text>
-    </View>
+    <Text style={styles.emptyText}>{park.NoBikes}</Text>
   );
 }
 
@@ -24,16 +31,25 @@ type BikeListProps = {
 
 function BikeList({bikesInThisSpot, navigation, park}: BikeListProps) {
   return (
-    <View style={{ gap: 10 }}>
-      <Text style={{ fontWeight: "700" }}>{park.BikesIn}</Text>
+    <View style={styles.bikeSection}>
+      <Text style={styles.bikeSectionTitle}>{park.BikesIn}</Text>
 
       {bikesInThisSpot.length === 0 ? <EmptyState park={park} /> : (
         bikesInThisSpot.map(b => (
-          <TouchableOpacity key={b.id} onPress={() => navigation.navigate("BikeDetails", { bikeId: b.id })}
-            style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
-            <Text><Text style={{ fontWeight: "700" }}>{park.Bike}:</Text> {b.id}</Text>
-            <Text><Text style={{ fontWeight: "700" }}>{park.Status}:</Text> {b.status}</Text>
-            <Text><Text style={{ fontWeight: "700" }}>{park.Type}:</Text> {b.type}</Text>
+          <TouchableOpacity
+            key={b.id}
+            onPress={() => navigation.navigate("BikeDetails", { bikeId: b.id })}
+            style={[styles.bikeCard, { borderLeftColor: STATUS_COLORS[b.status] }]}
+          >
+            <Text style={styles.bikeInfoText}>
+              <Text style={styles.bold}>{park.Bike}:</Text> {b.id}
+            </Text>
+            <Text style={styles.bikeInfoText}>
+              <Text style={styles.bold}>{park.Status}:</Text> {b.status}
+            </Text>
+            <Text style={styles.bikeInfoText}>
+              <Text style={styles.bold}>{park.Type}:</Text> {b.type}
+            </Text>
           </TouchableOpacity>
         ))
       )}
@@ -75,31 +91,116 @@ export function ParkingDetailsScreen({ route, navigation }: Props) {
 
   if (!spot) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={GREEN} />
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>{spot.name}</Text>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.scrollContent}
+    >
+      <Text style={styles.title}>Parking: {spot.name}</Text>
 
-      <View style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 8 }}>
-        <Text><Text style={{ fontWeight: "700" }}>{park.Id}:</Text> {spot.id}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{park.Lat}:</Text> {spot.location.lat}</Text>
-        <Text><Text style={{ fontWeight: "700" }}>{park.Lng}:</Text> {spot.location.lng}</Text>
+      <View style={styles.infoCard}>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{park.Id}:</Text> {spot.id}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{park.Lat}:</Text> {spot.location.lat}
+        </Text>
+        <Text style={styles.infoText}>
+          <Text style={styles.bold}>{park.Lng}:</Text> {spot.location.lng}
+        </Text>
 
         {(distance ?? 0) > 0 && (
-          <Text><Text style={{ fontWeight: "700" }}>{park.Distance}:</Text> {Math.round(distance!)}m</Text>
+          <Text style={styles.infoText}>
+            <Text style={styles.bold}>{park.Distance}:</Text> {Math.round(distance!)}m
+          </Text>
         )}
 
         {isActiveMode && isActiveBikeInsideThisSpot && (
-          <Text>{park.AlreadyInside}</Text>
+          <Text style={styles.alreadyInsideText}>{park.AlreadyInside}</Text>
         )}
       </View>
 
       {!isActiveMode && <BikeList bikesInThisSpot={bikesInThisSpot} navigation={navigation} park={park} />}
-    </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  scrollContent: {
+    paddingHorizontal: 28,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    marginBottom: 16,
+  },
+  infoCard: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    padding: 16,
+    gap: 6,
+    marginBottom: 20,
+  },
+  infoText: {
+    fontSize: 15,
+    color: "#333",
+    lineHeight: 22,
+  },
+  bold: {
+    fontWeight: "700",
+  },
+  alreadyInsideText: {
+    fontSize: 14,
+    color: GREEN,
+    fontWeight: "600",
+    marginTop: 4,
+  },
+  bikeSection: {
+    gap: 12,
+  },
+  bikeSectionTitle: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#333",
+  },
+  bikeCard: {
+    borderLeftWidth: 4,
+    borderLeftColor: "#757575",
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 12,
+    padding: 14,
+    gap: 4,
+    backgroundColor: "#fafafa",
+  },
+  bikeInfoText: {
+    fontSize: 14,
+    color: "#333",
+    lineHeight: 20,
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#888",
+    fontStyle: "italic",
+  },
+});

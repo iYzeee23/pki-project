@@ -12,5 +12,8 @@ export default {
     Filters: "Filteri",
     ClearFilters: "Ocisti filtere",
     TotalSpent: "Ukupno potroseno",
-    Sort: "Sortiranje"
+    Sort: "Sortiranje",
+    RecentRentals: "Nedavna iznajmljivanja",
+    Currency: "din",
+    RentalDate: "Datum iznajmljivanja"
 } as const;

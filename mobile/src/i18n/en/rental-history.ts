@@ -12,5 +12,8 @@ export default {
     Filters: "Filters",
     ClearFilters: "Clear filters",
     TotalSpent: "Total spent",
-    Sort: "Sort"
+    Sort: "Sort",
+    RecentRentals: "Recent rentals",
+    Currency: "din",
+    RentalDate: "Rental date"
 } as const;

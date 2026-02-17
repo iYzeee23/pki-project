@@ -1,4 +1,5 @@
 export default {
+    Title: "Unos fotografija",
     MissingInformation: "Nedostaju informacije. Vratite se nazad",
     AddImage: "Dodajte bar jednu sliku",
     MsgSuccessfulIssue: "Problem je uspesno prijavljen",

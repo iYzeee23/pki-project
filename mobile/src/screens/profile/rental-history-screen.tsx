@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
@@ -10,10 +11,12 @@ import { Draft, isCanceled, isoDateOnly, RentalDto } from "@app/shared";
 import { rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 
+const GREEN = "#2E7D32";
+
 function EmptyState({ rent }: any) {
   return (
-    <View style={{ padding: 12 }}>
-      <Text>{rent.NoRentals}</Text>
+    <View style={styles.emptyState}>
+      <Text style={styles.emptyText}>{rent.NoRentals}</Text>
     </View>
   );
 }
@@ -27,18 +30,25 @@ type NonEmptyStateProps = {
 function NonEmptyState({ filtered, navigation, rent }: NonEmptyStateProps) {
   return (
     <FlatList data={filtered} keyExtractor={(item) => item.id}
-      contentContainerStyle={{ gap: 10, paddingBottom: 8 }}
+      contentContainerStyle={styles.listContent}
       renderItem={({ item }) => {
         const day = isoDateOnly(item.startAt);
         return (
           <TouchableOpacity
             onPress={() => navigation.navigate("RentalDetails", { rentalId: item.id })}
-            style={{ borderWidth: 1, borderRadius: 12, padding: 12, gap: 6 }}>
-            <Text>
-              <Text style={{ fontWeight: "700" }}>{rent.Date}:</Text> {day}
-            </Text>
-            <Text>
-              <Text style={{ fontWeight: "700" }}>{rent.Bike}:</Text> {item.bikeId}
+            style={styles.rentalCard}
+            activeOpacity={0.7}
+          >
+            <View style={styles.cardLeft}>
+              <Text style={styles.cardLine}>
+                <Text style={styles.cardLabel}>{rent.Date}:</Text> {day}
+              </Text>
+              <Text style={styles.cardLine}>
+                <Text style={styles.cardLabel}>{rent.Bike}:</Text> {item.bikeId}
+              </Text>
+            </View>
+            <Text style={styles.cardCost}>
+              {item.totalCost ?? 0} {rent.Currency}
             </Text>
           </TouchableOpacity>
         );
@@ -95,18 +105,24 @@ export function RentalHistoryScreen({ navigation }: Props) {
   }, [isFocused]);
 
   const filterSpec: FilterFieldSpec[] = useMemo(() => [
-    { key: "day", label: rent.Date, kind: "date" },
     { key: "bikeId", label: rent.LabelBikeId, kind: "text", placeholder: rent.PlaceholderBikeId },
-  ], [rent.Date, rent.LabelBikeId, rent.Bike, rent.PlaceholderBikeId]);
+    { key: "date", label: rent.RentalDate, kind: "dateRange" },
+  ], [rent.LabelBikeId, rent.PlaceholderBikeId, rent.RentalDate]);
 
   const filtered = useMemo(() => {
-    const dayF = appliedFilters.day instanceof Date ? appliedFilters.day.toISOString().slice(0, 10) : "";
+    const dateFrom = appliedFilters.dateFrom instanceof Date ? appliedFilters.dateFrom : null;
+    const dateTo = appliedFilters.dateTo instanceof Date ? appliedFilters.dateTo : null;
     const bikeIdF = String(appliedFilters.bikeId ?? "").trim().toLowerCase();
 
     let out = rentals.filter((r) => {
-      const day = isoDateOnly(r.startAt);
+      const rDate = new Date(r.startAt);
 
-      if (dayF && day !== dayF) return false;
+      if (dateFrom && rDate < dateFrom) return false;
+      if (dateTo) {
+        const endOfDay = new Date(dateTo);
+        endOfDay.setHours(23, 59, 59, 999);
+        if (rDate > endOfDay) return false;
+      }
       if (bikeIdF && !r.bikeId.toLowerCase().includes(bikeIdF)) return false;
 
       return true;
@@ -129,8 +145,8 @@ export function RentalHistoryScreen({ navigation }: Props) {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={GREEN} />
       </View>
     );
   }
@@ -139,43 +155,58 @@ export function RentalHistoryScreen({ navigation }: Props) {
     setAppliedFilters({});
   }
 
-  return (
-    <View style={{ flex: 1, padding: 12, gap: 12 }}>
-      <View style={{ flexDirection: "row", gap: 10 }}>
-        <TouchableOpacity onPress={() => filterSheetRef.current?.open()}
-          style={{ flex: 1, borderWidth: 1, borderRadius: 12, padding: 12 }}>
-          <Text style={{ textAlign: "center", fontWeight: "800" }}>{rent.Filters}</Text>
-        </TouchableOpacity>
+  const hasFilters = Object.keys(appliedFilters).some(k => {
+    const v = appliedFilters[k];
+    return v !== undefined && v !== "" && v !== null;
+  });
 
-        <TouchableOpacity onPress={() => sortSheetRef.current?.open()}
-          style={{ flex: 1, borderWidth: 1, borderRadius: 12, padding: 12 }}>
-          <Text style={{ textAlign: "center", fontWeight: "800" }}>{rent.Sort}</Text>
+  return (
+    <View style={styles.container}>
+      {/* Title row */}
+      <View style={styles.headerRow}>
+        <Text style={styles.title}>{rent.RecentRentals}</Text>
+        <TouchableOpacity onPress={() => filterSheetRef.current?.open()} style={styles.filterIcon}>
+          <MaterialCommunityIcons name="tune-variant" size={22} color="#555" />
         </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={clearAppliedFilters}
-        style={{ borderWidth: 1, borderRadius: 12, padding: 12, opacity: 0.95 }}>
-        <Text style={{ textAlign: "center", fontWeight: "800" }}>{rent.ClearFilters}</Text>
-      </TouchableOpacity>
+      <View style={styles.divider} />
 
-      {filtered.length === 0 ? (
-        <EmptyState rent={rent} />
-      ) : (
-        <NonEmptyState filtered={filtered} navigation={navigation} rent={rent} />
+      {hasFilters && (
+        <View style={styles.filterActions}>
+          <TouchableOpacity onPress={clearAppliedFilters}>
+            <Text style={styles.clearFiltersText}>{rent.ClearFilters}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => sortSheetRef.current?.open()}>
+            <Text style={styles.sortText}>{rent.Sort}</Text>
+          </TouchableOpacity>
+        </View>
       )}
 
+      {!hasFilters && (
+        <TouchableOpacity onPress={() => sortSheetRef.current?.open()} style={styles.sortOnly}>
+          <Text style={styles.sortText}>{rent.Sort}</Text>
+        </TouchableOpacity>
+      )}
+
+      <View style={styles.listContainer}>
+        {filtered.length === 0 ? (
+          <EmptyState rent={rent} />
+        ) : (
+          <NonEmptyState filtered={filtered} navigation={navigation} rent={rent} />
+        )}
+      </View>
+
       {filtered.length > 0 && (
-        <View style={{ borderWidth: 1, borderRadius: 12, padding: 12 }}>
-          <Text style={{ fontWeight: "700" }}>
-            {rent.TotalSpent}: {totalSpent}
-          </Text>
+        <View style={styles.totalRow}>
+          <Text style={styles.totalLabel}>{rent.TotalSpent}:</Text>
+          <Text style={styles.totalValue}>{totalSpent} {rent.Currency}</Text>
         </View>
       )}
 
       <FilterSortSheet ref={filterSheetRef} title={rent.Filters} kind="filter" onDiscard={() => {}}
         filterSpec={filterSpec} initialDraft={appliedFilters} onApplyFilter={(next) => setAppliedFilters(next)}
         getFilterSummary={(key, d) => {
-          if (key === "day") return d.day instanceof Date ? d.day.toISOString().slice(0, 10) : "";
           if (key === "bikeId") return String(d.bikeId ?? "").trim();
           return "";
         }} />
@@ -191,3 +222,110 @@ export function RentalHistoryScreen({ navigation }: Props) {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    padding: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  headerRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "700",
+    color: "#1a1a1a",
+  },
+  filterIcon: {
+    padding: 4,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: "#e0e0e0",
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  filterActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  clearFiltersText: {
+    fontSize: 13,
+    color: "#d32f2f",
+    fontWeight: "600",
+  },
+  sortOnly: {
+    alignItems: "flex-end",
+    marginBottom: 12,
+  },
+  sortText: {
+    fontSize: 13,
+    color: GREEN,
+    fontWeight: "600",
+  },
+  listContainer: {
+    flex: 1,
+  },
+  listContent: {
+    gap: 10,
+    paddingBottom: 8,
+  },
+  emptyState: {
+    paddingVertical: 24,
+    alignItems: "center",
+  },
+  emptyText: {
+    fontSize: 14,
+    color: "#999",
+    fontStyle: "italic",
+  },
+  rentalCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#f5f5f5",
+    borderRadius: 12,
+    padding: 14,
+  },
+  cardLeft: {
+    flex: 1,
+    gap: 2,
+  },
+  cardLine: {
+    fontSize: 14,
+    color: "#333",
+  },
+  cardLabel: {
+    fontWeight: "700",
+  },
+  cardCost: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: GREEN,
+  },
+  totalRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingTop: 16,
+    borderTopWidth: 0,
+  },
+  totalLabel: {
+    fontSize: 15,
+    color: "#666",
+  },
+  totalValue: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: GREEN,
+  },
+});

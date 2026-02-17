@@ -9,4 +9,6 @@ export default {
   ErrNewMin: "Nova lozinka mora imati bar 6 karaktera",
   ErrMismatch: "Lozinke se ne poklapaju",
   SuccessMsg: "Lozinka je promenjena",
+  Save: "Sa\u010Duvaj",
+  ErrorPlaceholder: "Ovde \u0107e se prikazati gre\u0161ka ukoliko postoji"
 } as const;

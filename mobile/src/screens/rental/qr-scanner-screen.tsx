@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { View, Text, Button, Alert, ActivityIndicator } from "react-native";
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator, StyleSheet } from "react-native";
 import { BarcodeScanningResult, CameraView, useCameraPermissions } from "expo-camera";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RentalStackParamList } from "../../navigation/types";
@@ -11,6 +11,8 @@ import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 import { rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";
+
+const GREEN = "#2E7D32";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "QrScanner">;
 
@@ -150,33 +152,98 @@ export function QrScannerScreen({ navigation }: Props) {
 
   if (!permission) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={GREEN} />
       </View>
     );
   }
 
   if (!permission.granted) {
     return (
-      <View style={{ flex: 1, padding: 16, gap: 12, justifyContent: "center" }}>
-        <Text>{qrr.CameraPermission}</Text>
-        <Button title={qrr.AllowCamera} onPress={requestPermission} />
+      <View style={styles.permissionContainer}>
+        <Text style={styles.permissionText}>{qrr.CameraPermission}</Text>
+        <TouchableOpacity style={styles.allowButton} onPress={requestPermission}>
+          <Text style={styles.allowButtonText}>{qrr.AllowCamera}</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      <CameraView style={{ flex: 1 }} onBarcodeScanned={isFocused ? onBarcodeScanner : undefined}
+    <View style={styles.flex}>
+      <CameraView style={styles.flex} onBarcodeScanned={isFocused ? onBarcodeScanner : undefined}
         barcodeScannerSettings={{ barcodeTypes: ["qr"] }}/>
 
-      <View style={{ padding: 12, gap: 8 }}>
-        <Text>{qrr.ScanQR}</Text>
+      <View style={styles.bottomBar}>
+        <Text style={styles.scanText}>{qrr.ScanQR}</Text>
 
-        {busy && <ActivityIndicator />}
+        {busy && <ActivityIndicator color={GREEN} />}
 
-        {scanned && <Button title={qrr.ScanAgain} disabled={busy} onPress={clear}/>}
+        {scanned && (
+          <TouchableOpacity disabled={busy} onPress={clear} style={styles.scanAgainButton}>
+            <Text style={[styles.scanAgainText, busy && styles.disabledText]}>{qrr.ScanAgain}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
+  centered: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  permissionContainer: {
+    flex: 1,
+    padding: 32,
+    gap: 16,
+    justifyContent: "center",
+    backgroundColor: "#fff",
+  },
+  permissionText: {
+    fontSize: 16,
+    color: "#333",
+    textAlign: "center",
+  },
+  allowButton: {
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  allowButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  bottomBar: {
+    padding: 16,
+    gap: 10,
+    backgroundColor: "#fff",
+    borderTopWidth: 1,
+    borderTopColor: "#e0e0e0",
+  },
+  scanText: {
+    fontSize: 15,
+    color: "#333",
+    textAlign: "center",
+  },
+  scanAgainButton: {
+    alignItems: "center",
+    paddingVertical: 8,
+  },
+  scanAgainText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: GREEN,
+  },
+  disabledText: {
+    opacity: 0.5,
+  },
+});

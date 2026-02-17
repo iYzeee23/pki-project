@@ -44,7 +44,9 @@ export function changePasswordTexts(t: TFunction) {
     ErrOldMissing: t("ErrOldMissing", { ns: "changePassword" }),
     ErrNewMin: t("ErrNewMin", { ns: "changePassword" }),
     ErrMismatch: t("ErrMismatch", { ns: "changePassword" }),
-    SuccessMsg: t("SuccessMsg", { ns: "changePassword" })
+    SuccessMsg: t("SuccessMsg", { ns: "changePassword" }),
+    Save: t("Save", { ns: "changePassword" }),
+    ErrorPlaceholder: t("ErrorPlaceholder", { ns: "changePassword" })
   };
 }
 
@@ -53,7 +55,13 @@ export function loginTexts(t: TFunction) {
     Username: t("Username", { ns: "login" }),
     Password: t("Password", { ns: "login" }),
     Login: t("Login", { ns: "login" }),
-    NoAcc: t("NoAcc", { ns: "login" })
+    NoAcc: t("NoAcc", { ns: "login" }),
+    WelcomeTitle: t("WelcomeTitle", { ns: "login" }),
+    Subtitle: t("Subtitle", { ns: "login" }),
+    UsernamePlaceholder: t("UsernamePlaceholder", { ns: "login" }),
+    PasswordPlaceholder: t("PasswordPlaceholder", { ns: "login" }),
+    NoAccQuestion: t("NoAccQuestion", { ns: "login" }),
+    RegisterHere: t("RegisterHere", { ns: "login" })
   };
 }
 
@@ -136,7 +144,9 @@ export function editProfileTexts(t: TFunction) {
     Saving: t("Saving", { ns: "editProfile" }),
     SaveProfile: t("SaveProfile", { ns: "editProfile" }),
     MissingUser: t("MissingUser", { ns: "editProfile" }),
-    Title: t("Title", { ns: "editProfile" })
+    Title: t("Title", { ns: "editProfile" }),
+    ChangePhoto: t("ChangePhoto", { ns: "editProfile" }),
+    ErrorPlaceholder: t("ErrorPlaceholder", { ns: "editProfile" })
   };
 }
 
@@ -152,7 +162,8 @@ export function profileTexts(t: TFunction) {
     RentalHistory: t("RentalHistory", { ns: "profile" }),
     Logout: t("Logout", { ns: "profile" }),
     English: t("English", { ns: "profile" }),
-    Serbian: t("Serbian", { ns: "profile" })
+    Serbian: t("Serbian", { ns: "profile" }),
+    Language: t("Language", { ns: "profile" })
   };
 }
 
@@ -185,7 +196,10 @@ export function rentalHistoryTexts(t: TFunction) {
     Filters: t("Filters", { ns: "rentalHistory" }),
     ClearFilters: t("ClearFilters", { ns: "rentalHistory" }),
     TotalSpent: t("TotalSpent", { ns: "rentalHistory" }),
-    Sort: t("Sort", { ns: "rentalHistory" })
+    Sort: t("Sort", { ns: "rentalHistory" }),
+    RecentRentals: t("RecentRentals", { ns: "rentalHistory" }),
+    Currency: t("Currency", { ns: "rentalHistory" }),
+    RentalDate: t("RentalDate", { ns: "rentalHistory" })
   };
 }
 
@@ -211,6 +225,7 @@ export function finishRentalTexts(t: TFunction) {
 
 export function photoUploadTexts(t: TFunction) {
   return {
+    Title: t("Title", { ns: "photoUpload" }),
     MissingInformation: t("MissingInformation", { ns: "photoUpload" }),
     AddImage: t("AddImage", { ns: "photoUpload" }),
     MsgSuccessfulIssue: t("MsgSuccessfulIssue", { ns: "photoUpload" }),
@@ -234,6 +249,7 @@ export function qrScannerTexts(t: TFunction) {
 
 export function reportIssueTexts(t: TFunction) {
   return {
+    Title: t("Title", { ns: "reportIssue" }),
     Description: t("Description", { ns: "reportIssue" }),
     Next: t("Next", { ns: "reportIssue" })
   };
@@ -244,6 +260,12 @@ export function filterSortTexts(t: TFunction) {
     PickDate: t("PickDate", { ns: "filterSort" }),
     Back: t("Back", { ns: "filterSort" }),
     Apply: t("Apply", { ns: "filterSort" }),
-    Discard: t("Discard", { ns: "filterSort" })
+    Discard: t("Discard", { ns: "filterSort" }),
+    Reset: t("Reset", { ns: "filterSort" }),
+    From: t("From", { ns: "filterSort" }),
+    To: t("To", { ns: "filterSort" }),
+    Today: t("Today", { ns: "filterSort" }),
+    ThisWeek: t("ThisWeek", { ns: "filterSort" }),
+    ThisMonth: t("ThisMonth", { ns: "filterSort" })
   };
 }

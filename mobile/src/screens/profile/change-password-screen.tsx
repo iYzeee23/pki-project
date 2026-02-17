@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
@@ -7,6 +7,8 @@ import { changePasswordTexts, commonTexts } from "../../i18n/i18n-builder";
 import { profileApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";
+
+const GREEN = "#2E7D32";
 
 type Props = NativeStackScreenProps<ProfileStackParamList, "ChangePassword">;
 
@@ -20,6 +22,7 @@ export function ChangePasswordScreen({ navigation }: Props) {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConf, setNewPasswordConf] = useState("");
+  const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -37,7 +40,11 @@ export function ChangePasswordScreen({ navigation }: Props) {
 
   const onSubmit = async () => {
     const err = validate();
-    if (err) return Alert.alert(com.Error, err);
+    if (err) {
+      setError(err);
+      return;
+    }
+    setError("");
 
     submitControllerRef.current?.abort();
     submitControllerRef.current = new AbortController();
@@ -62,7 +69,7 @@ export function ChangePasswordScreen({ navigation }: Props) {
     }
     catch (e: any) {
       if (isCanceled(e)) return;
-      Alert.alert(com.Error, getApiErrorMessage(e));
+      setError(getApiErrorMessage(e));
     }
     finally {
       setBusy(false);
@@ -70,22 +77,94 @@ export function ChangePasswordScreen({ navigation }: Props) {
   };
 
   return (
-    <View style={{ padding: 16, gap: 10 }}>
-      <Text style={{ fontSize: 22, fontWeight: "700" }}>{chp.Title}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+      {/* Password fields */}
+      <Text style={styles.label}>{chp.OldPlaceholder}</Text>
+      <TextInput style={styles.input} placeholder={chp.OldPlaceholder} value={oldPassword}
+        onChangeText={setOldPassword} secureTextEntry editable={!busy} />
 
-      <TextInput placeholder={chp.OldPlaceholder} value={oldPassword} onChangeText={setOldPassword}
-        secureTextEntry style={{ borderWidth: 1, padding: 12, borderRadius: 10 }} />
+      <Text style={styles.label}>{chp.NewPlaceholder}</Text>
+      <TextInput style={styles.input} placeholder={chp.NewPlaceholder} value={newPassword}
+        onChangeText={setNewPassword} secureTextEntry editable={!busy} />
 
-      <TextInput placeholder={chp.NewPlaceholder} value={newPassword} onChangeText={setNewPassword}
-        secureTextEntry style={{ borderWidth: 1, padding: 12, borderRadius: 10 }} />
+      <Text style={styles.label}>{chp.ConfPlaceholder}</Text>
+      <TextInput style={styles.input} placeholder={chp.ConfPlaceholder} value={newPasswordConf}
+        onChangeText={setNewPasswordConf} secureTextEntry editable={!busy} />
 
-      <TextInput placeholder={chp.ConfPlaceholder} value={newPasswordConf} onChangeText={setNewPasswordConf}
-        secureTextEntry style={{ borderWidth: 1, padding: 12, borderRadius: 10 }} />
+      {error ? (
+        <Text style={styles.errorText}>{error}</Text>
+      ) : null}
 
-      <TouchableOpacity disabled={busy} onPress={onSubmit}
-        style={{ padding: 14, borderRadius: 12, borderWidth: 1, opacity: busy ? 0.6 : 1 }}>
-        <Text style={{ textAlign: "center", fontWeight: "600" }}>{busy ? chp.Changing : chp.Submit}</Text>
+      <TouchableOpacity
+        style={[styles.saveButton, busy && styles.saveButtonDisabled]}
+        onPress={onSubmit}
+        disabled={busy}
+        activeOpacity={0.8}
+      >
+        <Text style={styles.saveButtonText}>
+          {busy ? chp.Changing : chp.Save}
+        </Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  contentContainer: {
+    flexGrow: 1,
+    justifyContent: "center",
+    padding: 24,
+  },
+  label: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: GREEN,
+    marginTop: 10,
+    marginBottom: 2,
+    paddingHorizontal: 8,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: "#e0e0e0",
+    marginVertical: 16,
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    fontSize: 15,
+    color: "#333",
+    marginBottom: 4,
+  },
+  errorText: {
+    fontSize: 13,
+    color: "#d32f2f",
+    marginTop: 12,
+  },
+  errorPlaceholder: {
+    fontSize: 13,
+    color: "#d32f2f",
+    marginTop: 12,
+    opacity: 0.7,
+  },
+  saveButton: {
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginTop: 20,
+  },
+  saveButtonDisabled: {
+    opacity: 0.5,
+  },
+  saveButtonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+});

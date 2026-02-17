@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Button, Text, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RentalStackParamList } from "../../navigation/types";
@@ -10,6 +10,8 @@ import { activeRentalTexts, commonTexts } from "../../i18n/i18n-builder";
 import { BikeDto, findInsideSpotId, formatDurationFromMs, isCanceled } from "@app/shared";
 import { bikeApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
+
+const GREEN = "#2E7D32";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "ActiveRental">;
 
@@ -140,8 +142,8 @@ export function ActiveRentalScreen({ navigation }: Props) {
 
   if (loadingActive) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color={GREEN} />
       </View>
     );
   }
@@ -149,17 +151,84 @@ export function ActiveRentalScreen({ navigation }: Props) {
   if (!activeRental || !bike) return;
 
   return (
-    <View style={{ padding: 16, gap: 12 }}>
-      <Text style={{ fontSize: 18, fontWeight: "600" }}>{act.Title}</Text>
+    <View style={styles.container}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{act.Title}</Text>
 
-      <Text>{act.Bike}: {activeRental.bikeId} {bike.type}</Text>
-      <Text>{act.Duration}: {formatDurationFromMs(elapsedMs)}</Text>
-      <Text>{act.CurrCost}: {liveCost.toFixed(2)}</Text>
+        <View style={styles.infoSection}>
+          <Text style={styles.infoText}>
+            <Text style={styles.bold}>{act.Bike}:</Text> {activeRental.bikeId}
+          </Text>
+          <Text style={styles.infoText}>
+            <Text style={styles.bold}>{act.Duration}:</Text> {formatDurationFromMs(elapsedMs)}
+          </Text>
+          <Text style={styles.infoText}>
+            <Text style={styles.bold}>{act.CurrCost}:</Text> {liveCost.toFixed(2)}
+          </Text>
+        </View>
 
-      <View style={{ gap: 10, marginTop: 8 }}>
-        <Button title={act.ReportIssue} onPress={onReportIssue} />
-        <Button title={act.FinishRental} onPress={onFinish} />
+        <View style={styles.actionsContainer}>
+          <TouchableOpacity onPress={onReportIssue}>
+            <Text style={styles.actionLink}>{act.ReportIssue}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={onFinish}>
+            <Text style={styles.actionLink}>{act.FinishRental}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+  },
+  container: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 20,
+    justifyContent: "center",
+  },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    marginBottom: 16,
+  },
+  infoSection: {
+    gap: 6,
+    marginBottom: 40,
+  },
+  infoText: {
+    fontSize: 15,
+    color: "#333",
+    lineHeight: 22,
+  },
+  bold: {
+    fontWeight: "700",
+  },
+  actionsContainer: {
+    alignItems: "center",
+    gap: 12,
+  },
+  actionLink: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: GREEN,
+    textDecorationLine: "underline",
+  },
+});

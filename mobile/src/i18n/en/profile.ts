@@ -9,5 +9,6 @@ export default {
     RentalHistory: "Rental history",
     Logout: "Logout",
     English: "English",
-    Serbian: "Serbian"
+    Serbian: "Serbian",
+    Language: "Language"
 } as const;

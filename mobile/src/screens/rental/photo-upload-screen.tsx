@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Alert, Button, FlatList, Image, View } from "react-native";
+import { ActivityIndicator, Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useDraftStore } from "../../stores/draft-store";
 import { useRentalStore } from "../../stores/rental-store";
@@ -12,6 +12,8 @@ import { CommonActions } from "@react-navigation/native";
 import { imageApi, issueApi, rentalApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
 import { isCanceled } from "@app/shared";
+
+const GREEN = "#2E7D32";
 
 type Props = NativeStackScreenProps<RentalStackParamList, "PhotoUpload">;
 
@@ -138,22 +140,143 @@ export function PhotoUploadScreen({ route, navigation }: Props) {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16, gap: 12 }}>
-      <Button title={pht.AddPhotos} onPress={onPickImages} disabled={submitting} />
+    <View style={styles.outerContainer}>
+      <View style={styles.card}>
+        <Text style={styles.title}>{pht.Title}</Text>
 
-      <FlatList data={files} keyExtractor={(f) => f.uri} contentContainerStyle={{ gap: 12, paddingVertical: 8 }}
-        renderItem={({ item }) => (
-          <View style={{ borderWidth: 1, borderRadius: 12, overflow: "hidden" }}>
-            <Image source={{ uri: item.uri }} style={{ width: "100%", height: 200 }} />
-            <View style={{ padding: 8 }}>
-              <Button title={pht.Remove} onPress={() => remove(item.uri)} disabled={submitting} />
-            </View>
-          </View>
-        )} />
+        {files.length === 0 ? (
+          <TouchableOpacity style={styles.addArea} onPress={onPickImages} disabled={submitting}>
+            <Text style={styles.addAreaText}>{pht.AddPhotos}</Text>
+          </TouchableOpacity>
+        ) : (
+          <FlatList
+            data={files}
+            keyExtractor={(f) => f.uri}
+            contentContainerStyle={styles.imageList}
+            renderItem={({ item }) => (
+              <View style={styles.imageWrapper}>
+                <Image source={{ uri: item.uri }} style={styles.image} />
+                <TouchableOpacity
+                  style={styles.removeButton}
+                  onPress={() => remove(item.uri)}
+                  disabled={submitting}
+                >
+                  <Text style={styles.removeText}>{pht.Remove}</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+            ListFooterComponent={
+              <TouchableOpacity onPress={onPickImages} disabled={submitting} style={styles.addMoreArea}>
+                <Text style={styles.addAreaText}>{pht.AddPhotos}</Text>
+              </TouchableOpacity>
+            }
+          />
+        )}
 
-      {submitting && <ActivityIndicator size="large" />}
+        {submitting && <ActivityIndicator size="large" color={GREEN} style={styles.spinner} />}
 
-      <Button title={pht.Submit} onPress={onSubmit} disabled={submitting} />
+        <TouchableOpacity
+          style={[styles.submitButton, (submitting || files.length === 0) && styles.submitButtonDisabled]}
+          onPress={onSubmit}
+          disabled={submitting || files.length === 0}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.submitButtonText}>
+            {pht.Submit}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  outerContainer: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+    padding: 20,
+  },
+  card: {
+    flex: 1,
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    padding: 24,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#1a1a1a",
+    marginBottom: 16,
+  },
+  addArea: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    borderStyle: "dashed",
+    paddingVertical: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 16,
+  },
+  addMoreArea: {
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 12,
+    borderStyle: "dashed",
+    paddingVertical: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 12,
+  },
+  addAreaText: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+  imageList: {
+    gap: 12,
+    paddingBottom: 8,
+  },
+  imageWrapper: {
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  image: {
+    width: "100%",
+    height: 200,
+  },
+  removeButton: {
+    padding: 10,
+    alignItems: "center",
+  },
+  removeText: {
+    fontSize: 14,
+    color: "#d32f2f",
+    fontWeight: "600",
+  },
+  spinner: {
+    marginVertical: 12,
+  },
+  submitButton: {
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 16,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  submitButtonDisabled: {
+    opacity: 0.5,
+  },
+  submitButtonText: {
+    color: "#fff",
+    fontSize: 17,
+    fontWeight: "600",
+  },
+});

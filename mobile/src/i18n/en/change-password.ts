@@ -9,4 +9,6 @@ export default {
   ErrNewMin: "New password needs to have at least 6 characters",
   ErrMismatch: "Passwords don't match",
   SuccessMsg: "Password has been changed",
+  Save: "Save",
+  ErrorPlaceholder: "Error will be shown here if exists"
 } as const;

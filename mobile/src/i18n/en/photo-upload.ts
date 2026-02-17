@@ -1,4 +1,5 @@
 export default {
+    Title: "Photo upload",
     MissingInformation: "Missing information. Return back",
     AddImage: "Add at least one image",
     MsgSuccessfulIssue: "Successfully reported an issue",

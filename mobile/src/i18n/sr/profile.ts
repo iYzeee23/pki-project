@@ -7,7 +7,8 @@ export default {
     ChangeProfile: "Promeni podesavanja profila",
     ChangePassword: "Promeni lozinku",
     RentalHistory: "Istorija iznajmljivanja",
-    Logout: "Odjavi se",
+    Logout: "Odjava",
     English: "Engleski",
-    Serbian: "Srpski"
+    Serbian: "Srpski",
+    Language: "Jezik"
 } as const;
