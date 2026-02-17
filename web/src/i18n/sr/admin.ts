@@ -3,6 +3,6 @@ export default {
   Rentals: "Iznajmljivanje",
   Issues: "Problemi",
   Profile: "Profil",
-  Language: "EN \u25be",
+  Language: "SR \u25be",
   Logout: "Odjava"
 } as const;

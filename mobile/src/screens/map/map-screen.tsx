@@ -99,9 +99,21 @@ export function MapScreen({ navigation }: Props) {
 
   const activeNearestSpots = useMemo(() => {
     if (!activeBike) return [];
-    
+
     return nearestSpots(parkingSpots, activeBike.location);
   }, [parkingSpots, activeBike]);
+
+  const nearestSpotKey = useMemo(
+    () => activeNearestSpots.map(ns => ns.spot.id).join(","),
+    [activeNearestSpots]
+  );
+
+  const spotRenderVersion = useRef(0);
+  const prevNearestKey = useRef(nearestSpotKey);
+  if (prevNearestKey.current !== nearestSpotKey) {
+    prevNearestKey.current = nearestSpotKey;
+    spotRenderVersion.current += 1;
+  }
 
   const activeInsideSpotId = useMemo(() => {
     if (!activeBike) return undefined;
@@ -122,20 +134,32 @@ export function MapScreen({ navigation }: Props) {
     });
   }, [bikes, parkingSpots, isActiveMode]);
 
+  const visibleBikeIds = useMemo(
+    () => defaultVisibleBikes.map(b => b.id).sort().join(","),
+    [defaultVisibleBikes]
+  );
+
+  const bikeRenderVersion = useRef(0);
+  const prevVisibleIds = useRef(visibleBikeIds);
+  if (prevVisibleIds.current !== visibleBikeIds) {
+    prevVisibleIds.current = visibleBikeIds;
+    bikeRenderVersion.current += 1;
+  }
+
   useEffect(() => {
     if (!mapRef.current) return;
 
-    if (activeBike) {
-      mapRef.current.animateToRegion(locationToMapCenter(activeBike.location), 350);
-      return;
-    }
+    const target = activeBike
+      ? locationToMapCenter(activeBike.location)
+      : parkingSpots.length > 0
+        ? locationToMapCenter(parkingSpots[0].location)
+        : defaultMapCenter();
 
-    if (parkingSpots.length > 0) {
-      mapRef.current.animateToRegion(locationToMapCenter(parkingSpots[0].location), 350);
-      return;
-    }
+    const timer = setTimeout(() => {
+      mapRef.current?.animateToRegion(target, 350);
+    }, 150);
 
-    mapRef.current.animateToRegion(defaultMapCenter(), 350);
+    return () => clearTimeout(timer);
   }, [activeBike, parkingSpots]);
 
   if (loading || parkingSpots.length === 0) {
@@ -167,7 +191,8 @@ export function MapScreen({ navigation }: Props) {
           const pinColor = b.status === "Available" ? "green" : "red";
 
           return (
-            <Marker key={b.id} pinColor={pinColor} title={`${mapp.Bike} ${b.id}`} description={b.status}
+            <Marker key={`${b.id}-${bikeRenderVersion.current}`} pinColor={pinColor}
+              title={`${mapp.Bike} ${b.id}`} description={b.status}
               coordinate={{ latitude: b.location.lat, longitude: b.location.lng }}
               onPress={() => navigation.navigate("BikeDetails", { bikeId: b.id })} />
           );
@@ -178,8 +203,10 @@ export function MapScreen({ navigation }: Props) {
           const pinColor = isInsideThis ? "orange" : "blue";
 
           return (
-            <Marker key={spot.id} pinColor={pinColor} title={spot.name} description={`${Math.round(distance)}m`}
+            <Marker key={`${spot.id}-${spotRenderVersion.current}`} pinColor={pinColor}
+              title={spot.name} description={`${Math.round(distance)}m`}
               coordinate={{ latitude: spot.location.lat, longitude: spot.location.lng }}
+              zIndex={2}
               onPress={() =>
                 navigation.navigate("ParkingDetails", {
                   spotId: spot.id,
@@ -191,11 +218,19 @@ export function MapScreen({ navigation }: Props) {
           );
         })}
 
-        {isActiveMode && activeBike && !activeInsideSpotId && (
-          <Marker key={activeBike.id} pinColor="red" title={mapp.Active} description={`${mapp.Bike} ${activeBike.id}`}
-            coordinate={{ latitude: activeBike.location.lat, longitude: activeBike.location.lng }}
-            onPress={() => navigation.navigate("BikeDetails", { bikeId: activeBike.id })} />
-        )}
+        {isActiveMode && activeBike && (() => {
+          const hidden = !!activeInsideSpotId;
+          return (
+            <Marker key={activeBike.id} pinColor="red"
+              title={mapp.Active} description={`${mapp.Bike} ${activeBike.id}`}
+              coordinate={hidden
+                ? { latitude: 0, longitude: 0 }
+                : { latitude: activeBike.location.lat, longitude: activeBike.location.lng }}
+              zIndex={hidden ? -1 : 1}
+              opacity={hidden ? 0 : 1}
+              onPress={hidden ? undefined : () => navigation.navigate("BikeDetails", { bikeId: activeBike.id })} />
+          );
+        })()}
       </MapView>
     </View>
   );

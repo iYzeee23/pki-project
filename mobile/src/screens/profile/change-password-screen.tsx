@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { ProfileStackParamList } from "../../navigation/types";
 import { useTranslation } from "react-i18next";
@@ -77,7 +77,9 @@ export function ChangePasswordScreen({ navigation }: Props) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}
+      keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive">
       {/* Password fields */}
       <Text style={styles.label}>{chp.OldPlaceholder}</Text>
       <TextInput style={styles.input} placeholder={chp.OldPlaceholder} value={oldPassword}
@@ -106,6 +108,7 @@ export function ChangePasswordScreen({ navigation }: Props) {
         </Text>
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -118,6 +121,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     padding: 24,
+    paddingBottom: 120,
   },
   label: {
     fontSize: 12,

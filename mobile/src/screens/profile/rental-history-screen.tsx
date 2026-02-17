@@ -214,10 +214,10 @@ export function RentalHistoryScreen({ navigation }: Props) {
       <FilterSortSheet ref={sortSheetRef} title={rent.Sort} kind="sort" onDiscard={() => {}}
         initialSortKey={appliedSortKey} onApplySort={(k) => setAppliedSortKey(k)}
         sortSpec={[
-          { key: "date_desc", label: "Date (newest first)" },
-          { key: "date_asc", label: "Date (oldest first)" },
-          { key: "cost_desc", label: "Cost (high → low)" },
-          { key: "cost_asc", label: "Cost (low → high)" },
+          { key: "date_desc", label: rent.SortDateDesc },
+          { key: "date_asc", label: rent.SortDateAsc },
+          { key: "cost_desc", label: rent.SortCostDesc },
+          { key: "cost_asc", label: rent.SortCostAsc },
         ]} />
     </View>
   );

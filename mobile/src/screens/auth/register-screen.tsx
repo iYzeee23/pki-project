@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import {
   Alert,
   Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -118,10 +120,15 @@ export function RegisterScreen({}: Props) {
   };
 
   return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.scrollContent}
       keyboardShouldPersistTaps="handled"
+      keyboardDismissMode="interactive"
     >
       {/* Logo */}
       <View style={styles.logoContainer}>
@@ -227,6 +234,7 @@ export function RegisterScreen({}: Props) {
         </Text>
       </TouchableOpacity>
     </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -238,7 +246,7 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 32,
     paddingTop: 24,
-    paddingBottom: 40,
+    paddingBottom: 120,
   },
   logoContainer: {
     flexDirection: "row",

@@ -197,6 +197,10 @@ export function rentalHistoryTexts(t: TFunction) {
     ClearFilters: t("ClearFilters", { ns: "rentalHistory" }),
     TotalSpent: t("TotalSpent", { ns: "rentalHistory" }),
     Sort: t("Sort", { ns: "rentalHistory" }),
+    SortDateDesc: t("SortDateDesc", { ns: "rentalHistory" }),
+    SortDateAsc: t("SortDateAsc", { ns: "rentalHistory" }),
+    SortCostDesc: t("SortCostDesc", { ns: "rentalHistory" }),
+    SortCostAsc: t("SortCostAsc", { ns: "rentalHistory" }),
     RecentRentals: t("RecentRentals", { ns: "rentalHistory" }),
     Currency: t("Currency", { ns: "rentalHistory" }),
     RentalDate: t("RentalDate", { ns: "rentalHistory" })

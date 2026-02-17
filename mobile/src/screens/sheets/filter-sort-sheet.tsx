@@ -257,6 +257,9 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
       snapPoints={snapPoints}
       backdropComponent={backdrop}
       enablePanDownToClose
+      keyboardBehavior="interactive"
+      keyboardBlurBehavior="restore"
+      android_keyboardInputMode="adjustResize"
       onDismiss={() => {
         const r = dismissReasonRef.current;
         dismissReasonRef.current = "unknown";

@@ -219,15 +219,15 @@ export function mapTexts(t: TFunction) {
 
 export function parkingTexts(t: TFunction) {
   return {
-    Parking: t("Parking", { ns: "parking" }),
-    Coordinates: t("Coordinates", { ns: "parking" }),
-    Latitude: t("Latitude", { ns: "parking" }),
-    Longitude: t("Longitude", { ns: "parking" }),
-    Bikes: t("Bikes", { ns: "parking" }),
-    NoBikes: t("NoBikes", { ns: "parking" }),
-    Bike: t("Bike", { ns: "parking" }),
-    Status: t("Status", { ns: "parking" }),
-    Type: t("Type", { ns: "parking" }),
+    Parking: t("Parking", { ns: "parkingDetails" }),
+    Coordinates: t("Coordinates", { ns: "parkingDetails" }),
+    Latitude: t("Latitude", { ns: "parkingDetails" }),
+    Longitude: t("Longitude", { ns: "parkingDetails" }),
+    Bikes: t("Bikes", { ns: "parkingDetails" }),
+    NoBikes: t("NoBikes", { ns: "parkingDetails" }),
+    Bike: t("Bike", { ns: "parkingDetails" }),
+    Status: t("Status", { ns: "parkingDetails" }),
+    Type: t("Type", { ns: "parkingDetails" }),
   };
 }
 

@@ -64,6 +64,7 @@ export function LoginScreen({ navigation }: Props) {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
       >
         {/* Logo */}
         <View style={styles.logoContainer}>
@@ -124,6 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 32,
     paddingVertical: 48,
+    paddingBottom: 120,
   },
   logoContainer: {
     flexDirection: "row",

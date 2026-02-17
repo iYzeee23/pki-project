@@ -92,8 +92,10 @@ export class UsersController {
     user.phone = body.phone;
     user.email = body.email;
 
-    deleteImage(user.profileImagePath);
-    user.profileImagePath = await saveImage(req.file?.buffer, req.file?.originalname, req.file?.mimetype);
+    if (req.file) {
+      deleteImage(user.profileImagePath);
+      user.profileImagePath = await saveImage(req.file.buffer, req.file.originalname, req.file.mimetype);
+    }
 
     await user.save();
 

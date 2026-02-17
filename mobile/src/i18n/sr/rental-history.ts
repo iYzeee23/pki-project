@@ -13,6 +13,10 @@ export default {
     ClearFilters: "Ocisti filtere",
     TotalSpent: "Ukupno potroseno",
     Sort: "Sortiranje",
+    SortDateDesc: "Datum (najnovije prvo)",
+    SortDateAsc: "Datum (najstarije prvo)",
+    SortCostDesc: "Cena (od najviše)",
+    SortCostAsc: "Cena (od najniže)",
     RecentRentals: "Nedavna iznajmljivanja",
     Currency: "din",
     RentalDate: "Datum iznajmljivanja"

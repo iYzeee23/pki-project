@@ -10,6 +10,7 @@ import { activeRentalTexts, commonTexts } from "../../i18n/i18n-builder";
 import { BikeDto, findInsideSpotId, formatDurationFromMs, isCanceled } from "@app/shared";
 import { bikeApi } from "../../util/services";
 import { getApiErrorMessage } from "../../util/http";
+import { useBikesStore } from "../../stores/bike-store";
 
 const GREEN = "#2E7D32";
 
@@ -28,6 +29,10 @@ export function ActiveRentalScreen({ navigation }: Props) {
   const refreshActiveRental = useRentalStore((s) => s.refreshActiveRental);
 
   const parkingSpots = useMapStore((s) => s.parkingSpots);
+
+  const storeBike = useBikesStore((s) =>
+    activeRental ? s.bikes.find(b => b.id === activeRental.bikeId) : undefined
+  );
 
   const [bike, setBike] = useState<BikeDto | undefined>(undefined);
   const [tick, setTick] = useState(0);
@@ -90,6 +95,10 @@ export function ActiveRentalScreen({ navigation }: Props) {
       controller.abort();
     };
   }, [activeRental]);
+
+  useEffect(() => {
+    if (storeBike) setBike(storeBike);
+  }, [storeBike]);
 
   useEffect(() => {
     if (!activeRental) return;

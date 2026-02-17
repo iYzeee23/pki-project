@@ -13,6 +13,10 @@ export default {
     ClearFilters: "Clear filters",
     TotalSpent: "Total spent",
     Sort: "Sort",
+    SortDateDesc: "Date (newest first)",
+    SortDateAsc: "Date (oldest first)",
+    SortCostDesc: "Cost (high → low)",
+    SortCostAsc: "Cost (low → high)",
     RecentRentals: "Recent rentals",
     Currency: "din",
     RentalDate: "Rental date"
