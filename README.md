@@ -1,70 +1,74 @@
-## Setup & Testiranje
+## Setup Guide
 
-### 1) Instalirati Node.js
-https://nodejs.org/en/download
+### 1. Install Node.js
 
-### 2) Instalirati MongoDB i pokrenuti server
-https://www.mongodb.com/try/download/community  
-**Services => MongoDB Server => Start the service**
+Download and install from: https://nodejs.org/en/download
 
-### 3) Instalirati Expo Go na iPhone
-AppStore => Expo Go
+---
 
-### 4) Instalirati potrebne zavisnosti
+### 2. Install MongoDB & Start the Service
+
+Download and install from: https://www.mongodb.com/try/download/community
+
+After installation, start the MongoDB service:
+
+> **Services** → **MongoDB Server** → **Start the service**
+
+---
+
+### 3. Install Expo Go on iPhone
+
+> **App Store** → Search for **Expo Go** → **Install**
+
+---
+
+### 4. Create Environment Files
+
+Reporoot has a `.env.example` file. Copy it to `.env` and fill in the values.
+
+To find your local IP address (needed for mobile ↔ server communication):
+
 ```bash
-cd "%reporoot%"
-npm install --workspaces
+ipconfig
 ```
 
-### 5) Podesiti .env varijable
-Postoje primeri (.env.example) za svaki od njih
+Use the **IPv4 Address** from the output (e.g. `192.168.1.x`) in your `.env` files.
 
-### 6) Proveriti da li radi server [Node.js + Express]
-```bash
-npm --workspace ./Server run dev
-```
-**Browser => http://localhost:3000/health => {"ok":true}**
+---
 
-### 7) Proveriti da li radi REST + JWT
-```bash
-curl -X POST http://localhost:3000/auth/login ^
-  -H "Content-Type: application/json" ^
-  -d "{\"username\":\"admin\",\"password\":\"admin\"}"
+### 5. Run Full Setup
 
-curl http://localhost:3000/secret ^
-  -H "Authorization: Bearer <TOKEN>"
+```bash
+npm run full:setup
 ```
-**{"ok":true, ...}**
 
-### 8) Proveriti da li radi Socket.IO
-```bash
-node .\Server\scripts\test.js
-```
-**Server => [socket] connected**  
-**Terminal => connected i pong**
+Expected output: **Setup successfully finished!**
 
-### 9) Proveriti da li radi Mongo + Socket event
-```bash
-curl -X POST http://localhost:3000/notes ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer <TOKEN>" ^
-  -d "{\"text\":\"Hello\"}"
-```
-**Terminal => note_created**
-```bash
-curl http://localhost:3000/notes ^
-  -H "Authorization: Bearer <TOKEN>"
-```
-**{"notes":[...]}**
+---
 
-### 10) Proveriti da li radi Web app [React + Leaflet]
-```bash
-npm --workspace ./Web run dev
-```
-**http://localhost:5173/ => Treba da se iscrta minijaturna mapa**
+### 6. Initialize the Database
 
-### 11) Proveriti da li radi Mobile app [React Native + Expo]
 ```bash
-npm --workspace ./Mobile run start
+npm run db:init
 ```
-**Skenirati QR kod kamerom => U Expo Go treba da se iscrta mapa**
+
+Expected output: **DB init done**
+
+---
+
+### 7. Start All Dev Servers
+
+```bash
+npm run dev:all
+```
+
+This opens three terminal windows — one each for the server, web app, and mobile app.
+
+> **Important:** Your phone and the server must be on the **same network** for the mobile app to connect.
+
+---
+
+## Known Limitations
+
+- **Dark theme** is not supported
+- **Screen rotation** is not supported
