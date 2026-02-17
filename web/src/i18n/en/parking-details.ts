@@ -1,6 +1,11 @@
 export default {
     Parking: "Parking",
     Coordinates: "Coordinates",
-    Bikes: "Bikes on the parking spot",
-    NoBikes: "No bikes"
+    Latitude: "Latitude",
+    Longitude: "Longitude",
+    Bikes: "Bikes on this parking spot",
+    NoBikes: "No bikes",
+    Bike: "Bike",
+    Status: "Status",
+    Type: "Type",
 } as const;

@@ -8,4 +8,5 @@ export default {
   NewPassword: "Nova lozinka",
   ConfNewPassword: "Potvrdite novu lozinku",
   Back: "Nazad",
+  ErrorPlaceholder: "Ovde ce se prikazati greska ukoliko postoji",
 } as const;

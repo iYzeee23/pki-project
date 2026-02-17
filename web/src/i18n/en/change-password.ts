@@ -7,5 +7,6 @@ export default {
     CurrentPassword: "Current password",
     NewPassword: "New password",
     ConfNewPassword: "Confirm new password",
-    Back: "Back"
+    Back: "Back",
+    ErrorPlaceholder: "Error will be shown here if exists",
 } as const;

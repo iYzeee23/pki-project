@@ -9,4 +9,7 @@ export default {
   Email: "Email",
   ProfPicture: "Profilna slika [opciono]",
   Back: "Nazad",
+  ChangePhoto: "Promeni fotografiju",
+  Remove: "Ukloni",
+  ErrorPlaceholder: "Ovde ce se prikazati greska ukoliko postoji",
 } as const;

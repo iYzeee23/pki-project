@@ -10,7 +10,8 @@ import { issuesTexts } from "../../i18n/i18n-builder";
 const DEFAULT_FILTERS: CommonFilters = {
   userId: "",
   bikeId: "",
-  day: "",
+  dayFrom: "",
+  dayTo: "",
   sortBy: "day",
   sortDir: "desc",
 };
@@ -46,12 +47,15 @@ export function IssuesPage() {
   const view = useMemo(() => {
     const userQ = filters.userId.trim().toLowerCase();
     const bikeQ = filters.bikeId.trim().toLowerCase();
-    const dayQ = filters.day;
+    const fromQ = filters.dayFrom;
+    const toQ = filters.dayTo;
 
     let arr = items.filter((r) => {
       if (userQ && !r.userId.toLowerCase().includes(userQ)) return false;
       if (bikeQ && !r.bikeId.toLowerCase().includes(bikeQ)) return false;
-      if (dayQ && isoDateOnly(r.reportedAt) !== dayQ) return false;
+      const day = isoDateOnly(r.reportedAt);
+      if (fromQ && day < fromQ) return false;
+      if (toQ && day > toQ) return false;
       return true;
     });
 
@@ -75,42 +79,55 @@ export function IssuesPage() {
 
   return (
     <div style={{ position: "relative" }}>
-      <div style={{ maxWidth: 1000, margin: "0 auto", padding: 14 }}>
-        <h2 style={{ margin: "6px 0 12px" }}>{isp.Issues}</h2>
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 32, alignItems: "start" }}>
+          {/* Filter sidebar */}
+          <FilterSortBar
+            value={filters}
+            onChange={setFilters}
+            onReset={() => setFilters(DEFAULT_FILTERS)}
+          />
 
-        <FilterSortBar
-          value={filters}
-          onChange={setFilters}
-          onReset={() => setFilters(DEFAULT_FILTERS)}
-        />
+          {/* Issue cards */}
+          <div style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 12,
+            height: "calc(100vh - 64px - 90px)",
+            overflowY: "auto",
+            padding: "16px",
+            border: "1px solid #e0e0e0",
+            borderRadius: 14,
+            background: "#fafafa",
+          }}>
+            {busy ? <div style={{ color: "#888" }}>{isp.Loading}</div> : null}
 
-        {busy ? <div>{isp.Loading}</div> : null}
+            {view.map((r) => (
+              <Pressable
+                key={r.id}
+                onClick={() => nav(`/issues/${r.id}`, { state: { from: loc.pathname + loc.search } })}
+                style={{
+                  textAlign: "left",
+                  padding: "14px 18px",
+                  borderRadius: 12,
+                  background: "#fff",
+                  cursor: "pointer",
+                  color: "#111",
+                  boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+                }}
+              >
+                <div style={{ fontWeight: 700, fontSize: 15 }}>{isoDateOnly(r.reportedAt)}</div>
+                <div style={{ fontSize: 14, marginTop: 4 }}>
+                  <b>{isp.User}:</b> {r.userId}
+                </div>
+                <div style={{ fontSize: 14 }}>
+                  <b>{isp.Bike}:</b> {r.bikeId}
+                </div>
+              </Pressable>
+            ))}
 
-        <div style={{ display: "grid", gap: 10 }}>
-          {view.map((r) => (
-            <Pressable
-              key={r.id}
-              onClick={() => nav(`/issues/${r.id}`, { state: { from: loc.pathname + loc.search } })}
-              style={{
-                textAlign: "left",
-                padding: 12,
-                borderRadius: 14,
-                border: "1px solid #e5e5e5",
-                background: "#fff",
-                cursor: "pointer",
-                color: "black"
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", gap: 10 }}>
-                <div style={{ fontWeight: 900 }}>{isoDateOnly(r.reportedAt)}</div>
-              </div>
-
-              <div style={{ opacity: 0.9 }}>{isp.User}: {r.userId}</div>
-              <div style={{ opacity: 0.9 }}>{isp.Bike}: {r.bikeId}</div>
-            </Pressable>
-          ))}
-
-          {!busy && view.length === 0 ? <div>{isp.NoResults}</div> : null}
+            {!busy && view.length === 0 ? <div style={{ color: "#888" }}>{isp.NoResults}</div> : null}
+          </div>
         </div>
       </div>
 

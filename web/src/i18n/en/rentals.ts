@@ -4,5 +4,5 @@ export default {
     User: "User",
     Bike: "Bike",
     NoResults: "No results",
-    RSD: "RSD"
+    RSD: "din"
 } as const;

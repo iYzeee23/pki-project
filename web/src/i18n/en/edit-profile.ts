@@ -8,5 +8,8 @@ export default {
     Phone: "Phone",
     Email: "Email",
     ProfPicture: "Profile picture [optional]",
-    Back: "Back"
+    Back: "Back",
+    ChangePhoto: "Change photo",
+    Remove: "Remove",
+    ErrorPlaceholder: "Error will be shown here if exists",
 } as const;

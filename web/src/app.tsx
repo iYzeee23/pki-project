@@ -14,10 +14,12 @@ import { RentalsPage } from "./pages/features/rentals-page";
 import { IssuesPage } from "./pages/features/issues-page";
 import { BikeDetailsPanel } from "./panels/bike/bike-details-panel";
 import { BikeEditPanel } from "./panels/bike/bike-edit-panel";
+import { BikeAddPanel } from "./panels/bike/bike-add-panel";
 import { RentalImagesPanel } from "./panels/rental/rental-images-panel";
 import { RentalDetailsPanel } from "./panels/rental/rental-details-panel";
 import { IssueDetailsPanel } from "./panels/issue/issue-details-panel";
 import { IssueImagesPanel } from "./panels/issue/issue-images-panel";
+import { IssueEditBikeStatusPanel } from "./panels/issue/issue-edit-bike-status-panel";
 
 export function App() {
   const hydrate = useAuthStore((s) => s.hydrate);
@@ -43,6 +45,7 @@ export function App() {
               <Route path="parking/:id" element={<ParkingDetailsPanel />} />
               <Route path="bike/:id" element={<BikeDetailsPanel />} />
               <Route path="bike/:id/edit" element={<BikeEditPanel />} />
+              <Route path="bike/new" element={<BikeAddPanel />} />
             </Route>
             
             <Route path="/rentals" element={<RentalsPage />}>
@@ -53,6 +56,7 @@ export function App() {
             <Route path="/issues" element={<IssuesPage />}>
               <Route path=":id" element={<IssueDetailsPanel />} />
               <Route path=":id/images" element={<IssueImagesPanel />} />
+              <Route path=":id/edit-bike-status" element={<IssueEditBikeStatusPanel />} />
             </Route>
           </Route>
         </Route>

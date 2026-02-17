@@ -5,42 +5,71 @@ import { Pressable } from "../elements/pressable";
 export function Panel({
   title,
   onClose,
+  noBackdrop,
   children,
-}: PropsWithChildren<{ title: string; onClose: () => void }>) {
+}: PropsWithChildren<{ title: string; onClose: () => void; noBackdrop?: boolean }>) {
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        height: "100%",
-        width: 420,
-        maxWidth: "92vw",
-        background: "#fff",
-        color: "#111",
-        borderLeft: "1px solid #e5e5e5",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.12)",
-        display: "grid",
-        gridTemplateRows: "56px 1fr",
-        zIndex: 500,
-      }}
-    >
+    <>
+      {/* Blurred backdrop */}
+      {!noBackdrop && (
+        <div
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            inset: 0,
+            backdropFilter: "blur(3px)",
+            WebkitBackdropFilter: "blur(3px)",
+            backgroundColor: "rgba(0,0,0,0.15)",
+            zIndex: 499,
+          }}
+        />
+      )}
+
       <div
         style={{
+          position: "absolute",
+          top: 0,
+          right: 0,
+          height: "100%",
+          width: 360,
+          maxWidth: "92vw",
+          background: "#fff",
+          color: "#111",
+          boxShadow: "-4px 0 20px rgba(0,0,0,0.12)",
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 12px",
-          borderBottom: "1px solid #f1f1f1"
+          flexDirection: "column",
+          zIndex: 500,
         }}
       >
-        <div style={{ fontWeight: 900 }}>{title}</div>
-        <Pressable type="button" onClick={onClose} style={{ padding: "8px 12px" }}>
-          Zatvori
-        </Pressable>
-      </div>
+        {/* Close button */}
+        <div style={{ display: "flex", justifyContent: "flex-end", padding: "14px 16px 0" }}>
+          <Pressable
+            type="button"
+            onClick={onClose}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 4,
+              color: "#333",
+              fontSize: 22,
+              lineHeight: 1,
+            }}
+          >
+            ✕
+          </Pressable>
+        </div>
 
-      <div style={{ padding: 12, overflow: "auto" }}>{children}</div>
-    </div>
+        {/* Title */}
+        <div style={{ padding: "4px 20px 12px", fontWeight: 800, fontSize: 20 }}>
+          {title}
+        </div>
+
+        {/* Content */}
+        <div style={{ padding: "0 20px 20px", overflow: "auto", flex: 1 }}>
+          {children}
+        </div>
+      </div>
+    </>
   );
 }

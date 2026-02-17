@@ -16,13 +16,15 @@ export function adminTexts(t: TFunction) {
     Rentals: t("Rentals", { ns: "admin" }),
     Issues: t("Issues", { ns: "admin" }),
     Profile: t("Profile", { ns: "admin" }),
-    Language: t("Language", { ns: "admin" })
+    Language: t("Language", { ns: "admin" }),
+    Logout: t("Logout", { ns: "admin" })
   };
 }
 
 export function bikeDetailsTexts(t: TFunction) {
   return {
     Language: t("Language", { ns: "bikeDetails" }),
+    BikeDetails: t("BikeDetails", { ns: "bikeDetails" }),
     Bike: t("Bike", { ns: "bikeDetails" }),
     Loading: t("Loading", { ns: "bikeDetails" }),
     Type: t("Type", { ns: "bikeDetails" }),
@@ -30,10 +32,13 @@ export function bikeDetailsTexts(t: TFunction) {
     Price: t("Price", { ns: "bikeDetails" }),
     ID: t("ID", { ns: "bikeDetails" }),
     Coordinates: t("Coordinates", { ns: "bikeDetails" }),
+    Latitude: t("Latitude", { ns: "bikeDetails" }),
+    Longitude: t("Longitude", { ns: "bikeDetails" }),
     Address: t("Address", { ns: "bikeDetails" }),
     Edit: t("Edit", { ns: "bikeDetails" }),
     Back: t("Back", { ns: "bikeDetails" }),
-    Scan: t("Scan", { ns: "bikeDetails" })
+    Scan: t("Scan", { ns: "bikeDetails" }),
+    QRCode: t("QRCode", { ns: "bikeDetails" }),
   };
 }
 
@@ -53,7 +58,12 @@ export function bikeEditTexts(t: TFunction) {
     StopPicking: t("StopPicking", { ns: "bikeEdit" }),
     MapOrMarker: t("MapOrMarker", { ns: "bikeEdit" }),
     ChangeLocation: t("ChangeLocation", { ns: "bikeEdit" }),
-    Dismiss: t("Dismiss", { ns: "bikeEdit" })
+    Dismiss: t("Dismiss", { ns: "bikeEdit" }),
+    BikeAdd: t("BikeAdd", { ns: "bikeEdit" }),
+    Add: t("Add", { ns: "bikeEdit" }),
+    PickLocation: t("PickLocation", { ns: "bikeEdit" }),
+    FinishPicking: t("FinishPicking", { ns: "bikeEdit" }),
+    CancelPicking: t("CancelPicking", { ns: "bikeEdit" }),
   };
 }
 
@@ -67,7 +77,8 @@ export function changePasswordTexts(t: TFunction) {
     CurrentPassword: t("CurrentPassword", { ns: "changePassword" }),
     NewPassword: t("NewPassword", { ns: "changePassword" }),
     ConfNewPassword: t("ConfNewPassword", { ns: "changePassword" }),
-    Back: t("Back", { ns: "changePassword" })
+    Back: t("Back", { ns: "changePassword" }),
+    ErrorPlaceholder: t("ErrorPlaceholder", { ns: "changePassword" }),
   };
 }
 
@@ -82,7 +93,10 @@ export function editProfileTexts(t: TFunction) {
     Phone: t("Phone", { ns: "editProfile" }),
     Email: t("Email", { ns: "editProfile" }),
     ProfPicture: t("ProfPicture", { ns: "editProfile" }),
-    Back: t("Back", { ns: "editProfile" })
+    Back: t("Back", { ns: "editProfile" }),
+    ChangePhoto: t("ChangePhoto", { ns: "editProfile" }),
+    Remove: t("Remove", { ns: "editProfile" }),
+    ErrorPlaceholder: t("ErrorPlaceholder", { ns: "editProfile" }),
   };
 }
 
@@ -93,10 +107,17 @@ export function filterSortTexts(t: TFunction) {
     User: t("User", { ns: "filterSort" }),
     BikeId: t("BikeId", { ns: "filterSort" }),
     Date: t("Date", { ns: "filterSort" }),
+    RentalDate: t("RentalDate", { ns: "filterSort" }),
+    From: t("From", { ns: "filterSort" }),
+    To: t("To", { ns: "filterSort" }),
+    Today: t("Today", { ns: "filterSort" }),
+    ThisWeek: t("ThisWeek", { ns: "filterSort" }),
+    ThisMonth: t("ThisMonth", { ns: "filterSort" }),
     SortBy: t("SortBy", { ns: "filterSort" }),
     Direction: t("Direction", { ns: "filterSort" }),
     Desc: t("Desc", { ns: "filterSort" }),
     Asc: t("Asc", { ns: "filterSort" }),
+    Apply: t("Apply", { ns: "filterSort" }),
     Reset: t("Reset", { ns: "filterSort" })
   };
 }
@@ -111,6 +132,7 @@ export function issueDetailsTexts(t: TFunction) {
     Start: t("Start", { ns: "issueDetails" }),
     Description: t("Description", { ns: "issueDetails" }),
     ShowImages: t("ShowImages", { ns: "issueDetails" }),
+    EditBikeStatus: t("EditBikeStatus", { ns: "issueDetails" }),
     Back: t("Back", { ns: "issueDetails" })
   };
 }
@@ -176,7 +198,12 @@ export function loginTexts(t: TFunction) {
     Login: t("Login", { ns: "login" }),
     AdminLogin: t("AdminLogin", { ns: "login" }),
     Username: t("Username", { ns: "login" }),
-    Password: t("Password", { ns: "login" })
+    Password: t("Password", { ns: "login" }),
+    WelcomeBack: t("WelcomeBack", { ns: "login" }),
+    Subtitle: t("Subtitle", { ns: "login" }),
+    ErrorPlaceholder: t("ErrorPlaceholder", { ns: "login" }),
+    UsernamePlaceholder: t("UsernamePlaceholder", { ns: "login" }),
+    PasswordPlaceholder: t("PasswordPlaceholder", { ns: "login" })
   };
 }
 
@@ -194,8 +221,13 @@ export function parkingTexts(t: TFunction) {
   return {
     Parking: t("Parking", { ns: "parking" }),
     Coordinates: t("Coordinates", { ns: "parking" }),
+    Latitude: t("Latitude", { ns: "parking" }),
+    Longitude: t("Longitude", { ns: "parking" }),
     Bikes: t("Bikes", { ns: "parking" }),
-    NoBikes: t("NoBikes", { ns: "parking" })
+    NoBikes: t("NoBikes", { ns: "parking" }),
+    Bike: t("Bike", { ns: "parking" }),
+    Status: t("Status", { ns: "parking" }),
+    Type: t("Type", { ns: "parking" }),
   };
 }
 

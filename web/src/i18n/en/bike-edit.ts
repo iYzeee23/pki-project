@@ -13,5 +13,10 @@ export default {
     StopPicking: "Stop picking",
     MapOrMarker: "Click on the map or slide the marker",
     ChangeLocation: "Change location on the map",
-    Dismiss: "Dismis"
+    Dismiss: "Dismis",
+    BikeAdd: "Add bike",
+    Add: "Add",
+    PickLocation: "Pick location on the map",
+    FinishPicking: "Finish picking",
+    CancelPicking: "Cancel picking",
 } as const;

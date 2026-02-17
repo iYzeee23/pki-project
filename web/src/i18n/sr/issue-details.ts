@@ -4,8 +4,9 @@ export default {
   ID: "ID",
   User: "Korisnik",
   Bike: "Bicikl",
-  Start: "Pocetak",
+  Start: "Prijavljeno",
   Description: "Opis",
-  ShowImages: "Prikazi slike",
+  ShowImages: "Prikaži slike",
+  EditBikeStatus: "Izmeni status bicikla",
   Back: "Nazad",
 } as const;

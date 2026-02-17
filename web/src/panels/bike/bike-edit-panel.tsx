@@ -12,12 +12,19 @@ import { Pressable } from "../../elements/pressable";
 import { useTranslation } from "react-i18next";
 import { bikeEditTexts } from "../../i18n/i18n-builder";
 
-export function BikeEditPanel() {
+interface BikeEditPanelProps {
+  statusOnly?: boolean;
+  bikeIdOverride?: string;
+  returnTo?: string;
+  titleOverride?: string;
+}
+
+export function BikeEditPanel({ statusOnly, bikeIdOverride, returnTo, titleOverride }: BikeEditPanelProps = {}) {
   const { t } = useTranslation();
   const bep = bikeEditTexts(t);
 
   const { id } = useParams();
-  const bikeId = id!;
+  const bikeId = bikeIdOverride ?? id!;
   const nav = useNavigate();
 
   const upsertBike = useBikesStore(s => s.upsertBike);
@@ -66,9 +73,11 @@ export function BikeEditPanel() {
     return bike.location;
   }, [bike, editingBikeId, bikeId, pickedLocation]);
 
+  const closePath = returnTo ?? `/map/bike/${bikeId}`;
+
   const onClose = () => {
     stopPickLocation();
-    nav(`/map/bike/${bikeId}`);
+    nav(closePath);
   };
 
   const onStartPick = () => {
@@ -89,33 +98,39 @@ export function BikeEditPanel() {
     e.preventDefault();
     if (!bike) return;
 
-    const pph = Number(pricePerHour);
-    if (!type.trim()) return alert(bep.ErrBikeType);
-    if (!Number.isFinite(pph) || pph <= 0) return alert(bep.ErrPrice);
-    if (!effectiveLoc) return alert(bep.ErrLocation);
-
     saveCtrl.current?.abort();
     saveCtrl.current = new AbortController();
     const signal = saveCtrl.current.signal;
 
     setBusy(true);
     try {
-      const updated = await bikeApi.update(
-        bikeId,
-        {
-          type: type.trim(),
-          pricePerHour: pph,
-          status,
-          location: effectiveLoc,
-        },
-        signal
-      );
+      let updated: BikeDto;
+
+      if (statusOnly) {
+        updated = await bikeApi.changeStatus(bikeId, status, signal);
+      } else {
+        const pph = Number(pricePerHour);
+        if (!type.trim()) return alert(bep.ErrBikeType);
+        if (!Number.isFinite(pph) || pph <= 0) return alert(bep.ErrPrice);
+        if (!effectiveLoc) return alert(bep.ErrLocation);
+
+        updated = await bikeApi.update(
+          bikeId,
+          {
+            type: type.trim(),
+            pricePerHour: pph,
+            status,
+            location: effectiveLoc,
+          },
+          signal
+        );
+      }
 
       upsertBike(updated);
       setBike(updated);
 
       stopPickLocation();
-      nav(`/map/bike/${bikeId}`);
+      nav(closePath);
     } catch (err: any) {
       alert(err?.message ?? bep.ErrSaving);
     } finally {
@@ -125,63 +140,90 @@ export function BikeEditPanel() {
 
   if (!bike) return null;
 
-  return (
-    <Panel title={bep.BikeEdit} onClose={onClose}>
-      <form onSubmit={onSubmit} style={{ display: "grid", gap: 10 }}>
-        <label style={{ display: "grid", gap: 6 }}>
-          <b>{bep.Type}</b>
-          <TextField value={type} onChange={(e) => setType(e.target.value)} />
-        </label>
+  const labelStyle: React.CSSProperties = {
+    fontSize: 13,
+    fontWeight: 600,
+    color: "#2E7D32",
+    marginBottom: 2,
+  };
 
-        <label style={{ display: "grid", gap: 6 }}>
-          <b>{bep.Price}</b>
+  const isPicking = editingBikeId === bikeId;
+
+  const disableField = statusOnly || isPicking;
+
+  return (
+    <Panel title={titleOverride ?? bep.BikeEdit} onClose={onClose} noBackdrop={isPicking}>
+      <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, opacity: disableField ? 0.5 : 1 }}>
+          <span style={labelStyle}>{bep.Type}</span>
+          <TextField value={type} onChange={(e) => setType(e.target.value)} disabled={disableField} />
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, opacity: disableField ? 0.5 : 1 }}>
+          <span style={labelStyle}>{bep.Price}</span>
           <TextField
             value={pricePerHour}
             onChange={(e) => setPricePerHour(e.target.value)}
             inputMode="numeric"
+            disabled={disableField}
           />
-        </label>
+        </div>
 
-        <label style={{ display: "grid", gap: 6 }}>
-          <b>{bep.Status}</b>
-          <SelectField value={status} onChange={(e) => setStatus(e.target.value as BikeStatus)}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, opacity: isPicking ? 0.5 : 1 }}>
+          <span style={labelStyle}>{bep.Status}</span>
+          <SelectField value={status} onChange={(e) => setStatus(e.target.value as BikeStatus)} disabled={isPicking}>
             {BIKE_STATUSES.map((s) => (
               <option key={s} value={s}>{s}</option>
             ))}
           </SelectField>
-        </label>
+        </div>
 
-        <div style={{ display: "grid", gap: 6 }}>
-          <b>{bep.Location}</b>
-          <div style={{ opacity: 0.85 }}>
-            {effectiveLoc?.lat.toFixed(5)}, {effectiveLoc?.lng.toFixed(5)}
+        <div style={{ display: "flex", flexDirection: "column", gap: 4, opacity: disableField ? 0.5 : 1 }}>
+          <span style={labelStyle}>{bep.Location}</span>
+          <TextField
+            value={effectiveLoc ? `${effectiveLoc.lat}, ${effectiveLoc.lng}` : ""}
+            readOnly
+            style={{ color: "#555", background: "#fafafa" }}
+          />
+        </div>
+
+        {!statusOnly && isPicking ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <span
+              style={{ color: "#2E7D32", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
+              onClick={onCancelPick}
+            >
+              {bep.StopPicking}
+            </span>
+            <span style={{ color: "#888", fontSize: 13 }}>{bep.MapOrMarker}</span>
           </div>
+        ) : !statusOnly ? (
+          <span
+            style={{ color: "#2E7D32", fontWeight: 600, fontSize: 14, cursor: "pointer" }}
+            onClick={onStartPick}
+          >
+            {bep.ChangeLocation}
+          </span>
+        ) : null}
 
-          {editingBikeId === bikeId ? (
-            <div style={{ display: "flex", gap: 10 }}>
-              <Pressable type="button" onClick={onCancelPick}>
-                {bep.StopPicking}
-              </Pressable>
-              <div style={{ opacity: 0.7, alignSelf: "center" }}>
-                {bep.MapOrMarker}
-              </div>
-            </div>
-          ) : (
-            <Pressable type="button" onClick={onStartPick}>
-              {bep.ChangeLocation}
-            </Pressable>
-          )}
-        </div>
-
-        <div style={{ display: "flex", gap: 10, marginTop: 8 }}>
-          <Pressable type="submit" disabled={busy} variant="primary">
-            {busy ? bep.Saving : bep.Save}
-          </Pressable>
-
-          <Pressable type="button" onClick={onClose} variant="secondary">
-            {bep.Dismiss}
-          </Pressable>
-        </div>
+        <Pressable
+          type="submit"
+          disabled={busy}
+          style={{
+            backgroundColor: "#2E7D32",
+            color: "#fff",
+            border: "none",
+            borderRadius: 12,
+            padding: "14px 0",
+            fontWeight: 700,
+            fontSize: 15,
+            textAlign: "center",
+            cursor: busy ? "not-allowed" : "pointer",
+            marginTop: 4,
+          }}
+        >
+          {busy ? bep.Saving : bep.Save}
+        </Pressable>
       </form>
     </Panel>
   );

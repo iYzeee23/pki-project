@@ -4,10 +4,10 @@ export default {
   ID: "ID",
   User: "Korisnik",
   Bike: "Bicikl",
-  Start: "Pocetak",
+  Start: "Po\u010detak",
   End: "Kraj",
-  Total: "Ukupno",
+  Total: "Ukupna cena",
   Description: "Opis",
-  ShowImages: "Prikazi slike",
+  ShowImages: "Prika\u017ei slike",
   Back: "Nazad",
 } as const;

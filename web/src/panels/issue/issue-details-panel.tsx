@@ -5,12 +5,11 @@ import { issueApi } from "../../util/services";
 import { Panel } from "../panel";
 import { Pressable } from "../../elements/pressable";
 import { useTranslation } from "react-i18next";
-import { commonTexts, issueDetailsTexts } from "../../i18n/i18n-builder";
+import { issueDetailsTexts } from "../../i18n/i18n-builder";
 
 export function IssueDetailsPanel() {
   const { t } = useTranslation();
   const idp = issueDetailsTexts(t);
-  const com = commonTexts();
 
   const { id } = useParams();
   const issueId = id!;
@@ -43,26 +42,70 @@ export function IssueDetailsPanel() {
 
   return (
     <Panel title={idp.IssueDetails} onClose={closeTo}>
-      {busy && !item ? <div>{idp.Loading}</div> : null}
+      {busy && !item ? <div style={{ color: "#888" }}>{idp.Loading}</div> : null}
       {!item ? null : (
-        <div style={{ display: "grid", gap: 10 }}>
-          <div><b>{idp.ID}:</b> {item.id}</div>
-          <div><b>{idp.User}:</b> {item.userId}</div>
-          <div><b>{idp.Bike}:</b> {item.bikeId}</div>
-          <div><b>{idp.Start}:</b> {item.reportedAt}</div>
-          <div><b>{idp.Description}:</b> {item.description}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {/* Info card */}
+          <div
+            style={{
+              border: "1px solid #ddd",
+              borderRadius: 10,
+              padding: "14px 16px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 5,
+              fontSize: 14,
+            }}
+          >
+            <div><b>{idp.ID}:</b> {item.id}</div>
+            <div><b>{idp.User}:</b> {item.userId}</div>
+            <div><b>{idp.Bike}:</b> {item.bikeId}</div>
+            <div><b>{idp.Start}:</b> {item.reportedAt}</div>
+            <div><b>{idp.Description}:</b> {item.description}</div>
+          </div>
 
+          {/* Show images button */}
           <Pressable
             type="button"
             onClick={() =>
               nav(`/issues/${item.id}/images`, { state: { from: `/issues/${item.id}` } })
             }
+            style={{
+              backgroundColor: "#2E7D32",
+              color: "#fff",
+              border: "none",
+              borderRadius: 12,
+              padding: "14px 0",
+              fontWeight: 700,
+              fontSize: 15,
+              textAlign: "center",
+              cursor: "pointer",
+            }}
           >
             {idp.ShowImages}
           </Pressable>
 
-          <Pressable type="button" variant="secondary" onClick={closeTo}>
-            {com.Back}
+          {/* Edit bike status button */}
+          <Pressable
+            type="button"
+            onClick={() =>
+              nav(`/issues/${item.id}/edit-bike-status`, {
+                state: { bikeId: item.bikeId, from: `/issues/${item.id}` },
+              })
+            }
+            style={{
+              backgroundColor: "#2E7D32",
+              color: "#fff",
+              border: "none",
+              borderRadius: 12,
+              padding: "14px 0",
+              fontWeight: 700,
+              fontSize: 15,
+              textAlign: "center",
+              cursor: "pointer",
+            }}
+          >
+            {idp.EditBikeStatus}
           </Pressable>
         </div>
       )}

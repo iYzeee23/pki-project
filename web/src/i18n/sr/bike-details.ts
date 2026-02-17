@@ -1,5 +1,6 @@
 export default {
   Language: "sr-Latn",
+  BikeDetails: "Detalji bicikla",
   Bike: "Bicikl",
   Loading: "Ucitavanje...",
   Type: "Tip",
@@ -7,8 +8,11 @@ export default {
   Price: "Cena po satu",
   ID: "ID",
   Coordinates: "Koordinate",
-  Address: "Adresa",
+  Latitude: "Geografska širina",
+  Longitude: "Geografska dužina",
+  Address: "Lokacija",
   Edit: "Izmeni",
   Back: "Nazad",
-  Scan: "Skeniraj → ID bicikla",
+  Scan: "Skeniraj \u2192 ID bicikla",
+  QRCode: "QR kod bicikla",
 } as const;

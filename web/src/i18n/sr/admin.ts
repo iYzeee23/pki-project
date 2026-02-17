@@ -1,7 +1,8 @@
 export default {
   Map: "Mapa",
-  Rentals: "Iznajmljivanja",
-  Issues: "Prijave",
+  Rentals: "Iznajmljivanje",
+  Issues: "Problemi",
   Profile: "Profil",
-  Language: "EN ▾",
+  Language: "EN \u25be",
+  Logout: "Odjava"
 } as const;

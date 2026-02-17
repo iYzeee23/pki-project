@@ -4,8 +4,9 @@ export default {
     ID: "ID",
     User: "User",
     Bike: "Bike",
-    Start: "Start",
+    Start: "Reported at",
     Description: "Description",
     ShowImages: "Show images",
+    EditBikeStatus: "Edit bike status",
     Back: "Back"
 } as const;

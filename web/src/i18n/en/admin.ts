@@ -3,5 +3,6 @@ export default {
     Rentals: "Rentals",
     Issues: "Issues",
     Profile: "Profile",
-    Language: "SR ▾"
+    Language: "SR \u25be",
+    Logout: "Logout"
 } as const;

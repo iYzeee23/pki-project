@@ -1,5 +1,6 @@
 export default {
     Language: "en",
+    BikeDetails: "Bike details",
     Bike: "Bike",
     Loading: "Loading...",
     Type: "Type",
@@ -7,8 +8,11 @@ export default {
     Price: "Price per hour",
     ID: "ID",
     Coordinates: "Coordinates",
-    Address: "Address",
+    Latitude: "Latitude",
+    Longitude: "Longitude",
+    Address: "Location",
     Edit: "Edit",
     Back: "Back",
-    Scan: "Scan → Bike ID"
+    Scan: "Scan \u2192 Bike ID",
+    QRCode: "Bike QR code",
 } as const;

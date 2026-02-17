@@ -83,19 +83,65 @@ export function MapPage() {
   const isPicking = !!editingBikeId;
 
   return (
-    <div style={{ position: "relative", height: "calc(100vh - 145px)" }}>
-      <SelectField
-        value={bikeStatusFilter}
-        onChange={(e) => (setBikeStatusFilter(e.target.value as BikeStatus | "All")) }
+    <div style={{ position: "relative", height: "100%" }}>
+      {/* Floating filter + add button */}
+      <div
+        style={{
+          position: "absolute",
+          top: 16,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 1000,
+          display: "flex",
+          alignItems: "center",
+          gap: 10,
+        }}
       >
-        <option value="All">{mpp.All}</option>
-        <option value="Available">{mpp.Available}</option>
-        <option value="Busy">{mpp.Busy}</option>
-        <option value="Maintenance">{mpp.Maintenance}</option>
-        <option value="Off">{mpp.Off}</option>
-      </SelectField>
+        <SelectField
+          value={bikeStatusFilter}
+          onChange={(e) => setBikeStatusFilter(e.target.value as BikeStatus | "All")}
+          style={{
+            minWidth: 160,
+            padding: "10px 14px",
+            borderRadius: 10,
+            border: "1px solid #ddd",
+            fontSize: 15,
+            boxShadow: "0 2px 8px rgba(0,0,0,0.12)",
+          }}
+        >
+          <option value="All">{mpp.All}</option>
+          <option value="Available">{mpp.Available}</option>
+          <option value="Busy">{mpp.Busy}</option>
+          <option value="Maintenance">{mpp.Maintenance}</option>
+          <option value="Off">{mpp.Off}</option>
+        </SelectField>
 
-      <MapContainer center={center} zoom={14} style={{ height: "100%", width: "100%" }}>
+        <button
+          type="button"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 10,
+            border: "none",
+            backgroundColor: "#2E7D32",
+            color: "#fff",
+            fontSize: 26,
+            fontWeight: 700,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            lineHeight: 1,
+          }}
+          title="Add bike"
+          onClick={() => nav("/map/bike/new")}
+        >
+          +
+        </button>
+      </div>
+
+      <MapContainer center={center} zoom={14} zoomControl={false} style={{ height: "100%", width: "100%" }}>
         <MapClickPicker
           enabled={!!editingBikeId}
           onPick={pick => setPickedLocation(pick)}

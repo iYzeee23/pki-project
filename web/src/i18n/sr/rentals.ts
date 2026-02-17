@@ -4,5 +4,5 @@ export default {
   User: "Korisnik",
   Bike: "Bicikl",
   NoResults: "Nema rezultata",
-  RSD: "RSD",
+  RSD: "din",
 } as const;
