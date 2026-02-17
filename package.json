@@ -10,16 +10,18 @@
     "common"
   ],
   "scripts": {
-    "install:all": "npm install --workspaces",
-    "build:all": "npm -ws run build --if-present",
-    "typecheck:all": "npm -ws run typecheck --if-present",
     "clean:all": "npm -ws run clean --if-present",
+    "install:all": "npm install --workspaces",
+    "typecheck:all": "npm -ws run typecheck --if-present",
+    "full:setup": "npx tsx common/src/util/setup.ts",
     "dev:server": "npm --workspace server run dev",
     "dev:web": "npm --workspace web run dev",
     "dev:mobile": "npm --workspace mobile run start",
+    "dev:all": "npx tsx common/src/util/dev-all.ts",
     "build:common": "npm --workspace common run build",
     "build:server": "npm --workspace server run build",
     "build:web": "npm --workspace web run build",
+    "build:all": "npm -ws run build --if-present",
     "db:init": "npm --workspace server run init"
   },
   "repository": {
