@@ -111,7 +111,6 @@ export function EditProfilePage() {
           alignItems: "center",
         }}
       >
-        {/* Back arrow */}
         <div style={{ width: "100%", marginBottom: 12 }}>
           <span
             onClick={() => nav(-1)}
@@ -121,7 +120,6 @@ export function EditProfilePage() {
           </span>
         </div>
 
-        {/* Avatar */}
         <img
           src={previewUrl}
           alt="Profile"
@@ -134,7 +132,6 @@ export function EditProfilePage() {
           }}
         />
 
-        {/* Change / Remove links */}
         <div style={{ display: "flex", gap: 20, marginTop: 8 }}>
           <span
             onClick={() => fileInputRef.current?.click()}
@@ -164,10 +161,8 @@ export function EditProfilePage() {
           onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(f); }}
         />
 
-        {/* Divider */}
         <div style={{ width: 120, height: 1, background: "#e0e0e0", margin: "16px 0" }} />
 
-        {/* Form */}
         <form onSubmit={onSubmit} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 4 }}>
           <label style={{ fontSize: 12, color: "#888", marginTop: 8, marginLeft: 8 }}>{epp.Username}</label>
           <input

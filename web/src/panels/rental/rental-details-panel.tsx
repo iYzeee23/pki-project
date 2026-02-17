@@ -45,7 +45,6 @@ export function RentalDetailsPanel() {
       {busy && !item ? <div style={{ color: "#888" }}>{rdp.Loading}</div> : null}
       {!item ? null : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Info card */}
           <div
             style={{
               border: "1px solid #ddd",
@@ -66,7 +65,6 @@ export function RentalDetailsPanel() {
             <div><b>{rdp.Description}:</b> {item.description ?? "—"}</div>
           </div>
 
-          {/* Show images button */}
           <Pressable
             type="button"
             onClick={() =>

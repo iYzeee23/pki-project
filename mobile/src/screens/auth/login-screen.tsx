@@ -66,17 +66,14 @@ export function LoginScreen({ navigation }: Props) {
         keyboardShouldPersistTaps="handled"
         keyboardDismissMode="interactive"
       >
-        {/* Logo */}
         <View style={styles.logoContainer}>
           <MaterialCommunityIcons name="bike" size={64} color={GREEN} />
           <Text style={styles.logoText}>BikeLand</Text>
         </View>
 
-        {/* Welcome text */}
         <Text style={styles.welcomeTitle}>{logg.WelcomeTitle}</Text>
         <Text style={styles.subtitle}>{logg.Subtitle}</Text>
 
-        {/* Form */}
         <View style={styles.form}>
           <TextInput
             value={username}
@@ -103,7 +100,6 @@ export function LoginScreen({ navigation }: Props) {
           </TouchableOpacity>
         </View>
 
-        {/* Register link */}
         <View style={styles.registerContainer}>
           <Text style={styles.noAccText}>{logg.NoAccQuestion}</Text>
           <TouchableOpacity onPress={() => navigation.navigate("Register")}>

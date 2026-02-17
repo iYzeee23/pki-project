@@ -61,7 +61,6 @@ export function LoginPage() {
   return (
     <CenterLayout>
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 32 }}>
-        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <svg width="80" height="80" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="18" cy="42" r="12" stroke={GREEN} strokeWidth="3" fill="none" />
@@ -77,7 +76,6 @@ export function LoginPage() {
           </span>
         </div>
 
-        {/* Card */}
         <div style={{
           width: 440,
           maxWidth: "100%",

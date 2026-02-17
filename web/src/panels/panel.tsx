@@ -10,7 +10,6 @@ export function Panel({
 }: PropsWithChildren<{ title: string; onClose: () => void; noBackdrop?: boolean }>) {
   return (
     <>
-      {/* Blurred backdrop */}
       {!noBackdrop && (
         <div
           onClick={onClose}
@@ -41,7 +40,6 @@ export function Panel({
           zIndex: 500,
         }}
       >
-        {/* Close button */}
         <div style={{ display: "flex", justifyContent: "flex-end", padding: "14px 16px 0" }}>
           <Pressable
             type="button"
@@ -60,12 +58,10 @@ export function Panel({
           </Pressable>
         </div>
 
-        {/* Title */}
         <div style={{ padding: "4px 20px 12px", fontWeight: 800, fontSize: 20 }}>
           {title}
         </div>
 
-        {/* Content */}
         <div style={{ padding: "0 20px 20px", overflow: "auto", flex: 1 }}>
           {children}
         </div>

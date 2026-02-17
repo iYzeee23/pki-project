@@ -69,7 +69,6 @@ export function ProfileScreen({ navigation }: Props) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      {/* Avatar + Info */}
       <View style={styles.headerRow}>
         {url ? (
           <TouchableOpacity onPress={() => setPreviewOpen(true)} activeOpacity={0.8}>
@@ -90,7 +89,6 @@ export function ProfileScreen({ navigation }: Props) {
 
       <View style={styles.divider} />
 
-      {/* Menu Items */}
       <View style={styles.menuList}>
         <MenuItem
           icon="translate"

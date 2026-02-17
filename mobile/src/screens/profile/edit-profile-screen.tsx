@@ -134,7 +134,6 @@ export function EditProfileScreen({ navigation }: Props) {
       keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive">
       <Text style={styles.title}>{edit.Title}</Text>
 
-      {/* Image + Change/Remove */}
       <View style={styles.imageContainer}>
         <Image source={{ uri: displayUri }} style={styles.image} />
       </View>
@@ -151,7 +150,6 @@ export function EditProfileScreen({ navigation }: Props) {
 
       <View style={styles.divider} />
 
-      {/* Input fields */}
       <Text style={styles.label}>{edit.Username}</Text>
       <TextInput style={styles.input} placeholder={edit.Username} value={username}
         onChangeText={setUsername} autoCapitalize="none" editable={!busy} />

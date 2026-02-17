@@ -46,8 +46,6 @@ type Props = {
   onDiscard?: () => void;
 };
 
-/* ── date helpers ── */
-
 function startOfDay(d: Date) {
   const c = new Date(d);
   c.setHours(0, 0, 0, 0);
@@ -98,8 +96,6 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
   const filterSpec = props.filterSpec ?? [];
   const sortSpec = props.sortSpec ?? [];
 
-  /* ── helpers ── */
-
   function resetFromApplied() {
     setDraft(props.initialDraft ?? {});
     setSortKeyDraft(props.initialSortKey ?? "");
@@ -141,16 +137,12 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
     close(true);
   }
 
-  /* ── date picker callback ── */
-
   function onDateChange(_: any, selected?: Date) {
     if (Platform.OS === "android") setActiveDatePicker(null);
     if (!selected || !activeDatePicker) return;
     setDraftValue(activeDatePicker, selected);
     if (Platform.OS === "ios") setActiveDatePicker(null);
   }
-
-  /* ── date presets ── */
 
   function applyPreset(preset: { from: Date; to: Date }, rangeKey: string) {
     setDraft((prev) => ({
@@ -159,8 +151,6 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
       [`${rangeKey}To`]: preset.to,
     }));
   }
-
-  /* ── render a single filter field ── */
 
   function renderField(field: FilterFieldSpec) {
     if (field.kind === "text" || field.kind === "number") {
@@ -245,8 +235,6 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
     return null;
   }
 
-  /* ── backdrop ── */
-
   const backdrop = (p: any) => (
     <BottomSheetBackdrop {...p} appearsOnIndex={0} disappearsOnIndex={-1} pressBehavior="close" />
   );
@@ -267,7 +255,6 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
       }}
     >
       <BottomSheetScrollView contentContainerStyle={styles.content}>
-        {/* ── Header ── */}
         <View style={styles.header}>
           <TouchableOpacity onPress={discard} style={styles.headerBtn}>
             <MaterialCommunityIcons name="arrow-left" size={24} color="#333" />
@@ -284,10 +271,8 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
           )}
         </View>
 
-        {/* ── Filter fields (all inline) ── */}
         {props.kind === "filter" && filterSpec.map((f) => renderField(f))}
 
-        {/* ── Sort options ── */}
         {props.kind === "sort" && (
           <View style={styles.sortList}>
             {sortSpec.map((opt) => {
@@ -311,13 +296,11 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
           </View>
         )}
 
-        {/* ── Apply button ── */}
         <TouchableOpacity style={styles.applyButton} onPress={apply} activeOpacity={0.8}>
           <Text style={styles.applyButtonText}>{fst.Apply}</Text>
         </TouchableOpacity>
       </BottomSheetScrollView>
 
-      {/* ── Native date picker overlay ── */}
       {activeDatePicker && (
         <DateTimePicker
           mode="date"
@@ -356,7 +339,6 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 
-  /* ── filter fields ── */
   fieldGroup: {
     marginBottom: 20,
   },
@@ -375,7 +357,6 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 
-  /* ── date range ── */
   dateRow: {
     flexDirection: "row",
     gap: 12,
@@ -408,7 +389,6 @@ const styles = StyleSheet.create({
     color: "#999",
   },
 
-  /* ── presets ── */
   presetRow: {
     flexDirection: "row",
     gap: 10,
@@ -427,7 +407,6 @@ const styles = StyleSheet.create({
     color: "#333",
   },
 
-  /* ── sort ── */
   sortList: {
     gap: 10,
     marginBottom: 20,
@@ -473,7 +452,6 @@ const styles = StyleSheet.create({
     backgroundColor: GREEN,
   },
 
-  /* ── apply button ── */
   applyButton: {
     backgroundColor: GREEN,
     borderRadius: 12,

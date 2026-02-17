@@ -130,13 +130,11 @@ export function RegisterScreen({}: Props) {
       keyboardShouldPersistTaps="handled"
       keyboardDismissMode="interactive"
     >
-      {/* Logo */}
       <View style={styles.logoContainer}>
         <MaterialCommunityIcons name="bike" size={64} color={GREEN} />
         <Text style={styles.logoText}>BikeLand</Text>
       </View>
 
-      {/* Profile picture */}
       <View style={styles.avatarSection}>
         <View style={styles.imageWrapper}>
           <Image source={{ uri: displayUri }} style={styles.image} />
@@ -154,7 +152,6 @@ export function RegisterScreen({}: Props) {
         </View>
       </View>
 
-      {/* Form fields */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -219,10 +216,8 @@ export function RegisterScreen({}: Props) {
         />
       </View>
 
-      {/* Error */}
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
-      {/* Submit button */}
       <TouchableOpacity
         disabled={busy}
         onPress={onSubmit}

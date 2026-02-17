@@ -80,7 +80,7 @@ export function ChangePasswordScreen({ navigation }: Props) {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === "ios" ? "padding" : undefined}>
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}
       keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive">
-      {/* Password fields */}
+
       <Text style={styles.label}>{chp.OldPlaceholder}</Text>
       <TextInput style={styles.input} placeholder={chp.OldPlaceholder} value={oldPassword}
         onChangeText={setOldPassword} secureTextEntry editable={!busy} />

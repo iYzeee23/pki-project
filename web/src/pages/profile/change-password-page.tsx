@@ -91,7 +91,6 @@ export function ChangePasswordPage() {
           alignItems: "center",
         }}
       >
-        {/* Back arrow */}
         <div style={{ width: "100%", marginBottom: 12 }}>
           <span
             onClick={() => nav(-1)}
@@ -101,7 +100,6 @@ export function ChangePasswordPage() {
           </span>
         </div>
 
-        {/* Avatar */}
         <img
           src={avatarUrl}
           alt="Profile"
@@ -114,7 +112,6 @@ export function ChangePasswordPage() {
           }}
         />
 
-        {/* Name / email / phone */}
         {me && (
           <div style={{ textAlign: "center", marginTop: 8 }}>
             <div style={{ fontWeight: 700, fontSize: 17, color: "#222" }}>
@@ -125,10 +122,8 @@ export function ChangePasswordPage() {
           </div>
         )}
 
-        {/* Divider */}
         <div style={{ width: 120, height: 1, background: "#e0e0e0", margin: "16px 0" }} />
 
-        {/* Form */}
         <form onSubmit={onSubmit} style={{ width: "100%", display: "flex", flexDirection: "column", gap: 4 }}>
           <label style={{ fontSize: 12, color: "#888", marginTop: 8, marginLeft: 8 }}>{cpp.CurrentPassword}</label>
           <input

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { UserDto } from "@app/shared"; // ili common dto
+import type { UserDto } from "@app/shared";
 import { setAuthToken, setOnUnauthorized } from "../util/http";
 import { authApi } from "../util/services";
 import { useMapStore } from "./map-store";

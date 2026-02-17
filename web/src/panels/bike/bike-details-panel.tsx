@@ -67,7 +67,6 @@ export function BikeDetailsPanel() {
   return (
     <Panel title={bdp.BikeDetails} onClose={() => nav(from ?? "/map")}>
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-        {/* Info card */}
         <div
           style={{
             border: "1px solid #ddd",
@@ -89,13 +88,11 @@ export function BikeDetailsPanel() {
           <div><b>{bdp.Longitude}:</b> {bike.location.lng}</div>
         </div>
 
-        {/* QR Code */}
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
           <QRCodeCanvas value={bike.id} size={140} />
           <span style={{ fontSize: 13, color: "#555" }}>{bdp.QRCode}</span>
         </div>
 
-        {/* Edit button */}
         <Pressable
           type="button"
           onClick={() => nav(`/map/bike/${bike.id}/edit`)}

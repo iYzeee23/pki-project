@@ -92,7 +92,6 @@ export function FilterSortBar({
         color: "#111",
       }}
     >
-      {/* User */}
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <span style={labelStyle}>{fsb.User}</span>
         <TextField
@@ -102,7 +101,6 @@ export function FilterSortBar({
         />
       </div>
 
-      {/* Bike */}
       <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
         <span style={labelStyle}>{fsb.BikeId}</span>
         <TextField
@@ -112,7 +110,6 @@ export function FilterSortBar({
         />
       </div>
 
-      {/* Date range */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <span style={labelStyle}>{fsb.RentalDate}</span>
         <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
@@ -138,7 +135,6 @@ export function FilterSortBar({
         </div>
       </div>
 
-      {/* Sort */}
       <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
         <span style={labelStyle}>{fsb.SortBy}</span>
         <div style={{ display: "flex", gap: 12 }}>
@@ -161,8 +157,7 @@ export function FilterSortBar({
           </SelectField>
         </div>
       </div>
-
-      {/* Apply + Reset */}
+      
       <button
         type="button"
         style={{

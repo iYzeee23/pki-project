@@ -54,8 +54,6 @@ function NavItem({ to, icon, label, onClick }: NavItemProps) {
   );
 }
 
-/* ── SVG icons (20×20) ── */
-
 const MapIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
@@ -139,7 +137,6 @@ export function AdminLayout() {
             width: "100%",
           }}
         >
-          {/* Logo */}
           <NavLink
             to="/profile"
             style={{ display: "flex", alignItems: "center", gap: 8, textDecoration: "none" }}
@@ -158,7 +155,6 @@ export function AdminLayout() {
             </span>
           </NavLink>
 
-          {/* Nav items */}
           <nav style={{ display: "flex", alignItems: "center", gap: 20 }}>
             <NavItem to="/map" icon={<MapIcon />} label={adm.Map} />
             <NavItem to="/rentals" icon={<RentalsIcon />} label={adm.Rentals} />

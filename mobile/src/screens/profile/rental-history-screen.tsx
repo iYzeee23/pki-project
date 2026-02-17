@@ -162,7 +162,6 @@ export function RentalHistoryScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
-      {/* Title row */}
       <View style={styles.headerRow}>
         <Text style={styles.title}>{rent.RecentRentals}</Text>
         <TouchableOpacity onPress={() => filterSheetRef.current?.open()} style={styles.filterIcon}>

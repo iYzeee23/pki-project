@@ -84,7 +84,6 @@ export function MapPage() {
 
   return (
     <div style={{ position: "relative", height: "100%" }}>
-      {/* Floating filter + add button */}
       <div
         style={{
           position: "absolute",

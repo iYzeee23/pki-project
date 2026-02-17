@@ -52,14 +52,12 @@ export function ParkingDetailsPanel() {
   return (
     <Panel title={`${pdp.Parking}: ${spot.name}`} onClose={() => nav("/map")}>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-        {/* Parking info card */}
         <div style={infoCardStyle}>
           <div><b>ID:</b> {spot.id}</div>
           <div><b>{pdp.Latitude}:</b> {spot.location.lat}</div>
           <div><b>{pdp.Longitude}:</b> {spot.location.lng}</div>
         </div>
 
-        {/* Section header */}
         <div style={{ fontWeight: 700, fontSize: 15 }}>{pdp.Bikes}</div>
 
         {bikesHere.length === 0 ? (

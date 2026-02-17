@@ -81,14 +81,12 @@ export function RentalsPage() {
     <div style={{ position: "relative" }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "360px 1fr", gap: 32, alignItems: "start" }}>
-          {/* Filter sidebar */}
           <FilterSortBar
             value={filters}
             onChange={setFilters}
             onReset={() => setFilters(DEFAULT_FILTERS)}
           />
 
-          {/* Rental cards */}
           <div style={{
             display: "flex",
             flexDirection: "column",

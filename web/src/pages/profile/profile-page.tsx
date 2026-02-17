@@ -47,7 +47,6 @@ export function ProfilePage() {
           alignItems: "center",
         }}
       >
-        {/* Avatar */}
         <img
           src={imgUrl}
           alt="Profile"
@@ -62,7 +61,6 @@ export function ProfilePage() {
           }}
         />
 
-        {/* Name + info */}
         <div style={{ textAlign: "center", marginTop: 12 }}>
           <div style={{ fontSize: 18, fontWeight: 700, color: "#1a1a1a" }}>
             {me.firstName} {me.lastName}
@@ -71,12 +69,9 @@ export function ProfilePage() {
           <div style={{ fontSize: 14, color: "#666" }}>{me.phone}</div>
         </div>
 
-        {/* Divider */}
         <div style={{ width: 120, height: 1, background: "#e0e0e0", margin: "20px 0" }} />
 
-        {/* Menu items */}
         <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: 4 }}>
-          {/* Edit profile */}
           <Link to="/profile/edit" style={menuItemStyle}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
@@ -88,7 +83,6 @@ export function ProfilePage() {
             </svg>
           </Link>
 
-          {/* Change password */}
           <Link to="/profile/password" style={menuItemStyle}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />

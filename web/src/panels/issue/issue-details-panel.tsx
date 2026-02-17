@@ -45,7 +45,6 @@ export function IssueDetailsPanel() {
       {busy && !item ? <div style={{ color: "#888" }}>{idp.Loading}</div> : null}
       {!item ? null : (
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          {/* Info card */}
           <div
             style={{
               border: "1px solid #ddd",
@@ -64,7 +63,6 @@ export function IssueDetailsPanel() {
             <div><b>{idp.Description}:</b> {item.description}</div>
           </div>
 
-          {/* Show images button */}
           <Pressable
             type="button"
             onClick={() =>
@@ -85,7 +83,6 @@ export function IssueDetailsPanel() {
             {idp.ShowImages}
           </Pressable>
 
-          {/* Edit bike status button */}
           <Pressable
             type="button"
             onClick={() =>
