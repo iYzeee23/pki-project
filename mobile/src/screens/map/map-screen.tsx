@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ActivityIndicator, Alert, View } from "react-native";
+import { ActivityIndicator, Alert, StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Region } from "react-native-maps";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useMapStore } from "../../stores/map-store";
@@ -232,6 +232,68 @@ export function MapScreen({ navigation }: Props) {
           );
         })()}
       </MapView>
+
+      <View style={styles.legendContainer}>
+        <Text style={styles.legendTitle}>{mapp.Legend}</Text>
+        {isActiveMode ? (
+          <>
+            <LegendItem color="blue" label={mapp.NearbyParking} />
+            <LegendItem color="orange" label={mapp.InsideParking} />
+            <LegendItem color="red" label={mapp.ActiveBike} />
+          </>
+        ) : (
+          <>
+            <LegendItem color="blue" label={mapp.ParkingSpot} />
+            <LegendItem color="green" label={mapp.AvailableBike} />
+            <LegendItem color="red" label={mapp.UnavailableBike} />
+          </>
+        )}
+      </View>
     </View>
   );
 }
+
+function LegendItem({ color, label }: { color: string; label: string }) {
+  return (
+    <View style={styles.legendItem}>
+      <View style={[styles.legendDot, { backgroundColor: color }]} />
+      <Text style={styles.legendLabel}>{label}</Text>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  legendContainer: {
+    position: "absolute",
+    top: 12,
+    left: 12,
+    backgroundColor: "rgba(255, 255, 255, 0.92)",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  legendTitle: {
+    fontWeight: "700",
+    fontSize: 13,
+    marginBottom: 4,
+  },
+  legendItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginVertical: 2,
+  },
+  legendDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  legendLabel: {
+    fontSize: 12,
+  },
+});

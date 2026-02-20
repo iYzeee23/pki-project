@@ -175,6 +175,12 @@ export function BikeAddPanel() {
             {busy ? bep.Saving : bep.Add}
           </Pressable>
         )}
+
+        {!isPicking && (
+          <p style={{ fontSize: 14, color: "#888", fontStyle: "italic", fontWeight: 700, margin: 0, marginTop: 2 }}>
+            {bep.QrNote}
+          </p>
+        )}
       </form>
 
       {isPicking && (

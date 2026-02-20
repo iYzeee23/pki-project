@@ -64,6 +64,7 @@ export function bikeEditTexts(t: TFunction) {
     PickLocation: t("PickLocation", { ns: "bikeEdit" }),
     FinishPicking: t("FinishPicking", { ns: "bikeEdit" }),
     CancelPicking: t("CancelPicking", { ns: "bikeEdit" }),
+    QrNote: t("QrNote", { ns: "bikeEdit" }),
   };
 }
 
@@ -213,7 +214,12 @@ export function mapTexts(t: TFunction) {
     Available: t("Available", { ns: "map" }),
     Busy: t("Busy", { ns: "map" }),
     Maintenance: t("Maintenance", { ns: "map" }),
-    Off: t("Off", { ns: "map" })
+    Off: t("Off", { ns: "map" }),
+    Legend: t("Legend", { ns: "map" }),
+    ParkingSpot: t("ParkingSpot", { ns: "map" }),
+    AvailableBike: t("AvailableBike", { ns: "map" }),
+    BusyBike: t("BusyBike", { ns: "map" }),
+    OtherBike: t("OtherBike", { ns: "map" })
   };
 }
 

@@ -197,7 +197,45 @@ export function MapPage() {
         })}
       </MapContainer>
 
+      <div
+        style={{
+          position: "absolute",
+          bottom: 24,
+          left: 12,
+          zIndex: 1000,
+          backgroundColor: "rgba(255, 255, 255, 0.92)",
+          borderRadius: 10,
+          padding: "10px 14px",
+          boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
+          minWidth: 150,
+        }}
+      >
+        <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 4 }}>{mpp.Legend}</div>
+        <LegendItem color="#2A81CB" label={mpp.ParkingSpot} />
+        <LegendItem color="#2AAD27" label={mpp.AvailableBike} />
+        <LegendItem color="#FFD326" label={mpp.BusyBike} />
+        <LegendItem color="#F2A03D" label={mpp.OtherBike} />
+      </div>
+
       <Outlet />
+    </div>
+  );
+}
+
+function LegendItem({ color, label }: { color: string; label: string }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", marginTop: 3 }}>
+      <div
+        style={{
+          width: 12,
+          height: 12,
+          borderRadius: 6,
+          backgroundColor: color,
+          marginRight: 8,
+          flexShrink: 0,
+        }}
+      />
+      <span style={{ fontSize: 12 }}>{label}</span>
     </div>
   );
 }

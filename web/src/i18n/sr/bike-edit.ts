@@ -19,4 +19,5 @@ export default {
   PickLocation: "Izaberite lokaciju na mapi",
   FinishPicking: "Zavrsi izbor lokacije",
   CancelPicking: "Otkazi izbor",
+  QrNote: "QR kod će biti automatski generisan kada se bicikl doda u sistem."
 } as const;

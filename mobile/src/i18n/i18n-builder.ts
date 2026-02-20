@@ -107,7 +107,14 @@ export function bikeDetailsTexts(t: TFunction) {
 export function mapTexts(t: TFunction) {
   return {
     Bike: t("Bike", { ns: "map" }),
-    Active: t("Active", { ns: "map" })
+    Active: t("Active", { ns: "map" }),
+    Legend: t("Legend", { ns: "map" }),
+    ParkingSpot: t("ParkingSpot", { ns: "map" }),
+    AvailableBike: t("AvailableBike", { ns: "map" }),
+    UnavailableBike: t("UnavailableBike", { ns: "map" }),
+    NearbyParking: t("NearbyParking", { ns: "map" }),
+    InsideParking: t("InsideParking", { ns: "map" }),
+    ActiveBike: t("ActiveBike", { ns: "map" })
   };
 }
 

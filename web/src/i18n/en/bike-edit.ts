@@ -19,4 +19,5 @@ export default {
     PickLocation: "Pick location on the map",
     FinishPicking: "Finish picking",
     CancelPicking: "Cancel picking",
+    QrNote: "A QR code will be automatically generated once the bike is added to the system."
 } as const;
