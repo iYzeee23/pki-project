@@ -71,6 +71,7 @@ export function EditProfilePage() {
       fd.append("lastName", lastName.trim());
       fd.append("phone", phone.trim());
       fd.append("email", email.trim());
+      fd.append("removeProfileImage", file === null ? "true" : "false");
       if (file) fd.append("file", file);
 
       const updated = await profileApi.updateMe(fd, signal);

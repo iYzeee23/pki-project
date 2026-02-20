@@ -1,7 +1,8 @@
 import { forwardRef, useImperativeHandle, useMemo, useRef, useState } from "react";
-import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Modal, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import type { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { filterSortTexts } from "../../i18n/i18n-builder";
@@ -81,6 +82,15 @@ function fmtDate(d: Date) {
   return `${dd}-${mm}-${d.getFullYear()}`;
 }
 
+function draftDate(value: unknown): Date | null {
+  if (value instanceof Date) return value;
+  if (typeof value === "string" || typeof value === "number") {
+    const parsed = new Date(value);
+    if (!Number.isNaN(parsed.getTime())) return parsed;
+  }
+  return null;
+}
+
 export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function FilterSortSheet(props, ref) {
   const { t } = useTranslation();
   const fst = filterSortTexts(t);
@@ -92,6 +102,7 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
   const [draft, setDraft] = useState<Draft>(props.initialDraft ?? {});
   const [sortKeyDraft, setSortKeyDraft] = useState<string>(props.initialSortKey ?? "");
   const [activeDatePicker, setActiveDatePicker] = useState<string | null>(null);
+  const [iosPickerValue, setIosPickerValue] = useState<Date>(new Date());
 
   const filterSpec = props.filterSpec ?? [];
   const sortSpec = props.sortSpec ?? [];
@@ -100,6 +111,7 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
     setDraft(props.initialDraft ?? {});
     setSortKeyDraft(props.initialSortKey ?? "");
     setActiveDatePicker(null);
+    setIosPickerValue(new Date());
   }
 
   function setDraftValue(key: string, value: any) {
@@ -109,6 +121,13 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
   function clearDraft() {
     setDraft({});
     setActiveDatePicker(null);
+    setIosPickerValue(new Date());
+  }
+
+  function openDatePicker(key: string) {
+    const current = draftDate(draft[key]) ?? new Date();
+    setIosPickerValue(current);
+    setActiveDatePicker(key);
   }
 
   function open() {
@@ -137,11 +156,22 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
     close(true);
   }
 
-  function onDateChange(_: any, selected?: Date) {
-    if (Platform.OS === "android") setActiveDatePicker(null);
+  function onDateChange(event: DateTimePickerEvent, selected?: Date) {
+    if (Platform.OS === "android") {
+      setActiveDatePicker(null);
+      if (event.type !== "set" || !selected || !activeDatePicker) return;
+      setDraftValue(activeDatePicker, selected);
+      return;
+    }
+
     if (!selected || !activeDatePicker) return;
-    setDraftValue(activeDatePicker, selected);
-    if (Platform.OS === "ios") setActiveDatePicker(null);
+    setIosPickerValue(selected);
+  }
+
+  function applyIosDate() {
+    if (!activeDatePicker) return;
+    setDraftValue(activeDatePicker, iosPickerValue);
+    setActiveDatePicker(null);
   }
 
   function applyPreset(preset: { from: Date; to: Date }, rangeKey: string) {
@@ -173,8 +203,8 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
     if (field.kind === "dateRange") {
       const fromKey = `${field.key}From`;
       const toKey = `${field.key}To`;
-      const fromVal = draft[fromKey] instanceof Date ? (draft[fromKey] as Date) : null;
-      const toVal = draft[toKey] instanceof Date ? (draft[toKey] as Date) : null;
+      const fromVal = draftDate(draft[fromKey]);
+      const toVal = draftDate(draft[toKey]);
 
       return (
         <View key={field.key} style={styles.fieldGroup}>
@@ -183,7 +213,7 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
           <View style={styles.dateRow}>
             <View style={styles.dateCol}>
               <Text style={styles.dateSubLabel}>{fst.From}</Text>
-              <TouchableOpacity style={styles.datePicker} onPress={() => setActiveDatePicker(fromKey)}>
+              <TouchableOpacity style={styles.datePicker} onPress={() => openDatePicker(fromKey)}>
                 <Text style={[styles.dateText, !fromVal && styles.datePlaceholder]}>
                   {fromVal ? fmtDate(fromVal) : fst.PickDate}
                 </Text>
@@ -193,7 +223,7 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
 
             <View style={styles.dateCol}>
               <Text style={styles.dateSubLabel}>{fst.To}</Text>
-              <TouchableOpacity style={styles.datePicker} onPress={() => setActiveDatePicker(toKey)}>
+              <TouchableOpacity style={styles.datePicker} onPress={() => openDatePicker(toKey)}>
                 <Text style={[styles.dateText, !toVal && styles.datePlaceholder]}>
                   {toVal ? fmtDate(toVal) : fst.PickDate}
                 </Text>
@@ -218,11 +248,11 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
     }
 
     if (field.kind === "date") {
-      const val = draft[field.key] instanceof Date ? (draft[field.key] as Date) : null;
+      const val = draftDate(draft[field.key]);
       return (
         <View key={field.key} style={styles.fieldGroup}>
           <Text style={styles.fieldLabel}>{field.label}</Text>
-          <TouchableOpacity style={styles.datePicker} onPress={() => setActiveDatePicker(field.key)}>
+          <TouchableOpacity style={styles.datePicker} onPress={() => openDatePicker(field.key)}>
             <Text style={[styles.dateText, !val && styles.datePlaceholder]}>
               {val ? fmtDate(val) : fst.PickDate}
             </Text>
@@ -301,13 +331,36 @@ export const FilterSortSheet = forwardRef<FilterSortSheetHandle, Props>(function
         </TouchableOpacity>
       </BottomSheetScrollView>
 
-      {activeDatePicker && (
+      {activeDatePicker && Platform.OS === "android" && (
         <DateTimePicker
           mode="date"
           display="default"
-          value={(draft[activeDatePicker] as Date) ?? new Date()}
+          value={draftDate(draft[activeDatePicker]) ?? new Date()}
           onChange={onDateChange}
         />
+      )}
+
+      {activeDatePicker && Platform.OS === "ios" && (
+        <Modal transparent animationType="fade" visible>
+          <View style={styles.iosOverlay}>
+            <View style={styles.iosCard}>
+              <DateTimePicker
+                mode="date"
+                display="spinner"
+                value={iosPickerValue}
+                onChange={onDateChange}
+              />
+              <View style={styles.iosActions}>
+                <TouchableOpacity onPress={() => setActiveDatePicker(null)} style={styles.iosActionBtn}>
+                  <Text style={styles.iosCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={applyIosDate} style={styles.iosActionBtn}>
+                  <Text style={styles.iosDoneText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       )}
     </BottomSheetModal>
   );
@@ -463,5 +516,37 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 17,
     fontWeight: "600",
+  },
+  iosOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    justifyContent: "flex-end",
+  },
+  iosCard: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    paddingTop: 8,
+    paddingBottom: 20,
+  },
+  iosActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+    marginTop: 8,
+  },
+  iosActionBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+  },
+  iosCancelText: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#666",
+  },
+  iosDoneText: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: GREEN,
   },
 });

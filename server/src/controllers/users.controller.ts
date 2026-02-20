@@ -1,7 +1,7 @@
 import { UserModel } from "../models";
 import { toUserDto } from "../mappers";
 import { asyncHandler, hashPassword, signToken, verifyPassword, HttpError } from "../utils";
-import { deleteImage, saveImage } from "../image-utils";
+import { DEFAULT_IMAGE, deleteImage, saveImage } from "../image-utils";
 import { UserDto } from "@app/shared";
 
 export class UsersController {
@@ -76,6 +76,7 @@ export class UsersController {
       lastName: string;
       phone: string;
       email: string;
+      removeProfileImage?: string;
     };
 
     const exists = await UserModel.findOne({
@@ -92,9 +93,14 @@ export class UsersController {
     user.phone = body.phone;
     user.email = body.email;
 
+    const removeProfileImage = body.removeProfileImage === "true";
+
     if (req.file) {
       deleteImage(user.profileImagePath);
       user.profileImagePath = await saveImage(req.file.buffer, req.file.originalname, req.file.mimetype);
+    } else if (removeProfileImage && user.profileImagePath !== DEFAULT_IMAGE) {
+      deleteImage(user.profileImagePath);
+      user.profileImagePath = DEFAULT_IMAGE;
     }
 
     await user.save();

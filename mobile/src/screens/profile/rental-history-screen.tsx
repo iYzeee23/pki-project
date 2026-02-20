@@ -110,19 +110,21 @@ export function RentalHistoryScreen({ navigation }: Props) {
   ], [rent.LabelBikeId, rent.PlaceholderBikeId, rent.RentalDate]);
 
   const filtered = useMemo(() => {
-    const dateFrom = appliedFilters.dateFrom instanceof Date ? appliedFilters.dateFrom : null;
-    const dateTo = appliedFilters.dateTo instanceof Date ? appliedFilters.dateTo : null;
+    const dateFromRaw = appliedFilters.dateFrom instanceof Date ? appliedFilters.dateFrom : null;
+    const dateToRaw = appliedFilters.dateTo instanceof Date ? appliedFilters.dateTo : null;
     const bikeIdF = String(appliedFilters.bikeId ?? "").trim().toLowerCase();
+
+    const dateFrom = dateFromRaw ? new Date(dateFromRaw) : null;
+    if (dateFrom) dateFrom.setHours(0, 0, 0, 0);
+
+    const dateTo = dateToRaw ? new Date(dateToRaw) : null;
+    if (dateTo) dateTo.setHours(23, 59, 59, 999);
 
     let out = rentals.filter((r) => {
       const rDate = new Date(r.startAt);
 
       if (dateFrom && rDate < dateFrom) return false;
-      if (dateTo) {
-        const endOfDay = new Date(dateTo);
-        endOfDay.setHours(23, 59, 59, 999);
-        if (rDate > endOfDay) return false;
-      }
+      if (dateTo && rDate > dateTo) return false;
       if (bikeIdF && !r.bikeId.toLowerCase().includes(bikeIdF)) return false;
 
       return true;

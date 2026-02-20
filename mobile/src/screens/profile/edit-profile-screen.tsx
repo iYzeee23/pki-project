@@ -99,6 +99,7 @@ export function EditProfileScreen({ navigation }: Props) {
       form.append("lastName", lastName.trim());
       form.append("phone", phone.trim());
       form.append("email", email.trim());
+        form.append("removeProfileImage", file === null ? "true" : "false");
 
       if (file) {
           form.append("file", {
